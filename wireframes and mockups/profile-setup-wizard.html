@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Setup - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .setup-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 40px;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .step.completed:not(:last-child)::after {
+            background: #FFD700;
+        }
+        
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .step.active .step-circle {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .step.completed .step-circle {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .step-label {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        
+        .step.active .step-label {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 40px;
+        }
+        
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #000;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            border-color: #FFD700;
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-helper {
+            font-size: 14px;
+            color: #666;
+            margin-top: 6px;
+        }
+        
+        /* DUPR Connection */
+        .dupr-connection {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .dupr-connection.connected {
+            border-color: #28a745;
+            background: #f8fdf8;
+        }
+        
+        .dupr-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-icon.success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-connect {
+            background: #000;
+            color: #FFD700;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-connect:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-option input[type="radio"] {
+            accent-color: #FFD700;
+        }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .btn-back {
+            background: transparent;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            border-color: #000;
+            color: #000;
+        }
+        
+        .btn-next {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-next:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-skip {
+            background: transparent;
+            color: #666;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        /* Error State */
+        .form-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+        
+        .form-input.error {
+            border-color: #dc3545;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-steps {
+                display: none;
+            }
+            
+            .form-card {
+                padding: 20px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-back, .btn-next {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon">P.M</div>
+            <div class="logo-text">Pickleball Match</div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="step completed">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Basic Info</div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Playing Info</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Photos</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Videos</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Preferences</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Card -->
+        <div class="form-card">
+            <h1 class="form-title">Playing Information</h1>
+            <p class="form-subtitle">Tell us about your pickleball experience and preferences</p>
+            
+            <!-- DUPR Connection -->
+            <div class="dupr-connection">
+                <div class="dupr-status">
+                    <div class="status-icon">?</div>
+                    <span>DUPR Not Connected</span>
+                </div>
+                <p style="margin-bottom: 15px;">Connect your DUPR account for verified ratings</p>
+                <button class="btn-connect">Connect DUPR Account</button>
+            </div>
+            
+            <!-- Manual Rating (if no DUPR) -->
+            <div class="form-group">
+                <label class="form-label">Self-Reported Skill Level</label>
+                <select class="form-select">
+                    <option value="">Select your skill level</option>
+                    <option value="2.0">2.0 - Beginner</option>
+                    <option value="2.5">2.5 - Advanced Beginner</option>
+                    <option value="3.0">3.0 - Intermediate</option>
+                    <option value="3.5">3.5 - Advanced Intermediate</option>
+                    <option value="4.0">4.0 - Advanced</option>
+                    <option value="4.5">4.5 - Expert</option>
+                    <option value="5.0">5.0+ - Pro</option>
+                </select>
+                <p class="form-helper">This will be used until you connect your DUPR account</p>
+            </div>
+            
+            <!-- Playing Frequency -->
+            <div class="form-group">
+                <label class="form-label">How often do you play?</label>
+                <select class="form-select">
+                    <option value="">Select frequency</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">2-3 times per week</option>
+                    <option value="monthly">Weekly</option>
+                    <option value="occasional">Occasionally</option>
+                </select>
+            </div>
+            
+            <!-- Preferred Times -->
+            <div class="form-group">
+                <label class="form-label">When do you prefer to play?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="checkbox" name="times" value="morning">
+                        <span>Mornings</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="checkbox" name="times" value="afternoon">
+                        <span>Afternoons</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="checkbox" name="times" value="evening">
+                        <span>Evenings</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="checkbox" name="times" value="weekend">
+                        <span>Weekends</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Primary Location -->
+            <div class="form-group">
+                <label class="form-label">Primary Playing Location</label>
+                <input type="text" class="form-input" placeholder="Search for your main court or club">
+                <p class="form-helper">Start typing to search for courts near you</p>
+            </div>
+            
+            <!-- Travel Willingness -->
+            <div class="form-group">
+                <label class="form-label">Are you willing to travel for tournaments?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="travel" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="travel" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="travel" value="sometimes">
+                        <span>Sometimes</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <button class="btn-back">Back</button>
+                <button class="btn-next">Continue</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

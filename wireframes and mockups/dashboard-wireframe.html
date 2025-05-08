@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-link.active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FFD700;
+            color: #000;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 30px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .filters-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .filters-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .filter-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .btn-apply {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-apply:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .match-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .toggle-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .toggle-btn.active {
+            background: #000;
+            color: #FFD700;
+            border-color: #000;
+        }
+        
+        /* Swipe Card */
+        .swipe-container {
+            position: relative;
+            height: 600px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .swipe-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 65%;
+            background: #ddd;
+            position: relative;
+        }
+        
+        .card-badges {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .badge {
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .badge.travel {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .card-info {
+            padding: 20px;
+            height: 35%;
+        }
+        
+        .card-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .card-details {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tag {
+            background: #f0f0f0;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        
+        .swipe-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+        }
+        
+        .swipe-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .swipe-btn.dislike {
+            background: #fff;
+            border: 2px solid #ff4444;
+            color: #ff4444;
+        }
+        
+        .swipe-btn.info {
+            background: #fff;
+            border: 2px solid #666;
+            color: #666;
+        }
+        
+        .swipe-btn.like {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .swipe-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Right Sidebar */
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .reach-out-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .reach-out-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .reach-out-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .reach-out-count {
+            background: #FFD700;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .reach-out-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .reach-out-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .reach-out-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .reach-out-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        
+        .reach-out-info {
+            flex: 1;
+        }
+        
+        .reach-out-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .reach-out-details {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .btn-message {
+            background: #000;
+            color: #FFD700;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .upcoming-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .upcoming-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .upcoming-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .upcoming-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .upcoming-date {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 50px;
+        }
+        
+        .date-day {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .date-month {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .upcoming-info {
+            flex: 1;
+        }
+        
+        .upcoming-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .upcoming-details {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr 320px;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .right-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </a>
+            <div class="nav-links">
+                <a href="#" class="nav-link active">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M4 13h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1zm-1 7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v4zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v8zm1-17a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6z"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-link">Messages</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Community</a>
+            </div>
+            <div class="user-menu">
+                <button class="notification-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-avatar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard">
+        <!-- Left Sidebar - Filters -->
+        <aside class="sidebar">
+            <div class="filters-card">
+                <h2 class="filters-header">Filters</h2>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Looking For</label>
+                    <select class="filter-select">
+                        <option>Casual Play</option>
+                        <option>Tournament Partner</option>
+                        <option>Drilling Partner</option>
+                        <option>Travel Companion</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Distance</label>
+                    <select class="filter-select">
+                        <option>Within 5 miles</option>
+                        <option>Within 10 miles</option>
+                        <option>Within 25 miles</option>
+                        <option>Within 50 miles</option>
+                        <option>Any distance</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">DUPR Rating</label>
+                    <div class="filter-range">
+                        <input type="number" class="filter-input" value="3.0" min="2.0" max="5.0" step="0.5">
+                        <span>to</span>
+                        <input type="number" class="filter-input" value="4.0" min="2.0" max="5.0" step="0.5">
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Age Range</label>
+                    <div class="filter-range">
+                        <input type="number" class="filter-input" value="25" min="13" max="100">
+                        <span>to</span>
+                        <input type="number" class="filter-input" value="45" min="13" max="100">
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Gender</label>
+                    <select class="filter-select">
+                        <option>Any</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Include Travelers</label>
+                    <select class="filter-select">
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </div>
+                
+                <button class="btn-apply">Apply Filters</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="match-header">
+                <h1 class="match-title">Find Your Match</h1>
+                <div class="view-toggle">
+                    <button class="toggle-btn active">Swipe</button>
+                    <button class="toggle-btn">List</button>
+                </div>
+            </div>
+            
+            <div class="swipe-container">
+                <div class="swipe-card">
+                    <div class="card-image">
+                        <div class="card-badges">
+                            <div class="badge">DUPR 3.8</div>
+                            <div class="badge travel">Traveling: Mar 15-20</div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h2 class="card-name">Sarah Johnson, 32</h2>
+                        <p class="card-details">5 miles away • Toronto, ON</p>
+                        <div class="card-tags">
+                            <span class="tag">Tournament Partner</span>
+                            <span class="tag">Available Weekends</span>
+                            <span class="tag">PPA Experience</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swipe-buttons">
+                    <button class="swipe-btn dislike">✕</button>
+                    <button class="swipe-btn info">ℹ</button>
+                    <button class="swipe-btn like">✓</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="reach-out-card">
+                <div class="reach-out-header">
+                    <h2 class="reach-out-title">Reach Out List</h2>
+                    <span class="reach-out-count">8</span>
+                </div>
+                <div class="reach-out-list">
+                    <div class="reach-out-item">
+                        <div class="reach-out-avatar"></div>
+                        <div class="reach-out-info">
+                            <div class="reach-out-name">Mike Chen</div>
+                            <div class="reach-out-details">4.2 DUPR • Casual Play</div>
+                        </div>
+                        <button class="btn-message">Message</button>
+                    </div>
+                    <div class="reach-out-item">
+                        <div class="reach-out-avatar"></div>
+                        <div class="reach-out-info">
+                            <div class="reach-out-name">Emily Davis</div>
+                            <div class="reach-out-details">3.7 DUPR • Tournament</div>
+                        </div>
+                        <button class="btn-message">Message</button>
+                    </div>
+                    <div class="reach-out-item">
+                        <div class="reach-out-avatar"></div>
+                        <div class="reach-out-info">
+                            <div class="reach-out-name">Carlos Rivera</div>
+                            <div class="reach-out-details">3.9 DUPR • Drilling</div>
+                        </div>
+                        <button class="btn-message">Message</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upcoming-card">
+                <h2 class="upcoming-header">Upcoming</h2>
+                <div class="upcoming-item">
+                    <div class="upcoming-date">
+                        <div class="date-day">15</div>
+                        <div class="date-month">MAR</div>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Game with Alex</div>
+                        <div class="upcoming-details">2:00 PM • Toronto Pickleball Club</div>
+                    </div>
+                </div>
+                <div class="upcoming-item">
+                    <div class="upcoming-date">
+                        <div class="date-day">18</div>
+                        <div class="date-month">MAR</div>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Tournament Practice</div>
+                        <div class="upcoming-details">10:00 AM • North York Courts</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

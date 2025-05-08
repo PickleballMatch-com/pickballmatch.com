@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickleball Match - Find Partners, Play More</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .dropdown-indicator {
+            font-size: 12px;
+            margin-left: 4px;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 60px 0 40px;
+            background: #f8f9fa;
+        }
+        
+        .hero-content {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero h1 span {
+            color: #FFD700;
+            background: #000;
+            padding: 0 10px;
+            border-radius: 8px;
+        }
+        
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+        
+        .search-select {
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fff;
+            min-width: 150px;
+        }
+        
+        .quick-filters {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .filter-chip {
+            background: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-chip:hover {
+            background: #FFD700;
+        }
+        
+        /* Live Activity Feed */
+        .activity-section {
+            padding: 60px 0;
+            background: #fff;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .activity-feed {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .activity-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .activity-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .activity-type {
+            background: #FFD700;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .activity-time {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        /* Tournament Hub */
+        .tournament-section {
+            padding: 60px 0;
+            background: #f8f9fa;
+        }
+        
+        .tournament-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .tournament-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .tournament-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+        }
+        
+        .tournament-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .tournament-date {
+            background: #000;
+            color: #FFD700;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .tournament-date .month {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .tournament-date .day {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .partners-needed {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #eee;
+        }
+        
+        .partner-request {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .partner-request:last-child {
+            border-bottom: none;
+        }
+        
+        /* Travel Spotlight */
+        .travel-section {
+            padding: 60px 0;
+            background: #fff;
+        }
+        
+        .travel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .travel-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .travel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        
+        .travel-image {
+            height: 200px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .travel-content {
+            padding: 20px;
+        }
+        
+        .travel-badge {
+            background: #FFD700;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        /* Gear Central */
+        .gear-section {
+            padding: 60px 0;
+            background: #f8f9fa;
+        }
+        
+        .gear-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gear-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+        
+        .gear-image {
+            height: 200px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .gear-content {
+            padding: 20px;
+        }
+        
+        .gear-rating {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .gear-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        /* Community Highlights */
+        .community-section {
+            padding: 60px 0;
+            background: #fff;
+        }
+        
+        .community-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .forum-posts {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .forum-post {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .post-votes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-width: 40px;
+        }
+        
+        .vote-count {
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .post-content {
+            flex: 1;
+        }
+        
+        .post-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+        }
+        
+        .post-meta {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .spotlight-card {
+            background: #000;
+            color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .spotlight-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #FFD700;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #000;
+        }
+        
+        /* Blog Section */
+        .blog-section {
+            padding: 60px 0;
+            background: #f8f9fa;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .blog-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        
+        .blog-image {
+            height: 200px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .blog-content {
+            padding: 20px;
+        }
+        
+        .blog-category {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .blog-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .blog-excerpt {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        /* Stats Dashboard */
+        .stats-section {
+            padding: 60px 0;
+            background: #000;
+            color: #fff;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .cta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .cta-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .cta-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-5px);
+        }
+        
+        .cta-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+        }
+        
+        .cta-description {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            background: #000;
+            color: #fff;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section h4 {
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .footer-link {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .footer-link:hover {
+            color: #FFD700;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .social-link {
+            color: #ccc;
+            font-size: 20px;
+            text-decoration: none;
+        }
+        
+        .social-link:hover {
+            color: #FFD700;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .tournament-grid,
+            .community-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input,
+            .search-select {
+                width: 100%;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M.</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners <span class="dropdown-indicator">▼</span></a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Gear</a>
+                <a href="#" class="nav-link">Community</a>
+                <a href="#" class="nav-link">Blog</a>
+                <a href="#" class="nav-link">Login</a>
+                <a href="#" class="btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Find Your Perfect <span>Pickleball</span> Match</h1>
+                <p>Connect with players, find tournament partners, and never miss a game when you travel</p>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Enter your city...">
+                <select class="search-select">
+                    <option>All Play Types</option>
+                    <option>Casual Play</option>
+                    <option>Tournament Partner</option>
+                    <option>Drilling Partner</option>
+                    <option>Travel Buddy</option>
+                </select>
+                <select class="search-select">
+                    <option>All Skill Levels</option>
+                    <option>2.0 - 2.5</option>
+                    <option>3.0 - 3.5</option>
+                    <option>4.0 - 4.5</option>
+                    <option>5.0+</option>
+                </select>
+                <button class="btn-primary">Search Players</button>
+            </div>
+            
+            <div class="quick-filters">
+                <div class="filter-chip">Browse as Guest</div>
+                <div class="filter-chip">Find Local Games</div>
+                <div class="filter-chip">Tournament Partners</div>
+                <div class="filter-chip">Travel & Play</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Activity Feed -->
+    <section class="activity-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Live Activity</h2>
+                <a href="#" class="btn-secondary">View All</a>
+            </div>
+            
+            <div class="activity-feed">
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar">SJ</div>
+                        <div>
+                            <strong>Sarah Johnson</strong>
+                            <div class="activity-type">Tournament Partner</div>
+                        </div>
+                    </div>
+                    <p>4.0 player seeking mixed doubles partner for Toronto Open next month</p>
+                    <div class="activity-time">2 minutes ago</div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar">MR</div>
+                        <div>
+                            <strong>Mike Rodriguez</strong>
+                            <div class="activity-type">Travel</div>
+                        </div>
+                    </div>
+                    <p>Arriving in Miami next week - looking for 4.5+ games near South Beach</p>
+                    <div class="activity-time">15 minutes ago</div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar">TL</div>
+                        <div>
+                            <strong>Toronto League</strong>
+                            <div class="activity-type">Event</div>
+                        </div>
+                    </div>
+                    <p>Weekly mixer this Saturday - all levels welcome! Register now</p>
+                    <div class="activity-time">1 hour ago</div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar">JK</div>
+                        <div>
+                            <strong>Jessica Kim</strong>
+                            <div class="activity-type">Drilling Partner</div>
+                        </div>
+                    </div>
+                    <p>3.5 player looking for morning drill partner in Boston area</p>
+                    <div class="activity-time">2 hours ago</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tournament Hub -->
+    <section class="tournament-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tournament Hub</h2>
+                <a href="#" class="btn-secondary">Browse All</a>
+            </div>
+            
+            <div class="tournament-grid">
+                <div class="tournament-list">
+                    <div class="tournament-card">
+                        <div class="tournament-info">
+                            <div class="tournament-date">
+                                <div class="month">MAR</div>
+                                <div class="day">15</div>
+                            </div>
+                            <div>
+                                <h3>Toronto Spring Classic</h3>
+                                <p>All skill levels • 50+ teams registered</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn-primary">Find Partner</a>
+                    </div>
+                    
+                    <div class="tournament-card">
+                        <div class="tournament-info">
+                            <div class="tournament-date">
+                                <div class="month">MAR</div>
+                                <div class="day">22</div>
+                            </div>
+                            <div>
+                                <h3>Miami Beach Open</h3>
+                                <p>4.0+ only • PPA sanctioned</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn-primary">Find Partner</a>
+                    </div>
+                    
+                    <div class="tournament-card">
+                        <div class="tournament-info">
+                            <div class="tournament-date">
+                                <div class="month">APR</div>
+                                <div class="day">5</div>
+                            </div>
+                            <div>
+                                <h3>Vancouver Masters</h3>
+                                <p>Mixed doubles • $5,000 prize pool</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn-primary">Find Partner</a>
+                    </div>
+                </div>
+                
+                <div class="partners-needed">
+                    <h3>Partners Needed</h3>
+                    <div class="partner-request">
+                        <div class="activity-avatar">TW</div>
+                        <div>
+                            <strong>Tom Wilson</strong>
+                            <p>4.5 • Toronto Spring Classic</p>
+                        </div>
+                    </div>
+                    <div class="partner-request">
+                        <div class="activity-avatar">LM</div>
+                        <div>
+                            <strong>Lisa Martinez</strong>
+                            <p>3.5 • Miami Beach Open</p>
+                        </div>
+                    </div>
+                    <div class="partner-request">
+                        <div class="activity-avatar">RB</div>
+                        <div>
+                            <strong>Robert Brown</strong>
+                            <p>5.0 • Vancouver Masters</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Spotlight -->
+    <section class="travel-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Travel & Play</h2>
+                <a href="#" class="btn-secondary">Post Travel Plans</a>
+            </div>
+            
+            <div class="travel-grid">
+                <div class="travel-card">
+                    <div class="travel-image">[Beach Pickleball Court Image]</div>
+                    <div class="travel-content">
+                        <div class="travel-badge">Popular Destination</div>
+                        <h3>Miami, Florida</h3>
+                        <p>15 players visiting this week • 200+ local players</p>
+                        <a href="#" class="btn-secondary">Browse Players</a>
+                    </div>
+                </div>
+                
+                <div class="travel-card">
+                    <div class="travel-image">[Urban Court Image]</div>
+                    <div class="travel-content">
+                        <div class="travel-badge">Business Hub</div>
+                        <h3>Toronto, Ontario</h3>
+                        <p>8 business travelers looking for games</p>
+                        <a href="#" class="btn-secondary">Browse Players</a>
+                    </div>
+                </div>
+                
+                <div class="travel-card">
+                    <div class="travel-image">[Tropical Court Image]</div>
+                    <div class="travel-content">
+                        <div class="travel-badge">Hidden Gem</div>
+                        <h3>Jaco, Costa Rica</h3>
+                        <p>Small community • High-level players welcome</p>
+                        <a href="#" class="btn-secondary">Browse Players</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gear Central -->
+    <section class="gear-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Gear Central</h2>
+                <a href="#" class="btn-secondary">All Reviews</a>
+            </div>
+            
+            <div class="gear-grid">
+                <div class="gear-card">
+                    <div class="gear-image">[Paddle Image]</div>
+                    <div class="gear-content">
+                        <div class="gear-rating">★★★★★</div>
+                        <h3>JOOLA Ben Johns Hyperion</h3>
+                        <p>Community favorite • 156 reviews</p>
+                        <div class="gear-price">$199.99</div>
+                        <a href="#" class="btn-primary">Read Reviews</a>
+                    </div>
+                </div>
+                
+                <div class="gear-card">
+                    <div class="gear-image">[Shoes Image]</div>
+                    <div class="gear-content">
+                        <div class="gear-rating">★★★★☆</div>
+                        <h3>K-Swiss Express Light</h3>
+                        <p>Best value court shoe • 89 reviews</p>
+                        <div class="gear-price">$89.99</div>
+                        <a href="#" class="btn-primary">Read Reviews</a>
+                    </div>
+                </div>
+                
+                <div class="gear-card">
+                    <div class="gear-image">[Balls Image]</div>
+                    <div class="gear-content">
+                        <div class="gear-rating">★★★★★</div>
+                        <h3>Franklin X-40 Outdoor</h3>
+                        <p>Tournament standard • 234 reviews</p>
+                        <div class="gear-price">$24.99</div>
+                        <a href="#" class="btn-primary">Read Reviews</a>
+                    </div>
+                </div>
+                
+                <div class="gear-card">
+                    <div class="gear-image">[Bag Image]</div>
+                    <div class="gear-content">
+                        <div class="gear-rating">★★★★☆</div>
+                        <h3>Selkirk Tour Backpack</h3>
+                        <p>Pro player choice • 67 reviews</p>
+                        <div class="gear-price">$129.99</div>
+                        <a href="#" class="btn-primary">Read Reviews</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Highlights -->
+    <section class="community-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Community</h2>
+                <a href="#" class="btn-secondary">Join Discussion</a>
+            </div>
+            
+            <div class="community-grid">
+                <div class="forum-posts">
+                    <div class="forum-post">
+                        <div class="post-votes">
+                            <span>▲</span>
+                            <span class="vote-count">156</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title">How I went from 3.0 to 4.0 in one year</h3>
+                            <p class="post-meta">Posted by JohnDoe123 • 3 hours ago • 45 comments</p>
+                        </div>
+                    </div>
+                    
+                    <div class="forum-post">
+                        <div class="post-votes">
+                            <span>▲</span>
+                            <span class="vote-count">89</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title">Best drills for improving your third shot drop</h3>
+                            <p class="post-meta">Posted by PickleballPro • 8 hours ago • 32 comments</p>
+                        </div>
+                    </div>
+                    
+                    <div class="forum-post">
+                        <div class="post-votes">
+                            <span>▲</span>
+                            <span class="vote-count">67</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title">Tournament etiquette: What every player should know</h3>
+                            <p class="post-meta">Posted by SarahServes • 12 hours ago • 28 comments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="spotlight-card">
+                    <h3>Member Spotlight</h3>
+                    <div class="spotlight-image">👑</div>
+                    <h4>Maria Gonzalez</h4>
+                    <p>4.5 Player • Miami, FL</p>
+                    <p>"Found 3 amazing tournament partners through Pickleball Match. Best community ever!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Latest from the Blog</h2>
+                <a href="#" class="btn-secondary">All Articles</a>
+            </div>
+            
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <div class="blog-image">[Blog Post Image]</div>
+                    <div class="blog-content">
+                        <div class="blog-category">Strategy</div>
+                        <h3 class="blog-title">The Art of Stacking: When and How to Switch</h3>
+                        <p class="blog-excerpt">Master the advanced strategy that's changing how doubles is played...</p>
+                        <a href="#" class="btn-secondary">Read More</a>
+                    </div>
+                </div>
+                
+                <div class="blog-card">
+                    <div class="blog-image">[Blog Post Image]</div>
+                    <div class="blog-content">
+                        <div class="blog-category">Pro Tips</div>
+                        <h3 class="blog-title">Interview with Ben Johns: Training Secrets Revealed</h3>
+                        <p class="blog-excerpt">The world's #1 player shares his daily routine and practice tips...</p>
+                        <a href="#" class="btn-secondary">Read More</a>
+                    </div>
+                </div>
+                
+                <div class="blog-card">
+                    <div class="blog-image">[Blog Post Image]</div>
+                    <div class="blog-content">
+                        <div class="blog-category">Gear Guide</div>
+                        <h3 class="blog-title">2025 Paddle Comparison: Which One is Right for You?</h3>
+                        <p class="blog-excerpt">We tested 20 top paddles to help you find your perfect match...</p>
+                        <a href="#" class="btn-secondary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Dashboard -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label">Matches Made</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Active Cities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1,000+</div>
+                    <div class="stat-label">Tournament Partnerships</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25,000</div>
+                    <div class="stat-label">Active Players</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-grid">
+                <div class="cta-card">
+                    <div class="cta-icon">🎾</div>
+                    <h3 class="cta-title">Find Your Perfect Partner</h3>
+                    <p class="cta-description">Match with players at your skill level for casual games, drilling, or tournaments</p>
+                    <a href="#" class="btn-primary">Start Matching</a>
+                </div>
+                
+                <div class="cta-card">
+                    <div class="cta-icon">💑</div>
+                    <h3 class="cta-title">Singles Ready to Mingle</h3>
+                    <p class="cta-description">Find love on and off the court with our premium dating features</p>
+                    <a href="#" class="btn-primary">Learn More</a>
+                </div>
+                
+                <div class="cta-card">
+                    <div class="cta-icon">🌍</div>
+                    <h3 class="cta-title">Join Your Local Community</h3>
+                    <p class="cta-description">Connect with players, join discussions, and never miss local events</p>
+                    <a href="#" class="btn-primary">Find Your Community</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">About Us</a>
+                        <a href="#" class="footer-link">Careers</a>
+                        <a href="#" class="footer-link">Press</a>
+                        <a href="#" class="footer-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Find Partners</a>
+                        <a href="#" class="footer-link">Tournaments</a>
+                        <a href="#" class="footer-link">Travel & Play</a>
+                        <a href="#" class="footer-link">Gear Reviews</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">How It Works</a>
+                        <a href="#" class="footer-link">Blog</a>
+                        <a href="#" class="footer-link">Help Center</a>
+                        <a href="#" class="footer-link">Safety Tips</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Terms of Service</a>
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Cookie Policy</a>
+                        <a href="#" class="footer-link">Community Guidelines</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div>© 2025 Pickleball Match. All rights reserved.</div>
+                <div class="social-links">
+                    <a href="#" class="social-link">FB</a>
+                    <a href="#" class="social-link">TW</a>
+                    <a href="#" class="social-link">IG</a>
+                    <a href="#" class="social-link">YT</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

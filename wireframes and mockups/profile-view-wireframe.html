@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile View - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Profile Layout */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 40px 0;
+        }
+        
+        /* Left Column - Main Info */
+        .profile-main {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .profile-photos {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .main-photo {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #eee;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .photo-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .photo-thumb {
+            aspect-ratio: 1;
+            background: #eee;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .profile-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 8px;
+        }
+        
+        .profile-meta {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .dupr-badge {
+            background: #FFD700;
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .action-buttons .btn-primary,
+        .action-buttons .btn-secondary {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Right Column - Details */
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .detail-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .detail-card h3 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: #FFD700;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Travel Badge */
+        .travel-badge {
+            background: #000;
+            color: #FFD700;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Looking For Pills */
+        .looking-for-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .pill {
+            background: #f8f9fa;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #333;
+            border: 1px solid #eee;
+        }
+        
+        .pill.active {
+            background: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+        }
+        
+        /* Video Embed */
+        .video-embed {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #eee;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin-top: 15px;
+        }
+        
+        /* Equipment List */
+        .equipment-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .equipment-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .equipment-icon {
+            width: 50px;
+            height: 50px;
+            background: #eee;
+            border-radius: 8px;
+        }
+        
+        .equipment-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .equipment-info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Partner History */
+        .partner-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .partner-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        
+        .partner-avatar {
+            width: 50px;
+            height: 50px;
+            background: #eee;
+            border-radius: 50%;
+        }
+        
+        .partner-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .partner-info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Reviews */
+        .review-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .review-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            background: #eee;
+            border-radius: 50%;
+        }
+        
+        .rating {
+            color: #FFD700;
+        }
+        
+        .review-text {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="container">
+        <div class="profile-container">
+            <!-- Left Column - Main Info -->
+            <div class="profile-main">
+                <div class="profile-photos">
+                    <div class="main-photo">👤</div>
+                    <div class="photo-thumbnails">
+                        <div class="photo-thumb"></div>
+                        <div class="photo-thumb"></div>
+                        <div class="photo-thumb"></div>
+                        <div class="photo-thumb"></div>
+                    </div>
+                </div>
+                
+                <div class="profile-info">
+                    <h1 class="profile-name">Sarah Johnson</h1>
+                    <div class="profile-meta">
+                        <span>32 years</span>
+                        <span>•</span>
+                        <span>Toronto, ON</span>
+                        <span>•</span>
+                        <span>2.3 km away</span>
+                    </div>
+                    <div class="dupr-badge">
+                        <span>⭐</span>
+                        <span>4.25 DUPR</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-primary">
+                        <span>💬</span>
+                        <span>Message</span>
+                    </button>
+                    <button class="btn-secondary">
+                        <span>➕</span>
+                        <span>Add to Reach-Out</span>
+                    </button>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Matches Played</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Tournament Partners</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Partner Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Response Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Details -->
+            <div class="profile-details">
+                <!-- About Section -->
+                <div class="detail-card">
+                    <h3>
+                        <div class="section-icon">👋</div>
+                        About Me
+                    </h3>
+                    <p style="line-height: 1.6; margin-bottom: 20px;">
+                        Competitive player looking for tournament partners and high-level practice matches. 
+                        I've been playing for 3 years and love the strategic aspects of the game. 
+                        Available most evenings and weekends at Toronto Pickleball Club.
+                    </p>
+                    
+                    <div class="travel-badge">
+                        <span>✈️</span>
+                        <span>Traveling to Miami: March 15-22, 2025</span>
+                    </div>
+                    
+                    <h4 style="font-weight: 600; margin-bottom: 10px;">Looking For:</h4>
+                    <div class="looking-for-pills">
+                        <span class="pill active">Tournament Partners</span>
+                        <span class="pill active">Competitive Practice</span>
+                        <span class="pill">Casual Play</span>
+                        <span class="pill">Travel Partners</span>
+                    </div>
+                </div>
+                
+                <!-- Playing Style Section -->
+                <div class="detail-card">
+                    <h3>
+                        <div class="section-icon">🎾</div>
+                        Playing Style
+                    </h3>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Style:</strong> Aggressive baseline player with strong drives
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Strengths:</strong> Powerful forehand, quick reflexes at the net
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Working On:</strong> Drop shots and third shot consistency
+                    </p>
+                    <p>
+                        <strong>Preferred Partners:</strong> Players who communicate well and enjoy strategic play
+                    </p>
+                </div>
+                
+                <!-- Video Section -->
+                <div class="detail-card">
+                    <h3>
+                        <div class="section-icon">🎥</div>
+                        Videos
+                    </h3>
+                    <div class="video-embed">
+                        📹 Introduction Video
+                    </div>
+                    <div class="video-embed" style="margin-top: 15px;">
+                        🎾 Gameplay Footage
+                    </div>
+                </div>
+                
+                <!-- Equipment Section -->
+                <div class="detail-card">
+                    <h3>
+                        <div class="section-icon">🏓</div>
+                        Equipment
+                    </h3>
+                    <div class="equipment-list">
+                        <div class="equipment-item">
+                            <div class="equipment-icon"></div>
+                            <div class="equipment-info">
+                                <h4>Selkirk Power Air Invikta</h4>
+                                <p>Current paddle • Used for 6 months</p>
+                            </div>
+                        </div>
+                        <div class="equipment-item">
+                            <div class="equipment-icon"></div>
+                            <div class="equipment-info">
+                                <h4>Franklin X-40 Outdoor Balls</h4>
+                                <p>Preferred ball</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Partners Section -->
+                <div class="detail-card">
+                    <h3>
+                        <div class="section-icon">🤝</div>
+                        Recent Partners
+                    </h3>
+                    <div class="partner-list">
+                        <div class="partner-item">
+                            <div class="partner-avatar"></div>
+                            <div class="partner-info">
+                                <h4>Mike Chen • 4.5 DUPR</h4>
+                                <p>Tournament Partner • Won Silver at Ontario Open 2024</p>
+                            </div>
+                        </div>
+                        <div class="partner-item">
+                            <div class="partner-avatar"></div>
+                            <div class="partner-info">
+                                <h4>Lisa Park • 4.0 DUPR</h4>
+                                <p>Practice Partner • Regular drilling sessions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Section -->
+                <div class="detail-card">
+                    <h3>
+                        <div class="section-icon">⭐</div>
+                        Partner Reviews
+                    </h3>
+                    <div class="review-list">
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar"></div>
+                                    <div>
+                                        <h4>David Thompson</h4>
+                                        <p style="font-size: 14px; color: #666;">Played together 8 times</p>
+                                    </div>
+                                </div>
+                                <div class="rating">⭐⭐⭐⭐⭐</div>
+                            </div>
+                            <p class="review-text">
+                                "Sarah is an excellent partner - great communication and always positive on court. 
+                                Looking forward to our next tournament together!"
+                            </p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar"></div>
+                                    <div>
+                                        <h4>Emma Wilson</h4>
+                                        <p style="font-size: 14px; color: #666;">Tournament Partner</p>
+                                    </div>
+                                </div>
+                                <div class="rating">⭐⭐⭐⭐⭐</div>
+                            </div>
+                            <p class="review-text">
+                                "Played mixed doubles with Sarah at the Summer Classic. She's strategic, 
+                                supportive, and brings great energy to every match."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

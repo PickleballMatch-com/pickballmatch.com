@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickleball Match - Help & Support</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+            min-height: 80vh;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 28px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            color: #666;
+        }
+        
+        /* Settings Layout */
+        .settings-layout {
+            display: flex;
+            gap: 30px;
+        }
+        
+        /* Settings Sidebar */
+        .settings-sidebar {
+            width: 250px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        
+        .settings-nav {
+            list-style: none;
+        }
+        
+        .settings-nav-item {
+            margin-bottom: 10px;
+        }
+        
+        .settings-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .settings-nav-link:hover {
+            background: #f8f9fa;
+            color: #000;
+        }
+        
+        .settings-nav-link.active {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .settings-nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Help Content */
+        .help-content {
+            flex: 1;
+        }
+        
+        .help-search {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #FFD700;
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 20px;
+        }
+        
+        .popular-topics {
+            margin-top: 20px;
+        }
+        
+        .popular-topics-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .topics-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .topic-tag {
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 30px;
+            padding: 8px 15px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .topic-tag:hover {
+            background: #000;
+            color: #FFD700;
+            border-color: #000;
+        }
+        
+        .help-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .category-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .category-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .category-links {
+            list-style: none;
+        }
+        
+        .category-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #000;
+            text-decoration: none;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+        
+        .category-link:hover {
+            color: #FFD700;
+        }
+        
+        .contact-card {
+            background: #000;
+            color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .contact-card-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+        
+        .contact-description {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .contact-method {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .contact-method:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .contact-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .contact-method-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .contact-method-text {
+            font-size: 14px;
+            opacity: 0.9;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-primary:hover {
+            background: #fff;
+            color: #000;
+        }
+        
+        .faq-section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        
+        .faq-title {
+            font-size: 22px;
+            color: #000;
+            margin-bottom: 20px;
+        }
+        
+        .faq-list {
+            list-style: none;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        
+        .faq-answer {
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 30px 0;
+            background: #fff;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .footer-link:hover {
+            color: #000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .settings-layout {
+                flex-direction: column;
+            }
+            
+            .settings-sidebar {
+                width: 100%;
+            }
+            
+            .help-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">PM</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Gear</a>
+                <a href="#" class="nav-link">Community</a>
+                <a href="#" class="nav-link">Blog</a>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar"></div>
+                <span>John D.</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Help & Support</h1>
+                <p>Find answers to your questions and get help when you need it</p>
+            </div>
+            
+            <div class="settings-layout">
+                <!-- Settings Sidebar -->
+                <div class="settings-sidebar">
+                    <ul class="settings-nav">
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link">
+                                <div class="settings-nav-icon">👤</div>
+                                <span>Account</span>
+                            </a>
+                        </li>
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link">
+                                <div class="settings-nav-icon">🔒</div>
+                                <span>Privacy</span>
+                            </a>
+                        </li>
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link">
+                                <div class="settings-nav-icon">🔔</div>
+                                <span>Notifications</span>
+                            </a>
+                        </li>
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link">
+                                <div class="settings-nav-icon">💳</div>
+                                <span>Subscription</span>
+                            </a>
+                        </li>
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link">
+                                <div class="settings-nav-icon">🔗</div>
+                                <span>Linked Accounts</span>
+                            </a>
+                        </li>
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link">
+                                <div class="settings-nav-icon">🧩</div>
+                                <span>Preferences</span>
+                            </a>
+                        </li>
+                        <li class="settings-nav-item">
+                            <a href="#" class="settings-nav-link active">
+                                <div class="settings-nav-icon">❓</div>
+                                <span>Help & Support</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Help Content -->
+                <div class="help-content">
+                    <div class="help-search">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-input" placeholder="Search for help topics...">
+                        </div>
+                        <div class="popular-topics">
+                            <div class="popular-topics-title">Popular topics:</div>
+                            <div class="topics-list">
+                                <div class="topic-tag">Account issues</div>
+                                <div class="topic-tag">DUPR integration</div>
+                                <div class="topic-tag">Matching system</div>
+                                <div class="topic-tag">Travel plans</div>
+                                <div class="topic-tag">Premium features</div>
+                                <div class="topic-tag">Billing</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-categories">
+                        <div class="category-card">
+                            <div class="category-icon">👤</div>
+                            <div class="category-title">Account & Profile</div>
+                            <div class="category-description">Manage your account, profile settings, and privacy</div>
+                            <ul class="category-links">
+                                <li><a href="#" class="category-link">Creating an account</a></li>
+                                <li><a href="#" class="category-link">DUPR verification</a></li>
+                                <li><a href="#" class="category-link">Photo & video guidelines</a></li>
+                                <li><a href="#" class="category-link">Editing your profile</a></li>
+                                <li><a href="#" class="category-link">View all →</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="category-card">
+                            <div class="category-icon">🔍</div>
+                            <div class="category-title">Finding Partners</div>
+                            <div class="category-description">Learn about the matching system and connections</div>
+                            <ul class="category-links">
+                                <li><a href="#" class="category-link">How matching works</a></li>
+                                <li><a href="#" class="category-link">Filters & preferences</a></li>
+                                <li><a href="#" class="category-link">Finding tournament partners</a></li>
+                                <li><a href="#" class="category-link">Messaging etiquette</a></li>
+                                <li><a href="#" class="category-link">View all →</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="category-card">
+                            <div class="category-icon">✈️</div>
+                            <div class="category-title">Travel Features</div>
+                            <div class="category-description">Travel plans, local connections, and destinations</div>
+                            <ul class="category-links">
+                                <li><a href="#" class="category-link">Creating travel plans</a></li>
+                                <li><a href="#" class="category-link">Finding local players</a></li>
+                                <li><a href="#" class="category-link">Travel notifications</a></li>
+                                <li><a href="#" class="category-link">Destination guides</a></li>
+                                <li><a href="#" class="category-link">View all →</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="category-card">
+                            <div class="category-icon">💳</div>
+                            <div class="category-title">Premium & Billing</div>
+                            <div class="category-description">Subscriptions, payments, and premium features</div>
+                            <ul class="category-links">
+                                <li><a href="#" class="category-link">Premium benefits</a></li>
+                                <li><a href="#" class="category-link">Subscription management</a></li>
+                                <li><a href="#" class="category-link">Billing issues</a></li>
+                                <li><a href="#" class="category-link">Refund policy</a></li>
+                                <li><a href="#" class="category-link">View all →</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h2 class="contact-card-title">Need more help?</h2>
+                        <p class="contact-description">Our support team is here to assist you with any questions or issues you may have.</p>
+                        
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-method-title">Email Support</div>
+                                <div class="contact-method-text">Get a response within 24 hours</div>
+                                <a href="#" class="btn-primary" style="margin-top: 15px; width: 100%;">Send Email</a>
+                            </div>
+                            
+                            <div class="contact-method">
+                                <div class="contact-icon">💬</div>
+                                <div class="contact-method-title">Live Chat</div>
+                                <div class="contact-method-text">Available 9am-5pm ET, Mon-Fri</div>
+                                <a href="#" class="btn-primary" style="margin-top: 15px; width: 100%;">Start Chat</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-section">
+                        <h2 class="faq-title">Frequently Asked Questions</h2>
+                        <ul class="faq-list">
+                            <li class="faq-item">
+                                <div class="faq-question">
+                                    <span>How do I connect my DUPR rating to my profile?</span>
+                                    <span>+</span>
+                                </div>
+                                <div class="faq-answer">
+                                    To connect your DUPR rating, go to your Profile Settings and select "Connect DUPR." You'll be prompted to log in with your DUPR credentials or create a new DUPR account. Once connected, your rating will automatically update whenever it changes on DUPR.
+                                </div>
+                            </li>
+                            <li class="faq-item">
+                                <div class="faq-question">
+                                    <span>How does the matching system work?</span>
+                                    <span>+</span>
+                                </div>
+                                <div class="faq-answer">
+                                    Our matching system uses your DUPR rating, location, preferences, and playing style to suggest potential partners. You can browse matches, filter by various criteria, and add players to your reach-out list to send messages. The more complete your profile, the better matches you'll receive.
+                                </div>
+                            </li>
+                            <li class="faq-item">
+                                <div class="faq-question">
+                                    <span>What's included in the Premium membership?</span>
+                                    <span>+</span>
+                                </div>
+                                <div class="faq-answer">
+                                    Premium members get unlimited swipes, advanced filters, profile boost in search results, see who viewed their profile, video messaging, and priority support. Premium is $4.99/month or $49.99/year. The Singles add-on is available for an additional fee.
+                                </div>
+                            </li>
+                            <li class="faq-item">
+                                <div class="faq-question">
+                                    <span>How do I cancel my subscription?</span>
+                                    <span>+</span>
+                                </div>
+                                <div class="faq-answer">
+                                    You can cancel your subscription at any time by going to Settings > Subscription > Manage Subscription > Cancel. Your premium features will remain active until the end of your current billing period. No refunds are provided for partial subscription periods.
+                                </div>
+                            </li>
+                            <li class="faq-item">
+                                <div class="faq-question">
+                                    <span>How can I report inappropriate behavior?</span>
+                                    <span>+</span>
+                                </div>
+                                <div class="faq-answer">
+                                    If you encounter inappropriate behavior, you can report a user by visiting their profile and clicking the "Report" button, or from within your chat conversation. All reports are kept confidential and reviewed by our safety team within 24 hours.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>© 2025 Pickleball Match. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="#" class="footer-link">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

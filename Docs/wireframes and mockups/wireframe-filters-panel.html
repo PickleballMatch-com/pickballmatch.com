@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filters Panel - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .filters-panel {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 480px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        .filters-header {
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filters-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .filters-header .close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        
+        .filters-body {
+            padding: 20px;
+        }
+        
+        .filter-section {
+            margin-bottom: 24px;
+        }
+        
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .filter-section h3 {
+            font-size: 16px;
+            color: #000;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .input-group {
+            margin-bottom: 12px;
+        }
+        
+        .location-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .location-input input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 16px 12px 40px;
+            font-size: 14px;
+        }
+        
+        .location-input .location-icon {
+            position: absolute;
+            left: 12px;
+            color: #777;
+        }
+        
+        .range-slider {
+            margin-top: 8px;
+            padding: 0 4px;
+        }
+        
+        .range-slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .range-slider input {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+        }
+        
+        .range-slider input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .dual-range-control {
+            position: relative;
+            height: 30px;
+            margin-top: 20px;
+        }
+        
+        .range-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #eee;
+            transform: translateY(-50%);
+        }
+        
+        .range-track-highlight {
+            position: absolute;
+            top: 50%;
+            height: 4px;
+            background: #FFD700;
+            transform: translateY(-50%);
+            left: 25%;
+            right: 25%;
+        }
+        
+        .range-handle {
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #FFD700;
+            border: 2px solid #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        
+        .range-handle.min {
+            left: 25%;
+        }
+        
+        .range-handle.max {
+            left: 75%;
+        }
+        
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            display: none;
+        }
+        
+        .checkbox-item .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-right: 8px;
+            position: relative;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + .custom-checkbox {
+            background: #FFD700;
+            border-color: #000;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + .custom-checkbox:after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-size: 14px;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .toggle-label {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ddd;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #FFD700;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+            background-color: #000;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .filter-actions button {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .btn-reset {
+            background: transparent;
+            color: #000;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-apply {
+            background: #000;
+            color: #FFD700;
+            border: none;
+        }
+        
+        /* Tablet and above */
+        @media (min-width: 768px) {
+            .filters-panel {
+                max-width: 400px;
+                border-radius: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="filters-panel">
+        <div class="filters-header">
+            <h2>Filter Players</h2>
+            <button class="close-btn">×</button>
+        </div>
+        
+        <div class="filters-body">
+            <!-- Location Filter -->
+            <div class="filter-section">
+                <h3>Location</h3>
+                <div class="input-group">
+                    <div class="location-input">
+                        <span class="location-icon">📍</span>
+                        <input type="text" placeholder="City, State, or Zip Code" value="Jaco, Costa Rica">
+                    </div>
+                </div>
+                <div class="range-slider">
+                    <div class="range-slider-header">
+                        <span>Distance</span>
+                        <span>25 miles</span>
+                    </div>
+                    <input type="range" min="1" max="100" value="25">
+                </div>
+            </div>
+            
+            <!-- DUPR Rating Filter -->
+            <div class="filter-section">
+                <h3>DUPR Rating</h3>
+                <div class="dual-range-control">
+                    <div class="range-track"></div>
+                    <div class="range-track-highlight"></div>
+                    <div class="range-handle min"></div>
+                    <div class="range-handle max"></div>
+                </div>
+                <div class="range-values">
+                    <span>3.0</span>
+                    <span>4.5</span>
+                </div>
+            </div>
+            
+            <!-- Age Range Filter -->
+            <div class="filter-section">
+                <h3>Age Range</h3>
+                <div class="dual-range-control">
+                    <div class="range-track"></div>
+                    <div class="range-track-highlight"></div>
+                    <div class="range-handle min"></div>
+                    <div class="range-handle max"></div>
+                </div>
+                <div class="range-values">
+                    <span>25</span>
+                    <span>45</span>
+                </div>
+            </div>
+            
+            <!-- Gender Filter -->
+            <div class="filter-section">
+                <h3>Gender</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="custom-checkbox"></span>
+                        <span>Men</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="custom-checkbox"></span>
+                        <span>Women</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Match Type Filter -->
+            <div class="filter-section">
+                <h3>Looking For</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="custom-checkbox"></span>
+                        <span>Casual Play</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="custom-checkbox"></span>
+                        <span>Tournament</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="custom-checkbox"></span>
+                        <span>Drilling</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span>Travel Partner</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Additional Filters -->
+            <div class="filter-section">
+                <h3>Additional Filters</h3>
+                <div class="toggle-switch">
+                    <span class="toggle-label">Include travelers</span>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch" style="margin-top: 16px;">
+                    <span class="toggle-label">Has video</span>
+                    <label class="toggle">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch" style="margin-top: 16px;">
+                    <span class="toggle-label">Verified players only</span>
+                    <label class="toggle">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Filter Actions -->
+            <div class="filter-actions">
+                <button class="btn-reset">Reset</button>
+                <button class="btn-apply">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

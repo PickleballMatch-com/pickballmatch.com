@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { protectedProcedure, publicProcedure, router } from '../../trpc';
+import { protectedProcedure, router } from '../../trpc';
 import { db } from '../../db';
 import { users, playerProfiles } from '../../db/schema';
 import { eq } from 'drizzle-orm';
@@ -7,10 +7,10 @@ import { eq } from 'drizzle-orm';
 export const usersRouter = router({
   // Get current user profile
   getMyProfile: protectedProcedure.query(async ({ ctx }) => {
-    const { userId } = ctx;
-    
+    const userId = ctx.auth.userId;
+
     // Get user data
-    const user = await db.query.users.findFirst({
+    const user = await ctx.db.query.users.findFirst({
       where: eq(users.id, userId),
     });
     
@@ -19,7 +19,7 @@ export const usersRouter = router({
     }
     
     // Get player profile
-    const profile = await db.query.playerProfiles.findFirst({
+    const profile = await ctx.db.query.playerProfiles.findFirst({
       where: eq(playerProfiles.userId, userId),
     });
     
@@ -41,16 +41,16 @@ export const usersRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx;
-      
+      const userId = ctx.auth.userId;
+
       // Check if profile exists
-      const existingProfile = await db.query.playerProfiles.findFirst({
+      const existingProfile = await ctx.db.query.playerProfiles.findFirst({
         where: eq(playerProfiles.userId, userId),
       });
-      
+
       if (existingProfile) {
         // Update existing profile
-        return db
+        return ctx.db
           .update(playerProfiles)
           .set({
             ...input,
@@ -59,7 +59,7 @@ export const usersRouter = router({
           .where(eq(playerProfiles.userId, userId));
       } else {
         // Create new profile
-        return db.insert(playerProfiles).values({
+        return ctx.db.insert(playerProfiles).values({
           userId,
           ...input,
           updatedAt: new Date(),
@@ -69,16 +69,16 @@ export const usersRouter = router({
   
   // Get available players for matching
   getAvailablePlayers: protectedProcedure.query(async ({ ctx }) => {
-    const { userId } = ctx;
-    
+    const userId = ctx.auth.userId;
+
     // Get profiles of users who are available to play, excluding current user
-    const availablePlayers = await db.query.playerProfiles.findMany({
+    const availablePlayers = await ctx.db.query.playerProfiles.findMany({
       where: (profile) => eq(profile.isAvailableToPlay, true) && profile.userId !== userId,
       with: {
         user: true,
       },
     });
-    
+
     return availablePlayers;
   }),
 }); 

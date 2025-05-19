@@ -1,17 +1,32 @@
 import { initTRPC, TRPCError } from '@trpc/server';
-import superjson from 'superjson';
+// Temporarily remove superjson to test basic functionality
 import { ZodError } from 'zod';
-import { auth, currentUser } from '@clerk/nextjs';
+import { getAuth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
+import { db } from '../db';
 
-const t = initTRPC.create({
-  transformer: superjson,
+// Context should be created in the API handler
+// This is just a type definition for local use
+type Context = {
+  auth: { userId: string | null };
+  user?: any;
+  db: typeof db;
+};
+
+const t = initTRPC.context<Context>().create({
+  // Remove transformer temporarily
   errorFormatter({ shape, error }) {
+    console.error('TRPC error:', error);
+
     return {
       ...shape,
       data: {
         ...shape.data,
         zodError:
           error.cause instanceof ZodError ? error.cause.flatten() : null,
+        // Include serializable error information
+        message: error.message,
+        code: error.code,
       },
     };
   },
@@ -22,23 +37,20 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 
 // Protected procedure middleware
-const enforceUserIsAuthed = t.middleware(async ({ next }) => {
-  const { userId } = auth();
-  
-  if (!userId) {
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.auth.userId) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
     });
   }
 
-  const user = await currentUser();
-
   return next({
     ctx: {
-      user,
-      userId,
+      ...ctx,
+      auth: { userId: ctx.auth.userId },
+      user: ctx.user,
     },
   });
 });
 
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed); 
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);

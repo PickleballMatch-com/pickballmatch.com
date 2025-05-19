@@ -3,25 +3,44 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
-import { trpc } from './client';
-import superjson from 'superjson';
+import { api } from './client';
+// Temporarily remove superjson to test basic functionality
 
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        retry: 1,
+      },
+      mutations: {
+        retry: 0,
+        onError: (error) => {
+          console.error('API mutation error:', error);
+        },
+      },
+    },
+  }));
   const [trpcClient] = useState(() =>
-    trpc.createClient({
+    api.createClient({
       links: [
         httpBatchLink({
           url: `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/trpc`,
+          // Add custom headers if needed
+          headers() {
+            return {
+              'Content-Type': 'application/json',
+            };
+          },
         }),
       ],
-      transformer: superjson,
+      // Remove transformer temporarily to test
     })
   );
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+    <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </trpc.Provider>
+    </api.Provider>
   );
 } 

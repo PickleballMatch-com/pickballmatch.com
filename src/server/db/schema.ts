@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean, integer, date, real, primaryKey, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, date, real, uuid } from 'drizzle-orm/pg-core';
 
 // Users table (will be connected to Clerk for auth)
 export const users = pgTable('users', {
@@ -113,25 +113,36 @@ export const travelPlans = pgTable('travel_plans', {
 export const tournaments = pgTable('tournaments', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  location: text('location').notNull(),
+  venueId: uuid('venue_id').references(() => venues.id).notNull(), // Link to a specific venue
+  // location: text('location').notNull(), // This can now be derived from the venue or removed if venueId is always present
   startDate: date('start_date').notNull(),
   endDate: date('end_date').notNull(),
-  skillLevels: text('skill_levels').array(),
+  skillLevels: text('skill_levels').array(), // e.g., ['3.0-3.5', '4.0+', 'Open']
   description: text('description'),
-  registrationUrl: text('registration_url'),
+  registrationUrl: text('registration_url'), // Link to external registration
+  organizerName: text('organizer_name'),
+  organizerUrl: text('organizer_url'),
+  imageUrl: text('image_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
 
 export const tournamentPartners = pgTable('tournament_partners', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: text('user_id').references(() => users.id).notNull(),
-  tournamentId: uuid('tournament_id').references(() => tournaments.id),
-  eventType: text('event_type').notNull(), // 'mens', 'womens', 'mixed'
-  skillLevel: text('skill_level').notNull(),
-  status: text('status').default('seeking'),
+  tournamentId: uuid('tournament_id').references(() => tournaments.id).notNull(),
+  eventType: text('event_type').notNull(), // e.g., 'mens_doubles', 'womens_doubles', 'mixed_doubles', 'mens_singles'
+  skillLevel: text('skill_level').notNull(), // Seeker's skill level for THIS event
+  status: text('status').default('seeking').notNull(), // 'seeking', 'pending_confirmation', 'partner_found'
   message: text('message'),
+  desiredPartnerSkillMin: text('desired_partner_skill_min'),
+  desiredPartnerSkillMax: text('desired_partner_skill_max'),
+  desiredPartnerGender: text('desired_partner_gender'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
 
 // Community Features
 export const communities = pgTable('communities', {
@@ -340,17 +351,22 @@ export const specificAvailabilities = pgTable('specific_availabilities', {
 export const venues = pgTable('venues', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  address: text('address').notNull(),
+  address: text('address'), // Full street address
   city: text('city').notNull(),
   state: text('state'),
   country: text('country').notNull(),
+  postalCode: text('postal_code'), // Added for more precise location
   latitude: real('latitude'),
   longitude: real('longitude'),
   courtCount: integer('court_count'),
   indoorOutdoor: text('indoor_outdoor'), // 'indoor', 'outdoor', 'both'
+  surfaceType: text('surface_type'), // 'asphalt', 'concrete', 'cushioned', 'pickleball_sport_court'
+  amenities: text('amenities').array(), // e.g., ['restrooms', 'water_fountain', 'pro_shop', 'lights']
   website: text('website'),
   phone: text('phone'),
+  notes: text('notes'), // e.g., "Courts 1-4 are dedicated pickleball, 5-8 are shared with tennis"
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(), // Added updatedAt
 });
 
 export const venueReviews = pgTable('venue_reviews', {
@@ -388,15 +404,22 @@ export const events = pgTable('events', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   description: text('description'),
-  venueId: uuid('venue_id').references(() => venues.id),
-  clubId: uuid('club_id').references(() => clubs.id),
-  organizerId: text('organizer_id').references(() => users.id).notNull(),
+  venueId: uuid('venue_id').references(() => venues.id), // Make this nullable if an event doesn't *always* have a venue
+                                                        // but for consistency, NOT NULL is often better if events are physical.
+                                                        // If an event can be "online" or "TBD location", then nullable.
+  clubId: uuid('club_id').references(() => clubs.id), // If organized by a specific club
+  organizerId: text('organizer_id').references(() => users.id), // Could be a user or a club representative
   startTime: timestamp('start_time').notNull(),
   endTime: timestamp('end_time').notNull(),
   maxParticipants: integer('max_participants'),
-  eventType: text('event_type').notNull(), // 'social', 'tournament', 'clinic', 'drill'
-  skillLevel: text('skill_level').array(), // ['2.5', '3.0', etc.]
+  eventType: text('event_type').notNull(), // 'social_play', 'clinic', 'drill_session', 'league_night', 'community_tournament'
+  skillLevel: text('skill_level').array(), // ['2.5', '3.0', etc.] - general skill for the event
+  cost: real('cost'), // Cost to attend the event, if any
+  registrationRequired: boolean('registration_required').default(false),
+  registrationLink: text('registration_link'), // If external registration
+  imageUrl: text('image_url'), // Optional image for the event
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(), // Added updatedAt
 });
 
 export const eventParticipants = pgTable('event_participants', {
@@ -456,25 +479,31 @@ export const tournamentTeams = pgTable('tournament_teams', {
   id: uuid('id').defaultRandom().primaryKey(),
   tournamentId: uuid('tournament_id').references(() => tournaments.id).notNull(),
   player1Id: text('player_1_id').references(() => users.id).notNull(),
-  player2Id: text('player_2_id').references(() => users.id).notNull(),
+  player2Id: text('player_2_id').references(() => users.id), // Made this NULLABLE
   teamName: text('team_name'),
-  division: text('division').notNull(), // 'mens', 'womens', 'mixed'
-  skillLevel: text('skill_level').notNull(),
-  registrationStatus: text('registration_status').default('registered'),
+  division: text('division').notNull(), // e.g., 'Mens Doubles', 'Mixed Doubles', 'Womens Singles'
+  skillLevel: text('skill_level').notNull(), // e.g., '3.5', '4.0-4.5' (team's entered skill level)
+  registrationStatus: text('registration_status').default('registered'), // 'registered', 'waitlisted', 'withdrawn', 'confirmed_by_organizer'
+  partnerStatus: text('partner_status').default('complete'), // 'complete', 'seeking_partner' (could link to tournamentPartners.id)
+  externalTeamId: text('external_team_id'), // If imported from another system
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(), // Added
 });
 
 // Tournament results
 export const tournamentResults = pgTable('tournament_results', {
   id: uuid('id').defaultRandom().primaryKey(),
   tournamentId: uuid('tournament_id').references(() => tournaments.id).notNull(),
-  teamId: uuid('team_id').references(() => tournamentTeams.id),
+  teamId: uuid('team_id').references(() => tournamentTeams.id), // Links to your internal team representation
   division: text('division').notNull(),
-  placement: integer('placement'), // 1 = 1st place, 2 = 2nd place, etc.
-  medalType: text('medal_type'), // 'gold', 'silver', 'bronze'
+  placement: integer('placement'), // 1, 2, 3, etc.
+  medalType: text('medal_type'), // 'gold', 'silver', 'bronze', or null
   notes: text('notes'),
-  verifiedBy: text('verified_by').references(() => users.id),
+  verifiedBy: text('verified_by').references(() => users.id), // Admin or trusted source
+  externalMatchIds: text('external_match_ids').array(), // If results come from specific matches in another system
+  resultSource: text('result_source').default('manual_entry'), // 'manual_entry', 'scraped', 'organizer_upload'
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(), // Added
 });
 
 // Blocked users (for safety/moderation)

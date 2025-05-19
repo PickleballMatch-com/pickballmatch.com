@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Connections - Pickleball Dating</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .nav-link.active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .dropdown-indicator {
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #666;
+            border-right: 2px solid #666;
+            display: inline-block;
+            transform: rotate(45deg);
+            margin-left: 5px;
+            position: relative;
+            top: -2px;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            padding: 40px 0;
+            min-height: calc(100vh - 70px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-right: 30px;
+        }
+        
+        .sidebar-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            color: #000;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        
+        .sidebar-section h3 {
+            font-size: 16px;
+            color: #000;
+            margin-bottom: 15px;
+        }
+        
+        .filter-item {
+            margin-bottom: 15px;
+        }
+        
+        .filter-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .filter-item input[type="range"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .filter-item select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .filter-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #FFD700;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .filter-button {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            color: #FFD700;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        /* Cards Container */
+        .cards-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .card-stack {
+            position: relative;
+            height: 600px;
+            width: 400px;
+            margin: 0 auto;
+        }
+        
+        .dating-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .dating-card:nth-child(1) {
+            z-index: 3;
+        }
+        
+        .dating-card:nth-child(2) {
+            z-index: 2;
+            transform: scale(0.95) translateY(10px);
+            opacity: 0.9;
+        }
+        
+        .dating-card:nth-child(3) {
+            z-index: 1;
+            transform: scale(0.9) translateY(20px);
+            opacity: 0.7;
+        }
+        
+        .dating-card-image {
+            height: 65%;
+            background-color: #eee;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .dating-badge {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: rgba(0,0,0,0.7);
+            color: #FFD700;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .dupr-badge {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: #FFD700;
+            color: #000;
+            font-size: 16px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+        
+        .photo-counter {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .dating-card-content {
+            padding: 15px;
+            height: 35%;
+            position: relative;
+        }
+        
+        .dating-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .dating-card-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .dating-card-age {
+            font-size: 22px;
+            color: #666;
+        }
+        
+        .dating-card-location {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            gap: 5px;
+        }
+        
+        .dating-card-bio {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+            overflow-y: auto;
+            max-height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .dating-card-interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .interest-tag {
+            background: #f0f0f0;
+            color: #333;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .dating-card-actions {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .action-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:active {
+            transform: scale(0.95);
+        }
+        
+        .action-pass {
+            background: #fff;
+            color: #FF4D4F;
+            border: 1px solid #FF4D4F;
+        }
+        
+        .action-like {
+            background: #fff;
+            color: #FFD700;
+            border: 1px solid #FFD700;
+        }
+        
+        .action-super {
+            background: #000;
+            color: #FFD700;
+            border: none;
+        }
+        
+        .view-profile-button {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .view-profile-button button {
+            background: rgba(0,0,0,0.7);
+            color: #FFD700;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Court Connections Branding */
+        .court-connections {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        
+        .court-connections-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .cc-icon {
+            width: 30px;
+            height: 30px;
+            background: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .cc-text {
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #000, #444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .cc-heart {
+            color: #FF4D4F;
+            font-size: 18px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 100px;
+        }
+        
+        .empty-state h3 {
+            font-size: 22px;
+            color: #000;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 991px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+            
+            .card-stack {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .dating-card {
+                height: 550px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Community</a>
+                <a href="#" class="nav-link active">Court Connections <span class="dropdown-indicator"></span></a>
+                <a href="#" class="nav-link">Profile</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Sidebar / Filters -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Dating Preferences</h2>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Location</h3>
+                    <div class="filter-item">
+                        <label>Distance</label>
+                        <input type="range" min="1" max="100" value="25">
+                        <div class="range-values">
+                            <span>1 mi</span>
+                            <span>25 mi</span>
+                            <span>100 mi</span>
+                        </div>
+                    </div>
+                    <div class="filter-toggle">
+                        <span>Include travelers</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Player Details</h3>
+                    <div class="filter-item">
+                        <label>Age Range</label>
+                        <input type="range" min="18" max="80" value="35">
+                        <div class="range-values">
+                            <span>18</span>
+                            <span>35</span>
+                            <span>80+</span>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>DUPR Rating</label>
+                        <input type="range" min="2" max="6" value="4">
+                        <div class="range-values">
+                            <span>2.0</span>
+                            <span>4.0</span>
+                            <span>6.0+</span>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>Gender</label>
+                        <select>
+                            <option>Women</option>
+                            <option>Men</option>
+                            <option selected>Everyone</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Additional Filters</h3>
+                    <div class="filter-toggle">
+                        <span>Has video intro</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter-toggle">
+                        <span>Willing to travel</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter-toggle">
+                        <span>Tournament players</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="filter-button">Apply Filters</button>
+            </div>
+            
+            <!-- Card Stack -->
+            <div class="cards-container">
+                <!-- Court Connections Branding -->
+                <div class="court-connections">
+                    <div class="court-connections-logo">
+                        <div class="cc-icon">❤️</div>
+                        <div class="cc-text">Court Connections</div>
+                    </div>
+                </div>
+                
+                <!-- View Profile Button -->
+                <div class="view-profile-button">
+                    <button>View Full Profile</button>
+                </div>
+                
+                <!-- Card Stack -->
+                <div class="card-stack">
+                    <!-- Card 1 -->
+                    <div class="dating-card">
+                        <div class="dating-card-image" style="background-image: url('/api/placeholder/400/320');">
+                            <div class="dupr-badge">4.5</div>
+                            <div class="dating-badge">Traveler</div>
+                            <div class="photo-counter">1/6</div>
+                        </div>
+                        <div class="dating-card-content">
+                            <div class="dating-card-header">
+                                <div class="dating-card-name">Sarah</div>
+                                <div class="dating-card-age">32</div>
+                            </div>
+                            <div class="dating-card-location">
+                                <span>📍</span>
+                                <span>Toronto, ON (10 miles)</span>
+                            </div>
+                            <div class="dating-card-bio">
+                                Competitive pickleball player by day, foodie by night. Looking for someone who can keep up on the court and loves trying new restaurants.
+                            </div>
+                            <div class="dating-card-interests">
+                                <div class="interest-tag">Pickleball</div>
+                                <div class="interest-tag">Tennis</div>
+                                <div class="interest-tag">Foodie</div>
+                                <div class="interest-tag">Travel</div>
+                                <div class="interest-tag">Hiking</div>
+                            </div>
+                            <div class="dating-card-actions">
+                                <div class="action-button action-pass">✕</div>
+                                <div class="action-button action-like">❤️</div>
+                                <div class="action-button action-super">⭐</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2 (partially visible) -->
+                    <div class="dating-card">
+                        <div class="dating-card-image" style="background-image: url('/api/placeholder/400/320');">
+                            <div class="dupr-badge">4.2</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3 (barely visible) -->
+                    <div class="dating-card">
+                        <div class="dating-card-image" style="background-image: url('/api/placeholder/400/320');"></div>
+                    </div>
+                </div>
+                
+                <!-- Empty State (hidden by default) -->
+                <div class="empty-state">
+                    <h3>No matches in your area... yet!</h3>
+                    <p>Adjust your filters or check back soon as more players join Court Connections.</p>
+                    <a href="#" class="btn-primary">Expand Search Area</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

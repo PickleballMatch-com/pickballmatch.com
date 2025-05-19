@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singles Pool Interface - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .nav-link.active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .nav-link.premium {
+            color: #FFD700;
+            background: #000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+        
+        .avatar {
+            width: 35px;
+            height: 35px;
+            background: #eee;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Header Section */
+        .page-header {
+            background: linear-gradient(90deg, #fff, #f8f9fa);
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .page-header h1 {
+            font-size: 28px;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .tab-nav {
+            margin-top: 20px;
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            color: #000;
+            border-bottom: 3px solid #FFD700;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 30px 0;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            height: max-content;
+        }
+        
+        .filter-section {
+            margin-bottom: 25px;
+        }
+        
+        .filter-section h3 {
+            font-size: 16px;
+            color: #000;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .reset-link {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+            text-decoration: none;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .filter-option input {
+            margin-right: 10px;
+        }
+        
+        .filter-option label {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .range-slider {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .btn-filter {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .btn-filter:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .content-area {
+            flex: 1;
+        }
+        
+        .search-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .search-input input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sort-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .sort-select {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .view-option {
+            padding: 8px 12px;
+            background: #fff;
+            cursor: pointer;
+        }
+        
+        .view-option.active {
+            background: #f1f1f1;
+        }
+        
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .profile-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            position: relative;
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-badges {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .badge {
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge.badge-yellow {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .card-body {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .tag {
+            background: #f1f1f1;
+            color: #666;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .card-info {
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        
+        .info-label {
+            color: #666;
+        }
+        
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .card-bio {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-card {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 1px solid #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #f1f1f1;
+        }
+        
+        .premium-feature {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .premium-icon {
+            font-size: 40px;
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+        
+        .premium-feature h3 {
+            font-size: 20px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .premium-feature p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .paginator {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        
+        .page-item {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .page-item.active {
+            background: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .search-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-input {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Community</a>
+                <a href="#" class="nav-link active">Singles</a>
+                <a href="#" class="nav-link premium">Premium</a>
+                <div class="avatar">
+                    <img src="/api/placeholder/35/35" alt="Profile">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Singles Pool</h1>
+            <p>Find partners for pickleball and beyond - connect with singles who share your passion</p>
+            
+            <div class="tab-nav">
+                <div class="tab active">Browse Singles</div>
+                <div class="tab">My Matches</div>
+                <div class="tab">Dating Profile</div>
+                <div class="tab">Settings</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="sidebar">
+                <div class="filter-section">
+                    <h3>Interested In <a href="#" class="reset-link">Reset</a></h3>
+                    <div class="filter-option">
+                        <input type="radio" id="women" name="gender" checked>
+                        <label for="women">Women</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="radio" id="men" name="gender">
+                        <label for="men">Men</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="radio" id="everyone" name="gender">
+                        <label for="everyone">Everyone</label>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h3>Age Range</h3>
+                    <input type="range" min="18" max="80" value="18" class="range-slider" multiple>
+                    <div class="range-labels">
+                        <span>18</span>
+                        <span>80+</span>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h3>DUPR Rating</h3>
+                    <input type="range" min="2" max="6" value="2" class="range-slider" multiple>
+                    <div class="range-labels">
+                        <span>2.0</span>
+                        <span>6.0</span>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h3>Distance</h3>
+                    <div class="filter-option">
+                        <input type="radio" id="5miles" name="distance" checked>
+                        <label for="5miles">Within 5 miles</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="radio" id="10miles" name="distance">
+                        <label for="10miles">Within 10 miles</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="radio" id="25miles" name="distance">
+                        <label for="25miles">Within 25 miles</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="radio" id="50miles" name="distance">
+                        <label for="50miles">Within 50 miles</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="radio" id="anywhere" name="distance">
+                        <label for="anywhere">Anywhere</label>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h3>Looking For</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="relationship" checked>
+                        <label for="relationship">Relationship</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="casual" checked>
+                        <label for="casual">Casual Dating</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="friends" checked>
+                        <label for="friends">Friends</label>
+                    </div>
+                </div>
+                
+                <button class="btn-filter">Apply Filters</button>
+            </div>
+            
+            <div class="content-area">
+                <div class="search-row">
+                    <div class="search-input">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" placeholder="Search singles...">
+                    </div>
+                    
+                    <div class="sort-options">
+                        <span class="sort-label">Sort by:</span>
+                        <select class="sort-select">
+                            <option>Newest First</option>
+                            <option>Most Compatible</option>
+                            <option>Distance</option>
+                            <option>DUPR (High to Low)</option>
+                        </select>
+                        
+                        <div class="view-toggle">
+                            <div class="view-option active">📊</div>
+                            <div class="view-option">📋</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-grid">
+                    <!-- Profile Card 1 -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <img src="/api/placeholder/300/200" alt="Profile" class="card-image">
+                            <div class="card-badges">
+                                <span class="badge badge-yellow">4.2 DUPR</span>
+                                <span class="badge">2 miles</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">
+                                Jessica, 32
+                                <span>✓</span>
+                            </div>
+                            <div class="card-subtitle">San Francisco, CA</div>
+                            
+                            <div class="card-tags">
+                                <span class="tag">Aggressive Play</span>
+                                <span class="tag">Tournament Player</span>
+                                <span class="tag">Traveler</span>
+                            </div>
+                            
+                            <div class="card-info">
+                                <div class="info-row">
+                                    <span class="info-label">Playing Since:</span>
+                                    <span class="info-value">2021</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Frequency:</span>
+                                    <span class="info-value">4x weekly</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Looking For:</span>
+                                    <span class="info-value">Relationship</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-bio">
+                                Passionate pickleball player looking for someone who shares my love for the sport. I'm competitive but enjoy playing at all levels...
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-card btn-primary">Connect</button>
+                                <button class="btn-card btn-secondary">View Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Card 2 -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <img src="/api/placeholder/300/200" alt="Profile" class="card-image">
+                            <div class="card-badges">
+                                <span class="badge badge-yellow">3.8 DUPR</span>
+                                <span class="badge">4 miles</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">
+                                Michael, 29
+                                <span>✓</span>
+                            </div>
+                            <div class="card-subtitle">San Francisco, CA</div>
+                            
+                            <div class="card-tags">
+                                <span class="tag">Defensive Play</span>
+                                <span class="tag">Recreational</span>
+                                <span class="tag">Coach</span>
+                            </div>
+                            
+                            <div class="card-info">
+                                <div class="info-row">
+                                    <span class="info-label">Playing Since:</span>
+                                    <span class="info-value">2020</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Frequency:</span>
+                                    <span class="info-value">2x weekly</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Looking For:</span>
+                                    <span class="info-value">Casual Dating</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-bio">
+                                Pickleball instructor who loves teaching and playing. Looking for someone to share outdoor adventures with, both on and off the court...
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-card btn-primary">Connect</button>
+                                <button class="btn-card btn-secondary">View Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Card 3 - Locked Premium -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <img src="/api/placeholder/300/200" alt="Profile" class="card-image" style="filter: blur(5px);">
+                        </div>
+                        <div class="card-body" style="position: relative;">
+                            <div class="premium-feature">
+                                <div class="premium-icon">⭐</div>
+                                <h3>Premium Feature</h3>
+                                <p>Upgrade to see more matches and connect with singles interested in pickleball</p>
+                                <button class="btn-card btn-primary" style="width: 150px;">Upgrade Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Card 4 -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <img src="/api/placeholder/300/200" alt="Profile" class="card-image">
+                            <div class="card-badges">
+                                <span class="badge badge-yellow">4.5 DUPR</span>
+                                <span class="badge">8 miles</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">
+                                Sarah, 34
+                                <span>✓</span>
+                            </div>
+                            <div class="card-subtitle">Oakland, CA</div>
+                            
+                            <div class="card-tags">
+                                <span class="tag">Tournament Player</span>
+                                <span class="tag">Mixed Doubles</span>
+                                <span class="tag">Athletic</span>
+                            </div>
+                            
+                            <div class="card-info">
+                                <div class="info-row">
+                                    <span class="info-label">Playing Since:</span>
+                                    <span class="info-value">2019</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Frequency:</span>
+                                    <span class="info-value">Daily</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Looking For:</span>
+                                    <span class="info-value">Relationship</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-bio">
+                                Former tennis player who fell in love with pickleball. Looking for someone who can keep up on the court and is ambitious in life...
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-card btn-primary">Connect</button>
+                                <button class="btn-card btn-secondary">View Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Card 5 -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <img src="/api/placeholder/300/200" alt="Profile" class="card-image">
+                            <div class="card-badges">
+                                <span class="badge badge-yellow">3.5 DUPR</span>
+                                <span class="badge">12 miles</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">
+                                David, 38
+                                <span>✓</span>
+                            </div>
+                            <div class="card-subtitle">San Mateo, CA</div>
+                            
+                            <div class="card-tags">
+                                <span class="tag">Recreational</span>
+                                <span class="tag">Social Player</span>
+                                <span class="tag">Beginner-Friendly</span>
+                            </div>
+                            
+                            <div class="card-info">
+                                <div class="info-row">
+                                    <span class="info-label">Playing Since:</span>
+                                    <span class="info-value">2022</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Frequency:</span>
+                                    <span class="info-value">Weekends</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Looking For:</span>
+                                    <span class="info-value">Friends, Dating</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-bio">
+                                Tech professional who picked up pickleball as a way to stay active. Looking for someone to share laughs with both on and off the court...
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-card btn-primary">Connect</button>
+                                <button class="btn-card btn-secondary">View Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Card 6 - Locked Premium -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <img src="/api/placeholder/300/200" alt="Profile" class="card-image" style="filter: blur(5px);">
+                        </div>
+                        <div class="card-body" style="position: relative;">
+                            <div class="premium-feature">
+                                <div class="premium-icon">⭐</div>
+                                <h3>Premium Feature</h3>
+                                <p>Upgrade to see more matches and connect with singles interested in pickleball</p>
+                                <button class="btn-card btn-primary" style="width: 150px;">Upgrade Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="paginator">
+                    <div class="page-item">«</div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">3</div>
+                    <div class="page-item">4</div>
+                    <div class="page-item">»</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

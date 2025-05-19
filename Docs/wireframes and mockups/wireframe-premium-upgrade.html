@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Upgrade - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Premium Header */
+        .premium-header {
+            background: #000;
+            padding: 60px 0;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .premium-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        
+        .premium-title span {
+            color: #FFD700;
+        }
+        
+        .premium-subtitle {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        /* Main content */
+        .main-content {
+            padding: 60px 0;
+        }
+        
+        /* Pricing plans section */
+        .pricing-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #000;
+        }
+        
+        .section-subtitle {
+            font-size: 18px;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        .pricing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .toggle-label {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .toggle-label.active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: #FFD700;
+            border-radius: 13px;
+            position: relative;
+            margin: 0 15px;
+            cursor: pointer;
+        }
+        
+        .toggle-switch:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s;
+        }
+        
+        .toggle-switch.yearly:after {
+            left: calc(100% - 23px);
+        }
+        
+        .pricing-label {
+            display: inline-block;
+            background: #FFD700;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .pricing-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .pricing-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 30px;
+            width: 360px;
+            text-align: left;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card.featured {
+            border: 3px solid #FFD700;
+        }
+        
+        .pricing-card.featured::before {
+            content: 'Popular Choice';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FFD700;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .card-header {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .plan-desc {
+            font-size: 15px;
+            color: #666;
+        }
+        
+        .plan-price {
+            display: flex;
+            align-items: baseline;
+            margin: 15px 0;
+        }
+        
+        .price-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #000;
+        }
+        
+        .price-duration {
+            font-size: 16px;
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 18px;
+            margin-left: 10px;
+        }
+        
+        .plan-features {
+            margin-bottom: 30px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+        
+        .feature-icon {
+            color: #FFD700;
+            font-size: 18px;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            border-radius: 50%;
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        .select-plan-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .primary-btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+        }
+        
+        .primary-btn:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .secondary-btn {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+        }
+        
+        .secondary-btn:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .special-btn {
+            background: #000;
+            color: #FFD700;
+            border: none;
+        }
+        
+        .special-btn:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        /* Features section */
+        .features-section {
+            background: #fff;
+            padding: 60px 0;
+            margin-bottom: 60px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            padding: 25px;
+            border-radius: 15px;
+            background: #f9f9f9;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .feature-icon-lg {
+            width: 60px;
+            height: 60px;
+            background: #FFD700;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #000;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Testimonials */
+        .testimonials-section {
+            margin-bottom: 60px;
+        }
+        
+        .testimonials-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonial-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .author-info {
+            flex: 1;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .author-title {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            margin-bottom: 60px;
+        }
+        
+        .accordion {
+            margin-top: 40px;
+        }
+        
+        .accordion-item {
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .accordion-header {
+            padding: 20px;
+            background: #f9f9f9;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .accordion-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .accordion-icon {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .accordion-content.active {
+            padding: 20px;
+            max-height: 1000px;
+        }
+        
+        .accordion-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: #000;
+            padding: 80px 0;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .cta-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        
+        .cta-title span {
+            color: #FFD700;
+        }
+        
+        .cta-subtitle {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            font-size: 14px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .testimonials-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .premium-title {
+                font-size: 32px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pricing-card {
+                width: 100%;
+                max-width: 360px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Gear</a>
+                <a href="#" class="nav-link">Community</a>
+                <a href="#" class="nav-link">Blog</a>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Premium Header -->
+    <div class="premium-header">
+        <div class="container">
+            <h1 class="premium-title">Upgrade to <span>Premium</span></h1>
+            <p class="premium-subtitle">Unlock advanced features and find your perfect pickleball partner faster</p>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="main-content">
+        <div class="container">
+            <div class="pricing-section">
+                <h2 class="section-title">Choose Your Plan</h2>
+                <p class="section-subtitle">Select the plan that best fits your pickleball journey</p>
+                
+                <div class="pricing-toggle">
+                    <span class="toggle-label active">Monthly</span>
+                    <div class="toggle-switch"></div>
+                    <span class="toggle-label">Yearly <span class="pricing-label">Save 25%</span></span>
+                </div>
+                
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <div class="card-header">
+                            <h3 class="plan-name">Free</h3>
+                            <p class="plan-desc">Basic partner matching</p>
+                            <div class="plan-price">
+                                <span class="price-value">$0</span>
+                                <span class="price-duration">/forever</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">25 daily swipes</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Basic filters</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Standard messaging</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">View nearby players</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Join community discussions</div>
+                            </div>
+                        </div>
+                        
+                        <button class="select-plan-btn secondary-btn">Current Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <div class="card-header">
+                            <h3 class="plan-name">Premium</h3>
+                            <p class="plan-desc">Enhanced matching & features</p>
+                            <div class="plan-price">
+                                <span class="price-value">$4.99</span>
+                                <span class="price-duration">/month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text"><strong>Unlimited</strong> swipes</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text"><strong>Advanced</strong> filters</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">See who viewed your profile</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Priority in search results</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Video messaging</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Tournament partner boost</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Ad-free experience</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Profile analytics</div>
+                            </div>
+                        </div>
+                        
+                        <button class="select-plan-btn primary-btn">Get Premium</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="card-header">
+                            <h3 class="plan-name">Singles</h3>
+                            <p class="plan-desc">Premium + Dating features</p>
+                            <div class="plan-price">
+                                <span class="price-value">$19.99</span>
+                                <span class="price-duration">/month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text"><strong>All Premium features</strong></div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Access to singles pool</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Dating profile creation</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Enhanced matching algorithm</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Compatibility scoring</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Read receipts</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Verified profile badge</div>
+                            </div>
+                        </div>
+                        
+                        <button class="select-plan-btn special-btn">Get Singles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="container">
+            <h2 class="section-title">Premium Features</h2>
+            <p class="section-subtitle">Discover how Premium enhances your pickleball experience</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-lg">🔍</div>
+                    <h3 class="feature-title">Advanced Filters</h3>
+                    <p class="feature-desc">Filter by specific playing styles, equipment preferences, tournament goals, and more to find your ideal partner.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-lg">⭐</div>
+                    <h3 class="feature-title">Priority Matching</h3>
+                    <p class="feature-desc">Your profile appears at the top of searches, increasing your visibility to potential partners.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-lg">👀</div>
+                    <h3 class="feature-title">See Who Viewed You</h3>
+                    <p class="feature-desc">Know exactly who's interested in your profile and reach out to make the first move.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-lg">📊</div>
+                    <h3 class="feature-title">Profile Analytics</h3>
+                    <p class="feature-desc">Get insights into your profile performance, including views, matches, and engagement metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-lg">🎥</div>
+                    <h3 class="feature-title">Video Messaging</h3>
+                    <p class="feature-desc">Connect more personally with video messages to discuss playing styles and strategies.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-lg">🏆</div>
+                    <h3 class="feature-title">Tournament Boost</h3>
+                    <p class="feature-desc">Get highlighted in tournament partner searches and receive notifications for perfect matches.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonials Section -->
+    <div class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What Our Premium Users Say</h2>
+            <p class="section-subtitle">Join thousands of pickleball players who've upgraded their experience</p>
+            
+            <div class="testimonials-container">
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"I found my tournament partner in just one day with Premium filters. We're now competing in the regional circuit together and have won two tournaments!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JT</div>
+                        <div class="author-info">
+                            <div class="author-name">Jessica Thompson</div>
+                            <div class="author-title">4.5 DUPR • Premium member for 8 months</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"The advanced filters helped me find players with similar playing styles when I travel for business. Now I never miss practice, even when I'm on the road."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MR</div>
+                        <div class="author-info">
+                            <div class="author-name">Michael Rodriguez</div>
+                            <div class="author-title">3.8 DUPR • Premium member for 5 months</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"I upgraded to Premium and immediately found more serious practice partners. The unlimited swipes and priority matching made all the difference."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AK</div>
+                        <div class="author-info">
+                            <div class="author-name">Amanda Kim</div>
+                            <div class="author-title">4.2 DUPR • Premium member for 3 months</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"Not only did I find great partners to play with, but I also met my girlfriend through the Singles upgrade! Now we play mixed doubles together every weekend."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DH</div>
+                        <div class="author-info">
+                            <div class="author-name">David Hughes</div>
+                            <div class="author-title">3.5 DUPR • Singles member for 6 months</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Everything you need to know about our Premium plans</p>
+            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">How do I upgrade to Premium?</div>
+                        <div class="accordion-icon">+</div>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="accordion-text">Simply select your preferred plan above and follow the payment process. You'll be upgraded immediately after your payment is processed. Premium features will be available as soon as your payment is confirmed.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">Can I cancel my subscription anytime?</div>
+                        <div class="accordion-icon">+</div>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="accordion-text">Yes, you can cancel your subscription at any time from your account settings. Your Premium benefits will continue until the end of your current billing cycle. We don't provide refunds for partial subscription periods.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">What's the difference between Premium and Singles plans?</div>
+                        <div class="accordion-icon">+</div>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="accordion-text">Premium focuses on enhancing your pickleball partner matching experience with unlimited swipes, advanced filters, and more visibility. The Singles plan includes all Premium features plus access to our dating-focused features, including a separate dating profile, compatibility matching, and a dedicated singles pool.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">Is my payment information secure?</div>
+                        <div class="accordion-icon">+</div>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="accordion-text">Absolutely. We use Stripe, a PCI-compliant payment processor, to handle all transactions. Your payment information is never stored on our servers. We implement industry-standard security measures to protect your data.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">How do annual subscriptions work?</div>
+                        <div class="accordion-icon">+</div>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="accordion-text">Annual subscriptions are billed once for the entire year, providing you with a 25% discount compared to monthly billing. Your subscription will automatically renew after 12 months unless you cancel before the renewal date.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to find your <span>perfect match</span>?</h2>
+            <p class="cta-subtitle">Join thousands of pickleball players who've upgraded their partner search experience</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn-primary">Get Premium Now</a>
+                <a href="#" class="btn-secondary">Explore Singles</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>© 2025 Pickleball Match. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Refund Policy</a>
+                    <a href="#" class="footer-link">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('.accordion-icon');
+                
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
+                    icon.textContent = '+';
+                } else {
+                    content.classList.add('active');
+                    icon.textContent = '−';
+                }
+            });
+        });
+        
+        // Toggle switch
+        const toggleSwitch = document.querySelector('.toggle-switch');
+        const toggleLabels = document.querySelectorAll('.toggle-label');
+        
+        toggleSwitch.addEventListener('click', () => {
+            toggleSwitch.classList.toggle('yearly');
+            toggleLabels.forEach(label => label.classList.toggle('active'));
+            
+            // Here you would add code to update the price display
+        });
+    </script>
+</body>
+</html>

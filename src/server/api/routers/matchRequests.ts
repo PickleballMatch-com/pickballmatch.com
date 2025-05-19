@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { protectedProcedure, router } from '../../trpc';
 import { db } from '../../db';
-import { matchRequests, matches, users } from '../../db/schema';
+import { matchRequests, matches } from '../../db/schema';
 import { eq, and, or } from 'drizzle-orm';
 
 export const matchRequestsRouter = router({
@@ -16,11 +16,11 @@ export const matchRequestsRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx;
+      const userId = ctx.auth.userId;
       const { recipientId, proposedTime, proposedLocation, message } = input;
-      
+
       // Create new match request
-      return db.insert(matchRequests).values({
+      return ctx.db.insert(matchRequests).values({
         requesterId: userId,
         recipientId,
         proposedTime,
@@ -34,10 +34,10 @@ export const matchRequestsRouter = router({
   
   // Get all match requests for the current user (sent and received)
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const { userId } = ctx;
-    
+    const userId = ctx.auth.userId;
+
     // Get both sent and received match requests
-    const requests = await db.query.matchRequests.findMany({
+    const requests = await ctx.db.query.matchRequests.findMany({
       where: or(
         eq(matchRequests.requesterId, userId),
         eq(matchRequests.recipientId, userId)
@@ -63,32 +63,32 @@ export const matchRequestsRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx;
+      const userId = ctx.auth.userId;
       const { requestId, status, scheduledTime, location } = input;
-      
+
       // Verify this request is for the current user
-      const request = await db.query.matchRequests.findFirst({
+      const request = await ctx.db.query.matchRequests.findFirst({
         where: and(
           eq(matchRequests.id, requestId),
           eq(matchRequests.recipientId, userId)
         ),
       });
-      
+
       if (!request) {
         throw new Error('Match request not found or not addressed to you');
       }
-      
+
       // Update request status
-      await db.update(matchRequests)
+      await ctx.db.update(matchRequests)
         .set({
           status,
           updatedAt: new Date(),
         })
         .where(eq(matchRequests.id, requestId));
-      
+
       // If accepted, create a match
       if (status === 'accepted' && scheduledTime && location) {
-        await db.insert(matches).values({
+        await ctx.db.insert(matches).values({
           matchRequestId: requestId,
           status: 'scheduled',
           scheduledTime,

@@ -135,20 +135,44 @@ function EditProfileContent() {
     // Prepare data in the exact shape expected by the API
     const profileData = {
       skillLevel: formData.skillLevel,
-      preferredPlayStyle: formData.preferredPlayStyle || undefined,
-      yearsPlaying: typeof formData.yearsPlaying === 'number' ? formData.yearsPlaying : undefined,
-      preferredLocation: formData.preferredLocation || undefined,
-      bio: formData.bio || undefined,
-      maxTravelDistance: typeof formData.maxTravelDistance === 'number' ? formData.maxTravelDistance : undefined,
+      preferredPlayStyle: formData.preferredPlayStyle || null,
+      yearsPlaying: typeof formData.yearsPlaying === 'number' ? formData.yearsPlaying : null,
+      preferredLocation: formData.preferredLocation || null,
+      bio: formData.bio || null,
+      maxTravelDistance: typeof formData.maxTravelDistance === 'number' ? formData.maxTravelDistance : null,
       isAvailableToPlay: typeof formData.isAvailableToPlay === 'boolean' ? formData.isAvailableToPlay : true,
       strengths: Array.isArray(formData.strengths) ? formData.strengths : [],
       weaknesses: Array.isArray(formData.weaknesses) ? formData.weaknesses : [],
-      playingFrequency: formData.playingFrequency || undefined,
+      playingFrequency: formData.playingFrequency || null,
     };
     
     console.log("Submitting full profile data:", profileData);
+    
+    // Add debug info to the console
+    console.log("Current environment:", {
+      hostname: window.location.hostname,
+      isLocal: window.location.hostname.includes('localhost'),
+      protocol: window.location.protocol,
+    });
+    
     try {
-      updateProfile.mutate(profileData);
+      updateProfile.mutate(profileData, {
+        onError: (error) => {
+          console.error("Profile update error:", error);
+          
+          // Add more detailed error info
+          if (error.data?.zodError) {
+            console.error("Validation errors:", error.data.zodError);
+            const formErrors = Object.entries(error.data.zodError.fieldErrors || {})
+              .map(([field, errors]) => `${field}: ${errors?.join(', ')}`)
+              .join('\n');
+              
+            alert(`Validation errors:\n${formErrors || error.message}`);
+          } else {
+            alert(`Failed to update profile: ${error.message}`);
+          }
+        }
+      });
     } catch (error) {
       console.error("Error in mutation:", error);
       alert("An error occurred while updating your profile");

@@ -178,16 +178,16 @@ export const profilesRouter = router({
   updatePlayerProfile: protectedProcedure
     .input(
       z.object({
-        skillLevel: z.string(),
-        preferredPlayStyle: z.string().optional(),
-        yearsPlaying: z.number().optional(),
-        preferredLocation: z.string().optional(),
-        bio: z.string().optional(),
-        maxTravelDistance: z.number().optional(),
-        isAvailableToPlay: z.boolean().optional(),
-        strengths: z.array(z.string()).optional(),
-        weaknesses: z.array(z.string()).optional(),
-        playingFrequency: z.string().optional(),
+        skillLevel: z.string().min(1, "Skill level is required"),
+        preferredPlayStyle: z.string().optional().nullable(),
+        yearsPlaying: z.number().optional().nullable(),
+        preferredLocation: z.string().optional().nullable(),
+        bio: z.string().optional().nullable(),
+        maxTravelDistance: z.number().optional().nullable(),
+        isAvailableToPlay: z.boolean().optional().nullable(),
+        strengths: z.array(z.string()).optional().nullable().default([]),
+        weaknesses: z.array(z.string()).optional().nullable().default([]),
+        playingFrequency: z.string().optional().nullable(),
       })
     )
     .mutation(async ({ ctx, input }) => {

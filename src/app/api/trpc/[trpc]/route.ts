@@ -17,18 +17,22 @@ export async function OPTIONS(req: Request) {
   
   const response = NextResponse.json({}, { status: 200 });
   
-  // Get the origin from the request headers
-  const origin = req.headers.get('origin') || '*';
-  
-  // Set CORS headers
-  response.headers.set('Access-Control-Allow-Credentials', 'true');
-  response.headers.set('Access-Control-Allow-Origin', origin);
-  response.headers.set('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  response.headers.set('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
-  
-  debugLog('TRPC Route OPTIONS', 'Returning OPTIONS response', {
-    headers: Object.fromEntries([...response.headers.entries()]),
-  });
+  try {
+    // Get the origin from the request headers
+    const origin = req.headers.get('origin') || '*';
+    
+    // Set CORS headers
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
+    response.headers.set('Access-Control-Allow-Origin', origin);
+    response.headers.set('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    response.headers.set('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+    
+    debugLog('TRPC Route OPTIONS', 'Returning OPTIONS response', {
+      headers: Object.fromEntries([...response.headers.entries()]),
+    });
+  } catch (error) {
+    console.error('Error setting CORS headers:', error);
+  }
   
   return response;
 }
@@ -127,7 +131,12 @@ const handler = async (req: Request) => {
       });
       
       // Apply CORS headers to the response
-      return corsMiddleware(req, rawResponse);
+      try {
+        return corsMiddleware(req, rawResponse);
+      } catch (corsError) {
+        console.error('Error applying CORS middleware:', corsError);
+        return rawResponse;
+      }
     } catch (err) {
       debugLog('TRPC Handler', 'Error in fetchRequestHandler', {
         errorMessage: err instanceof Error ? err.message : String(err),

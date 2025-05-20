@@ -115,46 +115,74 @@ export function useProfileSync() {
             fixedData.playerProfile.updatedAt = new Date(fixedData.playerProfile.updatedAt);
           }
           
-          // Ensure arrays are properly initialized
-          if (!Array.isArray(fixedData.playerProfile.strengths)) {
-            console.log("Fixing strengths array:", { 
-              before: fixedData.playerProfile.strengths,
-              fixed: []
-            });
-            fixedData.playerProfile.strengths = [];
-          }
+          // Enhanced array fixing with more robust checks
+          const fixArray = (arrayProp: any, propName: string) => {
+            // If it's already an array, we're good
+            if (Array.isArray(fixedData.playerProfile[propName])) {
+              return;
+            }
             
-          if (!Array.isArray(fixedData.playerProfile.weaknesses)) {
-            console.log("Fixing weaknesses array:", { 
-              before: fixedData.playerProfile.weaknesses,
-              fixed: []
-            });
-            fixedData.playerProfile.weaknesses = [];
-          }
+            // Try to handle string representation of array
+            if (typeof fixedData.playerProfile[propName] === 'string') {
+              try {
+                // Check if it's a stringified JSON array
+                if (fixedData.playerProfile[propName].startsWith('[') && 
+                    fixedData.playerProfile[propName].endsWith(']')) {
+                  const parsed = JSON.parse(fixedData.playerProfile[propName]);
+                  if (Array.isArray(parsed)) {
+                    console.log(`Converting ${propName} from string JSON to array:`, { 
+                      before: fixedData.playerProfile[propName],
+                      parsed
+                    });
+                    fixedData.playerProfile[propName] = parsed;
+                    return;
+                  }
+                }
+                
+                // If it's just a simple string, make it a single-item array
+                if (fixedData.playerProfile[propName].trim() !== '') {
+                  console.log(`Converting ${propName} string to single-item array:`, { 
+                    before: fixedData.playerProfile[propName],
+                    fixed: [fixedData.playerProfile[propName]]
+                  });
+                  fixedData.playerProfile[propName] = [fixedData.playerProfile[propName]];
+                  return;
+                }
+              } catch (e) {
+                console.error(`Error parsing ${propName} string as array:`, e);
+                // Fall through to default empty array
+              }
+            }
             
-          if (!Array.isArray(fixedData.playerProfile.gameplayVideos)) {
-            console.log("Fixing gameplayVideos array:", { 
-              before: fixedData.playerProfile.gameplayVideos,
-              fixed: []
-            });
-            fixedData.playerProfile.gameplayVideos = [];
-          }
+            // Handle object that should be an array
+            if (fixedData.playerProfile[propName] && typeof fixedData.playerProfile[propName] === 'object') {
+              // Check if it's an object with numeric keys like {0: "item1", 1: "item2"}
+              const keys = Object.keys(fixedData.playerProfile[propName]).filter(k => !isNaN(Number(k)));
+              if (keys.length > 0) {
+                const arrayFromObj = keys.map(k => fixedData.playerProfile[propName][k]);
+                console.log(`Converting ${propName} object to array:`, { 
+                  before: fixedData.playerProfile[propName],
+                  fixed: arrayFromObj
+                });
+                fixedData.playerProfile[propName] = arrayFromObj;
+                return;
+              }
+            }
             
-          if (!Array.isArray(fixedData.playerProfile.equipmentIds)) {
-            console.log("Fixing equipmentIds array:", { 
-              before: fixedData.playerProfile.equipmentIds,
+            // Default: set to empty array
+            console.log(`Fixing ${propName} array:`, { 
+              before: fixedData.playerProfile[propName],
               fixed: []
             });
-            fixedData.playerProfile.equipmentIds = [];
-          }
-            
-          if (!Array.isArray(fixedData.playerProfile.matchTypes)) {
-            console.log("Fixing matchTypes array:", { 
-              before: fixedData.playerProfile.matchTypes,
-              fixed: []
-            });
-            fixedData.playerProfile.matchTypes = [];
-          }
+            fixedData.playerProfile[propName] = [];
+          };
+          
+          // Apply our enhanced array fixing to all array fields
+          fixArray(fixedData.playerProfile.strengths, 'strengths');
+          fixArray(fixedData.playerProfile.weaknesses, 'weaknesses');
+          fixArray(fixedData.playerProfile.gameplayVideos, 'gameplayVideos');
+          fixArray(fixedData.playerProfile.equipmentIds, 'equipmentIds');
+          fixArray(fixedData.playerProfile.matchTypes, 'matchTypes');
         } catch (e) {
           console.error("Error fixing player profile data:", e);
         }

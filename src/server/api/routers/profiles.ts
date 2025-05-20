@@ -186,25 +186,96 @@ export const profilesRouter = router({
   // Update player profile with all fields
   updatePlayerProfile: protectedProcedure
     .input(
-      z.object({
-        skillLevel: z.string().min(1, "Skill level is required"),
-        preferredPlayStyle: z.string().optional().nullable(),
-        yearsPlaying: z.number().optional().nullable(),
-        preferredLocation: z.string().optional().nullable(),
-        bio: z.string().optional().nullable(),
-        maxTravelDistance: z.number().optional().nullable(),
-        isAvailableToPlay: z.boolean().optional().nullable(),
-        strengths: z.array(z.string()).optional().nullable().default([]),
-        weaknesses: z.array(z.string()).optional().nullable().default([]),
-        playingFrequency: z.string().optional().nullable(),
-      })
+      z.union([
+        // Regular format directly from the mutation input
+        z.object({
+          skillLevel: z.string().min(1, "Skill level is required"),
+          preferredPlayStyle: z.string().optional().nullable(),
+          yearsPlaying: z.number().optional().nullable(),
+          preferredLocation: z.string().optional().nullable(),
+          bio: z.string().optional().nullable(),
+          maxTravelDistance: z.number().optional().nullable(),
+          isAvailableToPlay: z.boolean().optional().nullable(),
+          // Make these more flexible to handle different serialization formats
+          strengths: z.union([
+            z.array(z.string()),
+            z.string().transform(str => str === "" ? [] : [str]),
+            z.null()
+          ]).optional().default([]),
+          weaknesses: z.union([
+            z.array(z.string()),
+            z.string().transform(str => str === "" ? [] : [str]),
+            z.null()
+          ]).optional().default([]),
+          playingFrequency: z.string().optional().nullable(),
+        }),
+        // Alternative format with json wrapper that might come from certain environments
+        z.object({
+          json: z.object({
+            skillLevel: z.string().min(1, "Skill level is required"),
+            preferredPlayStyle: z.string().optional().nullable(),
+            yearsPlaying: z.number().optional().nullable(),
+            preferredLocation: z.string().optional().nullable(),
+            bio: z.string().optional().nullable(),
+            maxTravelDistance: z.number().optional().nullable(),
+            isAvailableToPlay: z.boolean().optional().nullable(),
+            strengths: z.union([
+              z.array(z.string()),
+              z.string().transform(str => str === "" ? [] : [str]),
+              z.null()
+            ]).optional().default([]),
+            weaknesses: z.union([
+              z.array(z.string()),
+              z.string().transform(str => str === "" ? [] : [str]),
+              z.null()
+            ]).optional().default([]),
+            playingFrequency: z.string().optional().nullable(),
+          }).passthrough() // Allow additional properties with passthrough
+        })
+      ])
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        debugLog('profiles.updatePlayerProfile', "Profile update received with input:", input);
-        debugLog('profiles.updatePlayerProfile', "Auth context:", ctx.auth);
+        // CRITICAL FIX: Unwrap input from json property if it exists 
+        // Define interface for our input to satisfy TypeScript
+        interface ProfileInput {
+          skillLevel: string;
+          preferredPlayStyle?: string | null;
+          yearsPlaying?: number | null;
+          preferredLocation?: string | null;
+          bio?: string | null;
+          maxTravelDistance?: number | null;
+          isAvailableToPlay?: boolean | null;
+          strengths: string[] | null;
+          weaknesses: string[] | null;
+          playingFrequency?: string | null;
+          [key: string]: any; // Allow additional properties
+        }
         
-        if (!input) {
+        // Use type assertion to handle the json property access
+        const unwrappedInput = ('json' in input) 
+          ? (input as { json: ProfileInput }).json 
+          : input as ProfileInput;
+        
+        debugLog('profiles.updatePlayerProfile', "Profile update received with input:", {
+          inputType: 'json' in input ? 'json-wrapped' : 'direct',
+          skillLevel: unwrappedInput?.skillLevel,
+          strengths: unwrappedInput?.strengths ? Array.isArray(unwrappedInput.strengths) 
+            ? `Array with ${unwrappedInput.strengths.length} items` 
+            : `Not an array: ${typeof unwrappedInput.strengths}` 
+            : 'undefined',
+          weaknesses: unwrappedInput?.weaknesses ? Array.isArray(unwrappedInput.weaknesses) 
+            ? `Array with ${unwrappedInput.weaknesses.length} items` 
+            : `Not an array: ${typeof unwrappedInput.weaknesses}` 
+            : 'undefined',
+        });
+        debugLog('profiles.updatePlayerProfile', "Auth context:", {
+          auth: ctx.auth,
+          hasUserId: !!ctx.auth?.userId,
+          userId: ctx.auth?.userId
+        });
+        
+        if (!unwrappedInput) {
           debugLog('profiles.updatePlayerProfile', "No input received for profile update");
           throw new TRPCError({
             code: 'BAD_REQUEST',
@@ -230,20 +301,51 @@ export const profilesRouter = router({
         
         debugLog('profiles.updatePlayerProfile', "Existing profile check result:", existingProfile);
         
-        // Prepare data for update/insert
-        const profileData = {
-          skillLevel: input.skillLevel,
-          preferredPlayStyle: input.preferredPlayStyle,
-          yearsPlaying: input.yearsPlaying,
-          preferredLocation: input.preferredLocation,
-          bio: input.bio,
-          maxTravelDistance: input.maxTravelDistance,
-          isAvailableToPlay: input.isAvailableToPlay,
-          strengths: input.strengths || [],
-          weaknesses: input.weaknesses || [],
-          playingFrequency: input.playingFrequency,
+        // Prepare data for update/insert with extra validation
+        // Create type-safe profile data object
+        interface ProfileDbData {
+          skillLevel: string;
+          preferredPlayStyle: string | null;
+          yearsPlaying: number | null;
+          preferredLocation: string | null;
+          bio: string | null;
+          maxTravelDistance: number | null;
+          isAvailableToPlay: boolean | null;
+          strengths: string[];
+          weaknesses: string[];
+          playingFrequency: string | null;
+          updatedAt: Date;
+        }
+
+        const profileData: ProfileDbData = {
+          skillLevel: unwrappedInput.skillLevel,
+          preferredPlayStyle: unwrappedInput.preferredPlayStyle || null,
+          yearsPlaying: unwrappedInput.yearsPlaying || null,
+          preferredLocation: unwrappedInput.preferredLocation || null,
+          bio: unwrappedInput.bio || null,
+          maxTravelDistance: unwrappedInput.maxTravelDistance || null,
+          isAvailableToPlay: typeof unwrappedInput.isAvailableToPlay === 'boolean' ? unwrappedInput.isAvailableToPlay : true, // Default to true if not specified
+          // Special handling for array fields
+          strengths: Array.isArray(unwrappedInput.strengths) ? unwrappedInput.strengths : 
+                    typeof unwrappedInput.strengths === 'string' ? [unwrappedInput.strengths] : 
+                    [],
+          weaknesses: Array.isArray(unwrappedInput.weaknesses) ? unwrappedInput.weaknesses : 
+                    typeof unwrappedInput.weaknesses === 'string' ? [unwrappedInput.weaknesses] : 
+                    [],
+          playingFrequency: unwrappedInput.playingFrequency || null,
           updatedAt: new Date(),
         };
+        
+        // Log the final data being saved to help diagnose issues
+        debugLog('profiles.updatePlayerProfile', "Final data for database update:", {
+          skillLevel: profileData.skillLevel,
+          strengths: Array.isArray(profileData.strengths) 
+            ? `Array with ${profileData.strengths.length} items` 
+            : `Not an array: ${typeof profileData.strengths}`,
+          weaknesses: Array.isArray(profileData.weaknesses) 
+            ? `Array with ${profileData.weaknesses.length} items` 
+            : `Not an array: ${typeof profileData.weaknesses}`,
+        });
         
         try {
           // Restore full profile update logic
@@ -278,7 +380,7 @@ export const profilesRouter = router({
             const insertResult = await ctx.db.insert(playerProfiles).values({
               userId: clerkId,
               ...profileData,
-              isAvailableToPlay: input.isAvailableToPlay ?? true,
+              // Already included in profileData, no need to add it again
             });
             
             debugLog('profiles.updatePlayerProfile', "Profile created successfully", { insertResult });

@@ -3,24 +3,39 @@ import { debugLog } from '@/server/debug-log';
 
 export function corsMiddleware(req: Request, res: Response) {
   try {
+    if (!req || !res) {
+      console.error('Missing request or response in corsMiddleware');
+      return res;
+    }
+    
     // Get the origin from request headers
     const origin = req.headers.get('origin') || '*';
     
     debugLog('CORS Middleware', `Setting CORS headers for origin: ${origin}`, {
       requestUrl: req.url,
       responseStatus: res.status,
-      responseHeaders: Object.fromEntries([...res.headers.entries()]),
+      responseType: typeof res,
     });
     
-    // Try to read the body and clone it
-    const responseClone = res.clone();
-    
-    // Create a new response with the same body and status
-    const response = new Response(responseClone.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: new Headers(res.headers),
-    });
+    // Create a Response from the original response
+    let response;
+    try {
+      // Try to clone and reuse the original response
+      const clonedResponse = res.clone();
+      response = new Response(clonedResponse.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: new Headers(res.headers),
+      });
+    } catch (cloneError) {
+      console.warn('Could not clone response body, creating empty response:', cloneError);
+      // Fallback to an empty response with the same status
+      response = new Response(null, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: new Headers(res.headers),
+      });
+    }
     
     // Set CORS headers
     response.headers.set('Access-Control-Allow-Credentials', 'true');
@@ -39,18 +54,8 @@ export function corsMiddleware(req: Request, res: Response) {
       stack: error instanceof Error ? error.stack : undefined,
     });
     
-    // If anything fails, return original response with basic CORS headers
-    const fallbackResponse = new Response(res.body, {
-      status: res.status,
-      headers: {
-        ...Object.fromEntries([...res.headers.entries()]),
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-        'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
-      },
-    });
-    
-    return fallbackResponse;
+    // If anything fails, return original response
+    console.error('Failed to apply CORS headers:', error);
+    return res;
   }
 }

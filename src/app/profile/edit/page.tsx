@@ -57,7 +57,10 @@ function EditProfileContent() {
     console.log("Setting form data from profile data:", profileData);
     
     // CRITICAL FIX: Check if data is nested under json property
-    const unwrappedData = profileData?.json ? profileData.json : profileData;
+    // Use a type assertion to handle the potential json property which TypeScript doesn't know about
+    const unwrappedData = profileData && 'json' in (profileData as any) 
+      ? (profileData as any).json 
+      : profileData;
     console.log("Edit page - unwrapped profile data:", {
       original: profileData,
       unwrapped: unwrappedData,
@@ -246,35 +249,47 @@ function EditProfileContent() {
     if (isVercel) {
       console.log("Using direct fetch approach on Vercel");
       
-      // CRITICAL FIX: Modify the request for Vercel's specific format
-      const requestBody = JSON.stringify([{ 
-        json: {
-          skillLevel: profileData.skillLevel,
-          preferredPlayStyle: profileData.preferredPlayStyle,
-          yearsPlaying: profileData.yearsPlaying,
-          preferredLocation: profileData.preferredLocation,
-          bio: profileData.bio,
-          maxTravelDistance: profileData.maxTravelDistance,
-          isAvailableToPlay: profileData.isAvailableToPlay,
-          strengths: profileData.strengths,
-          weaknesses: profileData.weaknesses,
-          playingFrequency: profileData.playingFrequency
-        }
-      }]);
-      
-      console.log("Vercel direct fetch request body:", requestBody);
-      
-      fetch(`${window.location.origin}/api/trpc/profiles.updatePlayerProfile?batch=1`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: requestBody,
-        credentials: 'include', // Include cookies for auth
-      })
+      try {
+        // CRITICAL FIX: Modify the request for Vercel's specific format
+        // Ensure arrays are properly formatted
+        const safeStrengths = Array.isArray(profileData.strengths) ? profileData.strengths : [];
+        const safeWeaknesses = Array.isArray(profileData.weaknesses) ? profileData.weaknesses : [];
+        
+        // CRITICAL FIX: The format that works on Vercel is different
+        // We need to send the params directly without the json wrapper
+        const requestBody = JSON.stringify([{
+            skillLevel: profileData.skillLevel,
+            preferredPlayStyle: profileData.preferredPlayStyle,
+            yearsPlaying: profileData.yearsPlaying,
+            preferredLocation: profileData.preferredLocation,
+            bio: profileData.bio,
+            maxTravelDistance: profileData.maxTravelDistance,
+            isAvailableToPlay: profileData.isAvailableToPlay,
+            strengths: safeStrengths,
+            weaknesses: safeWeaknesses,
+            playingFrequency: profileData.playingFrequency
+        }]);
+        
+        console.log("Vercel direct fetch request body:", requestBody);
+        
+        // Use basic error handling to catch network issues
+        fetch(`${window.location.origin}/api/trpc/profiles.updatePlayerProfile?batch=1`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: requestBody,
+          credentials: 'include', // Include cookies for auth
+        })
       .then(response => {
         console.log("Profile update response status:", response.status);
         console.log("Response headers:", Object.fromEntries([...response.headers.entries()]));
+        
+        // Check for non-OK responses and handle them before trying to parse JSON
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+        
         return response.json();
       })
       .then(data => {
@@ -294,6 +309,11 @@ function EditProfileContent() {
         console.error("Profile update error with fetch:", error);
         alert(`Failed to update profile: ${error.message || 'Unknown error'}`);
       });
+    } catch (error) {
+      const fetchError = error as Error;
+      console.error("Critical error in direct fetch approach:", fetchError);
+      alert(`Error sending profile update: ${fetchError.message || 'Unknown error'}`);
+    }
     } else {
       // Just use tRPC locally
       console.log("Using only tRPC approach locally");

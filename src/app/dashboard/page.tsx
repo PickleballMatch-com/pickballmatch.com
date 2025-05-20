@@ -3,9 +3,14 @@
 import { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useProfileSync } from '@/lib/hooks/useProfileSync';
+import ProfileCompletionPrompt from '@/components/profile/ProfileCompletionPrompt';
+import { ProfileCompletionIndicatorCompact } from '@/components/profile/ProfileCompletionIndicator';
 
 export default function Dashboard() {
   const { user } = useUser();
+  const { profileData } = useProfileSync();
   const [activeTab, setActiveTab] = useState('matches');
 
   if (!user) {
@@ -19,20 +24,36 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
+        {/* Profile Completion Prompt */}
+        <ProfileCompletionPrompt
+          user={profileData?.user}
+          playerProfile={profileData?.playerProfile}
+          className="mb-6"
+          variant="banner"
+        />
+        
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex flex-col md:flex-row items-center gap-4">
-            <img
+            <Image
               src={user.imageUrl || 'https://via.placeholder.com/80'}
               alt="Profile"
+              width={80}
+              height={80}
               className="rounded-full h-20 w-20 object-cover"
+              unoptimized
             />
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl font-bold">
                 Welcome, {user.firstName || 'Player'}!
               </h1>
               <p className="text-gray-600">
                 Manage your pickleball matches and profile
               </p>
+              <ProfileCompletionIndicatorCompact
+                user={profileData?.user}
+                playerProfile={profileData?.playerProfile}
+                className="mt-2"
+              />
             </div>
           </div>
         </div>

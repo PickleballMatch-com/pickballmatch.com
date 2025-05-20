@@ -1,8 +1,8 @@
 # Pickleball Match App - Project Progress Tracker
-**Last Updated:** May 8, 2025  
+**Last Updated:** May 4, 2025  
 **Project Start Date:** May 4, 2025  
 **Target MVP Date:** TBD  
-**Current Phase:** Technical Setup  
+**Current Phase:** Planning  
 
 ---
 
@@ -24,18 +24,18 @@
 - [x] 🟢 Create technical PRD v2.0
 - [x] 🟢 Create project tracker
 - [x] 🟢 Create detailed user flows
-- [ ] 🟡 Create wireframes/mockups
-- [ ] 🔴 Finalize tech stack decisions
+- [x] 🟢 Create wireframes/mockups
+- [x] 🟢 Finalize tech stack decisions
 
 ### 0.2 Technical Setup
-- [ ] 🔴 Set up development environment
-- [ ] 🔴 Initialize Git repository
-- [ ] 🔴 Set up project structure
-- [ ] 🔴 Configure Next.js with TypeScript
+- [x] 🟢 Set up development environment
+- [x] 🟢 Initialize Git repository
+- [x] 🟢 Set up project structure
+- [x] 🟢 Configure Next.js with TypeScript
 - [ ] 🔴 Set up PostgreSQL database
-- [ ] 🔴 Configure Clerk authentication
-- [ ] 🔴 Set up tRPC
-- [ ] 🔴 Configure Tailwind CSS
+- [x] 🟡 Configure Clerk authentication (partially implemented)
+- [x] 🟢 Set up tRPC
+- [x] 🟢 Configure Tailwind CSS
 - [ ] 🔴 Set up testing framework
 
 ### 0.3 Third-party Accounts
@@ -52,8 +52,8 @@
 ## Phase 1: Core MVP (Weeks 1-8)
 
 ### 1.1 Foundation (Week 1-2)
-- [x] 🟢 Database schema implementation
-- [x] 🟢 User authentication with Clerk
+- [ ] 🔴 Database schema implementation
+- [ ] 🔴 User authentication with Clerk
 - [ ] 🔴 Basic user registration flow
 - [ ] 🔴 User profile creation
 - [ ] 🔴 DUPR API integration
@@ -208,7 +208,7 @@
 - [ ] 🔴 Community interaction flow
 
 ### Page Designs Needed
-- [ ] 🔴 Landing page
+- [x] 🟢 Landing page
 - [ ] 🔴 Login/Register pages
 - [ ] 🔴 Dashboard (main matching interface)
 - [ ] 🔴 Profile view/edit pages
@@ -283,9 +283,14 @@
 
 | Task | Assignee | Status | Points | Notes |
 |------|----------|--------|--------|-------|
-| Create user flows | - | 🔴 | 3 | Next task |
-| Set up dev environment | - | 🔴 | 2 | After user flows |
-| Initialize repository | - | 🔴 | 1 | After environment |
+| Create user flows | - | 🟢 | 3 | Completed |
+| Set up dev environment | - | 🟢 | 2 | Completed |
+| Initialize repository | - | 🟢 | 1 | Completed |
+| Configure Tailwind CSS | - | 🟢 | 2 | Completed with brand colors |
+| Set up UI components | - | 🟢 | 3 | Completed with shadcn/ui |
+| Create basic landing page | - | 🟢 | 2 | Implemented based on wireframe |
+| Configure tRPC | - | 🟢 | 2 | Completed |
+| Set up PostgreSQL with Railway | - | 🟡 | 2 | In progress |
 
 ---
 

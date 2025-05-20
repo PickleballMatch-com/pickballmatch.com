@@ -1,0 +1,419 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { api } from '@/lib/trpc/client';
+import { useProfileSync } from '@/lib/hooks/useProfileSync';
+import ProfileCompletionIndicator from '@/components/profile/ProfileCompletionIndicator';
+
+export default function EditProfilePage() {
+  const { user, isLoaded, isSignedIn } = useUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Use our custom hook to manage profile synchronization
+  const { profileData, isLoading } = useProfileSync();
+  
+  const updateProfile = api.profiles.updatePlayerProfile.useMutation({
+    onSuccess: () => {
+      console.log("Profile updated successfully");
+      
+      // Check if there's a redirect parameter
+      const redirectTo = searchParams.get('redirect');
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push('/profile');
+      }
+    },
+    onError: (error) => {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile: " + error.message);
+    }
+  });
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    skillLevel: '2.0', // Default to beginner
+    preferredPlayStyle: '',
+    yearsPlaying: 0,
+    preferredLocation: '',
+    bio: '',
+    playingFrequency: '',
+    maxTravelDistance: 0,
+    isAvailableToPlay: true,
+    strengths: [] as string[],
+    weaknesses: [] as string[],
+  });
+  
+  // New strength/weakness input fields
+  const [newStrength, setNewStrength] = useState('');
+  const [newWeakness, setNewWeakness] = useState('');
+  
+  // Set initial form data from profile
+  useEffect(() => {
+    if (profileData?.playerProfile) {
+      setFormData({
+        skillLevel: profileData.playerProfile.skillLevel || '',
+        preferredPlayStyle: profileData.playerProfile.preferredPlayStyle || '',
+        yearsPlaying: profileData.playerProfile.yearsPlaying || 0,
+        preferredLocation: profileData.playerProfile.preferredLocation || '',
+        bio: profileData.playerProfile.bio || '',
+        playingFrequency: profileData.playerProfile.playingFrequency || '',
+        maxTravelDistance: profileData.playerProfile.maxTravelDistance || 0,
+        isAvailableToPlay: profileData.playerProfile.isAvailableToPlay ?? true,
+        strengths: profileData.playerProfile.strengths || [],
+        weaknesses: profileData.playerProfile.weaknesses || [],
+      });
+    }
+  }, [profileData]);
+  
+  // Handle form input changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else if (name === 'yearsPlaying' || name === 'maxTravelDistance') {
+      setFormData(prev => ({ ...prev, [name]: parseInt(value) || 0 }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+  
+  // Handle adding strengths and weaknesses
+  const addStrength = () => {
+    if (newStrength.trim()) {
+      setFormData(prev => ({ 
+        ...prev, 
+        strengths: [...prev.strengths, newStrength.trim()]
+      }));
+      setNewStrength('');
+    }
+  };
+  
+  const addWeakness = () => {
+    if (newWeakness.trim()) {
+      setFormData(prev => ({ 
+        ...prev, 
+        weaknesses: [...prev.weaknesses, newWeakness.trim()]
+      }));
+      setNewWeakness('');
+    }
+  };
+  
+  // Handle removing strengths and weaknesses
+  const removeStrength = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      strengths: prev.strengths.filter((_, i) => i !== index)
+    }));
+  };
+  
+  const removeWeakness = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      weaknesses: prev.weaknesses.filter((_, i) => i !== index)
+    }));
+  };
+  
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.skillLevel) {
+      alert("Skill level is required");
+      return;
+    }
+    
+    // Prepare data in the exact shape expected by the API
+    const profileData = {
+      skillLevel: formData.skillLevel,
+      preferredPlayStyle: formData.preferredPlayStyle || undefined,
+      yearsPlaying: typeof formData.yearsPlaying === 'number' ? formData.yearsPlaying : undefined,
+      preferredLocation: formData.preferredLocation || undefined,
+      bio: formData.bio || undefined,
+      maxTravelDistance: typeof formData.maxTravelDistance === 'number' ? formData.maxTravelDistance : undefined,
+      isAvailableToPlay: typeof formData.isAvailableToPlay === 'boolean' ? formData.isAvailableToPlay : true,
+      strengths: Array.isArray(formData.strengths) ? formData.strengths : [],
+      weaknesses: Array.isArray(formData.weaknesses) ? formData.weaknesses : [],
+      playingFrequency: formData.playingFrequency || undefined,
+    };
+    
+    console.log("Submitting full profile data:", profileData);
+    try {
+      updateProfile.mutate(profileData);
+    } catch (error) {
+      console.error("Error in mutation:", error);
+      alert("An error occurred while updating your profile");
+    }
+  };
+  
+  // Redirect to login if not signed in
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (!isLoaded || !isSignedIn) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  // We'll show the form even if we have errors, as long as we have some user data
+  const showLoading = isLoading && !profileData;
+  if (showLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading profile data...</div>;
+  }
+  
+  return (
+    <div className="container max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Edit Profile</h1>
+      
+      {/* Profile Completion Indicator */}
+      <div className="bg-white shadow rounded-lg p-6 mb-6">
+        <ProfileCompletionIndicator
+          user={profileData?.user}
+          playerProfile={{
+            ...profileData?.playerProfile,
+            ...formData,
+            // Convert form data types to match schema
+            yearsPlaying: typeof formData.yearsPlaying === 'number' ? formData.yearsPlaying : null,
+            maxTravelDistance: typeof formData.maxTravelDistance === 'number' ? formData.maxTravelDistance : null,
+          }}
+          showMissingFields={true}
+        />
+      </div>
+      
+      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Basic Player Info */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Skill Level
+              <select
+                name="skillLevel"
+                value={formData.skillLevel}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                required
+              >
+                <option value="">Select Skill Level</option>
+                <option value="2.0">2.0 - Beginner</option>
+                <option value="2.5">2.5</option>
+                <option value="3.0">3.0 - Intermediate</option>
+                <option value="3.5">3.5</option>
+                <option value="4.0">4.0 - Advanced</option>
+                <option value="4.5">4.5</option>
+                <option value="5.0">5.0 - Professional</option>
+              </select>
+            </label>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Years Playing
+              <input
+                type="number"
+                name="yearsPlaying"
+                min="0"
+                max="50"
+                value={formData.yearsPlaying}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </label>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Preferred Play Style
+              <select
+                name="preferredPlayStyle"
+                value={formData.preferredPlayStyle}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              >
+                <option value="">Select Play Style</option>
+                <option value="singles">Singles</option>
+                <option value="doubles">Doubles</option>
+                <option value="mixed doubles">Mixed Doubles</option>
+                <option value="any">Any</option>
+              </select>
+            </label>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Playing Frequency
+              <select
+                name="playingFrequency"
+                value={formData.playingFrequency}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              >
+                <option value="">Select Frequency</option>
+                <option value="daily">Daily</option>
+                <option value="several times a week">Several Times a Week</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="occasionally">Occasionally</option>
+              </select>
+            </label>
+          </div>
+          
+          {/* Location & Travel */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Preferred Location
+              <input
+                type="text"
+                name="preferredLocation"
+                value={formData.preferredLocation}
+                onChange={handleChange}
+                placeholder="e.g. Downtown Courts, City Tennis Club"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </label>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Max Travel Distance (miles)
+              <input
+                type="number"
+                name="maxTravelDistance"
+                min="0"
+                max="500"
+                value={formData.maxTravelDistance}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </label>
+          </div>
+          
+          <div className="flex items-center">
+            <label className="flex items-center text-sm font-medium text-gray-700">
+              <input
+                type="checkbox"
+                name="isAvailableToPlay"
+                checked={formData.isAvailableToPlay}
+                onChange={(e) => setFormData(prev => ({ ...prev, isAvailableToPlay: e.target.checked }))}
+                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-2"
+              />
+              Available to Play
+            </label>
+          </div>
+          
+          {/* Bio */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Bio
+              <textarea
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                rows={4}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="Tell other players about yourself..."
+              />
+            </label>
+          </div>
+          
+          {/* Strengths */}
+          <div className="md:col-span-2 border-t pt-4">
+            <h3 className="text-lg font-medium mb-4">Strengths</h3>
+            <div className="mb-4">
+              {formData.strengths.map((strength, index) => (
+                <div key={index} className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 mr-2 mb-2">
+                  <span className="text-sm">{strength}</span>
+                  <button 
+                    type="button" 
+                    onClick={() => removeStrength(index)}
+                    className="ml-2 text-gray-500 hover:text-red-500"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex">
+              <input
+                type="text"
+                value={newStrength}
+                onChange={(e) => setNewStrength(e.target.value)}
+                placeholder="Add a strength..."
+                className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+              <button
+                type="button"
+                onClick={addStrength}
+                className="bg-primary text-white px-4 py-2 rounded-r-md hover:bg-primary/90 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          
+          {/* Weaknesses */}
+          <div className="md:col-span-2 border-t pt-4">
+            <h3 className="text-lg font-medium mb-4">Areas to Improve</h3>
+            <div className="mb-4">
+              {formData.weaknesses.map((weakness, index) => (
+                <div key={index} className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 mr-2 mb-2">
+                  <span className="text-sm">{weakness}</span>
+                  <button 
+                    type="button" 
+                    onClick={() => removeWeakness(index)}
+                    className="ml-2 text-gray-500 hover:text-red-500"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex">
+              <input
+                type="text"
+                value={newWeakness}
+                onChange={(e) => setNewWeakness(e.target.value)}
+                placeholder="Add an area to improve..."
+                className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+              <button
+                type="button"
+                onClick={addWeakness}
+                className="bg-primary text-white px-4 py-2 rounded-r-md hover:bg-primary/90 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Form Actions */}
+        <div className="flex justify-end gap-4 border-t pt-6">
+          <button
+            type="button"
+            onClick={() => router.push('/profile')}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
+            disabled={updateProfile.isLoading}
+          >
+            {updateProfile.isLoading ? 'Saving...' : 'Save Profile'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

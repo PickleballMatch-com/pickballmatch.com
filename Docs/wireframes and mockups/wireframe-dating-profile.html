@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dating Profile Setup - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Header */
+        .page-header {
+            background: #000;
+            padding: 40px 0;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .header-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .header-title span {
+            color: #FFD700;
+        }
+        
+        .header-subtitle {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            background: #fff;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 0 auto;
+            max-width: 700px;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 7%;
+            right: 7%;
+            height: 3px;
+            background: #eee;
+            z-index: 1;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 7%;
+            width: 40%; /* Change this based on progress */
+            height: 3px;
+            background: #FFD700;
+            z-index: 2;
+        }
+        
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .progress-step.active {
+            background: #FFD700;
+            border-color: #FFD700;
+            color: #000;
+        }
+        
+        .progress-step.completed {
+            background: #000;
+            border-color: #000;
+            color: #FFD700;
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .step-label.active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        /* Main content */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        
+        .form-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fff;
+            cursor: pointer;
+        }
+        
+        .input-hint {
+            font-size: 13px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s;
+        }
+        
+        .form-textarea:focus {
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+        
+        .char-count {
+            font-size: 13px;
+            color: #888;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f9f9f9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .checkbox-item input {
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .radio-item input {
+            cursor: pointer;
+        }
+        
+        .radio-item label {
+            cursor: pointer;
+            font-size: 15px;
+        }
+        
+        .photo-uploader {
+            margin-top: 15px;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .photo-item {
+            aspect-ratio: 1;
+            background: #f9f9f9;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            border: 2px dashed #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .photo-item:hover {
+            border-color: #FFD700;
+            color: #666;
+        }
+        
+        .photo-item.has-image {
+            border: none;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-item .photo-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .photo-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .photo-add-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .range-slider {
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .interest-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .interest-tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .interest-tag:hover, .interest-tag.selected {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .form-actions .btn-primary {
+            padding: 12px 25px;
+            font-size: 16px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            font-size: 14px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .progress-bar::before,
+            .progress-bar::after {
+                left: 15%;
+                right: 15%;
+            }
+            
+            .step-label {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .header-title {
+                font-size: 26px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .form-actions .btn-primary {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Gear</a>
+                <a href="#" class="nav-link">Community</a>
+                <a href="#" class="nav-link">Blog</a>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="header-title">Create Your <span>Dating Profile</span></h1>
+            <p class="header-subtitle">Find your perfect match on and off the court</p>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="container">
+            <div class="progress-bar">
+                <div class="progress-step completed">
+                    <span>1</span>
+                    <div class="step-label active">Basics</div>
+                </div>
+                <div class="progress-step active">
+                    <span>2</span>
+                    <div class="step-label active">About You</div>
+                </div>
+                <div class="progress-step">
+                    <span>3</span>
+                    <div class="step-label">Photos</div>
+                </div>
+                <div class="progress-step">
+                    <span>4</span>
+                    <div class="step-label">Interests</div>
+                </div>
+                <div class="progress-step">
+                    <span>5</span>
+                    <div class="step-label">Preferences</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 class="form-title">Tell Us About Yourself</h2>
+                    <p class="form-subtitle">Share more details about who you are beyond pickleball</p>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Personal Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Dating Profile Headline</label>
+                        <input type="text" class="form-input" placeholder="E.g., 'Looking for a partner on and off the court'">
+                        <div class="input-hint">This appears at the top of your dating profile</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">About Me</label>
+                        <textarea class="form-textarea" placeholder="Tell potential matches about yourself, your personality, values, and what you enjoy besides pickleball..."></textarea>
+                        <div class="char-count">0/500 characters</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Profession</label>
+                        <input type="text" class="form-input" placeholder="What do you do for a living?">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Education</label>
+                        <input type="text" class="form-input" placeholder="Highest level of education">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Lifestyle & Preferences</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Height</label>
+                        <select class="form-select">
+                            <option value="" disabled selected>Select your height</option>
+                            <option value="under-5">Under 5'0"</option>
+                            <option value="5-0">5'0" (152 cm)</option>
+                            <option value="5-1">5'1" (155 cm)</option>
+                            <option value="5-2">5'2" (157 cm)</option>
+                            <option value="5-3">5'3" (160 cm)</option>
+                            <!-- Additional height options -->
+                            <option value="6-0">6'0" (183 cm)</option>
+                            <option value="over-6">Over 6'0"</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Exercise Frequency</label>
+                        <select class="form-select">
+                            <option value="" disabled selected>How often do you exercise?</option>
+                            <option value="daily">Daily</option>
+                            <option value="several-times">Several times a week</option>
+                            <option value="once-a-week">Once a week</option>
+                            <option value="occasionally">Occasionally</option>
+                            <option value="rarely">Rarely</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Smoking</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="smoke-no" name="smoking" value="no">
+                                <label for="smoke-no">Don't smoke</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="smoke-sometimes" name="smoking" value="sometimes">
+                                <label for="smoke-sometimes">Sometimes</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="smoke-yes" name="smoking" value="yes">
+                                <label for="smoke-yes">Regularly</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Drinking</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="drink-no" name="drinking" value="no">
+                                <label for="drink-no">Don't drink</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="drink-socially" name="drinking" value="socially">
+                                <label for="drink-socially">Socially</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="drink-regularly" name="drinking" value="regularly">
+                                <label for="drink-regularly">Regularly</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Children</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="children-no" name="children" value="no">
+                                <label for="children-no">Don't have and don't want</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="children-someday" name="children" value="someday">
+                                <label for="children-someday">Want someday</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="children-have" name="children" value="have">
+                                <label for="children-have">Have children</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Beyond Pickleball</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Other Sports & Activities</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-tennis" name="sports" value="tennis">
+                                <label for="sport-tennis">Tennis</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-golf" name="sports" value="golf">
+                                <label for="sport-golf">Golf</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-running" name="sports" value="running">
+                                <label for="sport-running">Running</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-yoga" name="sports" value="yoga">
+                                <label for="sport-yoga">Yoga</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-swimming" name="sports" value="swimming">
+                                <label for="sport-swimming">Swimming</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-hiking" name="sports" value="hiking">
+                                <label for="sport-hiking">Hiking</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-cycling" name="sports" value="cycling">
+                                <label for="sport-cycling">Cycling</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sport-skiing" name="sports" value="skiing">
+                                <label for="sport-skiing">Skiing</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">What are you looking for in a relationship?</label>
+                        <select class="form-select">
+                            <option value="" disabled selected>Select what you're looking for</option>
+                            <option value="casual">Casual dating</option>
+                            <option value="serious">Serious relationship</option>
+                            <option value="friendship">Friendship first</option>
+                            <option value="marriage">Marriage-minded</option>
+                            <option value="unsure">Not sure yet</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ideal First Date</label>
+                        <textarea class="form-textarea" placeholder="Describe your idea of a perfect first date..."></textarea>
+                        <div class="char-count">0/300 characters</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back to Basics</button>
+                    <button class="btn-primary">Continue to Photos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>© 2025 Pickleball Match. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

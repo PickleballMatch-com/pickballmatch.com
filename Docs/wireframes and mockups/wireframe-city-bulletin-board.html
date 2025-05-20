@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Bulletin Board - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .nav-link.active {
+            color: #000;
+            font-weight: 500;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #eee;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-gap: 30px;
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .main-content {
+            min-height: 800px;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .city-stats-card {
+            padding: 20px;
+        }
+        
+        .city-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .city-icon {
+            width: 48px;
+            height: 48px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .city-info h2 {
+            font-size: 18px;
+            color: #000;
+            margin-bottom: 4px;
+        }
+        
+        .city-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .club-list {
+            list-style: none;
+        }
+        
+        .club-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        
+        .club-item:last-child {
+            border-bottom: none;
+        }
+        
+        .club-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .club-icon {
+            width: 36px;
+            height: 36px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .club-info {
+            flex: 1;
+        }
+        
+        .club-info h3 {
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+        
+        .club-info p {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #000;
+        }
+        
+        .btn-create {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-create:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .filter-bar {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-input {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .filter-input input {
+            width: 100%;
+            padding: 10px 15px 10px 35px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .filter-input input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+        
+        .filter-input i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 16px;
+        }
+        
+        .filter-select {
+            min-width: 140px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+        }
+        
+        .bulletin-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .bulletin-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.2s;
+            display: flex;
+        }
+        
+        .bulletin-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .bulletin-card.traveler {
+            border-left: 4px solid #FFD700;
+        }
+        
+        .bulletin-card.court-update {
+            border-left: 4px solid #4285F4;
+        }
+        
+        .bulletin-card.event {
+            border-left: 4px solid #34A853;
+        }
+        
+        .bulletin-card.partner-needed {
+            border-left: 4px solid #EA4335;
+        }
+        
+        .bulletin-avatar {
+            width: 75px;
+            flex-shrink: 0;
+            padding: 20px 0 20px 15px;
+        }
+        
+        .avatar-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+        
+        .avatar-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .bulletin-content {
+            flex: 1;
+            padding: 20px;
+            min-width: 0;
+        }
+        
+        .bulletin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .bulletin-meta h3 {
+            font-size: 16px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .badge {
+            background: #f5f5f5;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge.traveler {
+            background: #fffaeb;
+            color: #B45309;
+        }
+        
+        .badge.court-update {
+            background: #EFF6FF;
+            color: #1E40AF;
+        }
+        
+        .badge.event {
+            background: #ECFDF5;
+            color: #065F46;
+        }
+        
+        .badge.partner-needed {
+            background: #FEF2F2;
+            color: #B91C1C;
+        }
+        
+        .bulletin-meta p {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .bulletin-date {
+            font-size: 13px;
+            color: #999;
+            white-space: nowrap;
+        }
+        
+        .bulletin-text {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .bulletin-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .info-tag {
+            background: #f5f5f5;
+            color: #666;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .info-tag.dupr {
+            background: #000;
+            color: #FFD700;
+            font-weight: 600;
+        }
+        
+        .bulletin-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .action-btn:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+        
+        .action-btn.primary {
+            background: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+        }
+        
+        .action-btn.primary:hover {
+            background: #000;
+            color: #FFD700;
+            border-color: #000;
+        }
+        
+        .tab-group {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .tab-group::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            color: #000;
+        }
+        
+        .tab.active {
+            color: #000;
+            border-bottom-color: #FFD700;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        
+        .page-item {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-radius: 50%;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .page-item.active {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .page-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .bulletin-card {
+                flex-direction: column;
+            }
+            
+            .bulletin-avatar {
+                width: auto;
+                padding: 20px 20px 0;
+            }
+            
+            .avatar-img {
+                margin: 0;
+            }
+            
+            .bulletin-header {
+                flex-direction: column;
+            }
+            
+            .bulletin-date {
+                margin-top: 5px;
+            }
+            
+            .bulletin-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="user-menu">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Find Players</a>
+                <a href="#" class="nav-link">Messages</a>
+                <a href="#" class="nav-link active">Community</a>
+                <div class="user-avatar">
+                    <img src="/api/placeholder/36/36" alt="Your profile" />
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card city-stats-card">
+                <div class="city-header">
+                    <div class="city-icon">🏙️</div>
+                    <div class="city-info">
+                        <h2>Toronto, Canada</h2>
+                        <p>Community Hub</p>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">324</div>
+                        <div class="stat-label">Active Players</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Courts & Clubs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Travelers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Events</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 15px 20px; border-bottom: 1px solid #eee;">
+                    <h3 style="font-size: 16px;">Popular Clubs</h3>
+                </div>
+                <ul class="club-list">
+                    <li class="club-item">
+                        <div class="club-icon">🏸</div>
+                        <div class="club-info">
+                            <h3>Toronto Pickleball Club</h3>
+                            <p>215 members • 6 courts</p>
+                        </div>
+                    </li>
+                    <li class="club-item">
+                        <div class="club-icon">🏸</div>
+                        <div class="club-info">
+                            <h3>Riverside Courts</h3>
+                            <p>178 members • 8 courts</p>
+                        </div>
+                    </li>
+                    <li class="club-item">
+                        <div class="club-icon">🏸</div>
+                        <div class="club-info">
+                            <h3>Downtown Recreation Center</h3>
+                            <p>142 members • 4 courts</p>
+                        </div>
+                    </li>
+                    <li class="club-item">
+                        <div class="club-icon">🏸</div>
+                        <div class="club-info">
+                            <h3>North Toronto Pickleball</h3>
+                            <p>98 members • 4 courts</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 15px 20px; border-bottom: 1px solid #eee;">
+                    <h3 style="font-size: 16px;">Upcoming Tournaments</h3>
+                </div>
+                <ul class="club-list">
+                    <li class="club-item">
+                        <div class="club-icon" style="background: #fffaeb; color: #B45309;">📅</div>
+                        <div class="club-info">
+                            <h3>Toronto Open</h3>
+                            <p>Jun 18-20 • All skill levels</p>
+                        </div>
+                    </li>
+                    <li class="club-item">
+                        <div class="club-icon" style="background: #fffaeb; color: #B45309;">📅</div>
+                        <div class="club-info">
+                            <h3>Canada Day Classic</h3>
+                            <p>Jul 1-3 • 3.5+ skill level</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="section-header">
+                <h1 class="section-title">Toronto Bulletin Board</h1>
+                <button class="btn-create">
+                    <span>Create Post</span>
+                    <i>+</i>
+                </button>
+            </div>
+            
+            <div class="filter-bar">
+                <div class="filter-input">
+                    <i>🔍</i>
+                    <input type="text" placeholder="Search bulletins...">
+                </div>
+                <select class="filter-select">
+                    <option>All Types</option>
+                    <option>Travelers</option>
+                    <option>Court Updates</option>
+                    <option>Events</option>
+                    <option>Partner Needed</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Skill Levels</option>
+                    <option>Beginner (2.0-2.5)</option>
+                    <option>Intermediate (3.0-3.5)</option>
+                    <option>Advanced (4.0-4.5)</option>
+                    <option>Pro (5.0+)</option>
+                </select>
+            </div>
+            
+            <div class="tab-group">
+                <div class="tab active">All Posts</div>
+                <div class="tab">Travelers</div>
+                <div class="tab">Court Updates</div>
+                <div class="tab">Events</div>
+                <div class="tab">Partner Needed</div>
+                <div class="tab">Toronto Pickleball Club</div>
+                <div class="tab">Riverside Courts</div>
+            </div>
+            
+            <div class="bulletin-grid">
+                <!-- Bulletin Card 1 - Traveler -->
+                <div class="bulletin-card traveler">
+                    <div class="bulletin-avatar">
+                        <div class="avatar-img">
+                            <img src="/api/placeholder/50/50" alt="Michael" />
+                        </div>
+                    </div>
+                    <div class="bulletin-content">
+                        <div class="bulletin-header">
+                            <div class="bulletin-meta">
+                                <h3>
+                                    Michael Davis
+                                    <span class="badge traveler">Traveler</span>
+                                </h3>
+                                <p>From Chicago, IL</p>
+                            </div>
+                            <div class="bulletin-date">Posted 2 days ago</div>
+                        </div>
+                        
+                        <div class="bulletin-text">
+                            I'll be in Toronto from June 15-22 for a business conference and looking for casual games in the evenings after 6pm. I typically play at 4.2 DUPR and enjoy competitive but friendly games. Would love recommendations for the best courts in the downtown area too!
+                        </div>
+                        
+                        <div class="bulletin-footer">
+                            <div class="info-tags">
+                                <div class="info-tag dupr">DUPR 4.2</div>
+                                <div class="info-tag"><i>📅</i> Jun 15-22</div>
+                                <div class="info-tag"><i>🕒</i> Evenings</div>
+                                <div class="info-tag"><i>🏸</i> Casual Games</div>
+                            </div>
+                            
+                            <div class="bulletin-actions">
+                                <button class="action-btn">View Profile</button>
+                                <button class="action-btn primary">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bulletin Card 2 - Court Update -->
+                <div class="bulletin-card court-update">
+                    <div class="bulletin-avatar">
+                        <div class="avatar-img">
+                            <img src="/api/placeholder/50/50" alt="Toronto Pickleball Club" />
+                        </div>
+                    </div>
+                    <div class="bulletin-content">
+                        <div class="bulletin-header">
+                            <div class="bulletin-meta">
+                                <h3>
+                                    Toronto Pickleball Club
+                                    <span class="badge court-update">Court Update</span>
+                                </h3>
+                                <p>Official Club Announcement</p>
+                            </div>
+                            <div class="bulletin-date">Posted 1 day ago</div>
+                        </div>
+                        
+                        <div class="bulletin-text">
+                            We're excited to announce that we've resurfaced courts 3-6 with new premium surfaces! They're now available for booking. Also, we've extended summer hours to 9pm on weekdays and 8pm on weekends to accommodate more play.
+                        </div>
+                        
+                        <div class="bulletin-footer">
+                            <div class="info-tags">
+                                <div class="info-tag"><i>📍</i> Toronto Pickleball Club</div>
+                                <div class="info-tag"><i>🏸</i> Courts 3-6</div>
+                                <div class="info-tag"><i>🕒</i> Extended Hours</div>
+                            </div>
+                            
+                            <div class="bulletin-actions">
+                                <button class="action-btn">View Club</button>
+                                <button class="action-btn primary">Book Court</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bulletin Card 3 - Event -->
+                <div class="bulletin-card event">
+                    <div class="bulletin-avatar">
+                        <div class="avatar-img">
+                            <img src="/api/placeholder/50/50" alt="Sarah" />
+                        </div>
+                    </div>
+                    <div class="bulletin-content">
+                        <div class="bulletin-header">
+                            <div class="bulletin-meta">
+                                <h3>
+                                    Sarah Johnson
+                                    <span class="badge event">Event</span>
+                                </h3>
+                                <p>Local Tournament Organizer</p>
+                            </div>
+                            <div class="bulletin-date">Posted 3 days ago</div>
+                        </div>
+                        
+                        <div class="bulletin-text">
+                            Join us for a casual round-robin tournament at Riverside Courts on Saturday, June 10th from 10am-3pm. All skill levels welcome! Entry fee is $15 per person, includes lunch and refreshments. Prizes for winners! Sign up by June 8th.
+                        </div>
+                        
+                        <div class="bulletin-footer">
+                            <div class="info-tags">
+                                <div class="info-tag"><i>📅</i> Jun 10, 10am-3pm</div>
+                                <div class="info-tag"><i>📍</i> Riverside Courts</div>
+                                <div class="info-tag"><i>💰</i> $15 entry</div>
+                                <div class="info-tag"><i>👥</i> 24 spots</div>
+                            </div>
+                            
+                            <div class="bulletin-actions">
+                                <button class="action-btn">More Info</button>
+                                <button class="action-btn primary">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bulletin Card 4 - Partner Needed -->
+                <div class="bulletin-card partner-needed">
+                    <div class="bulletin-avatar">
+                        <div class="avatar-img">
+                            <img src="/api/placeholder/50/50" alt="Robert" />
+                        </div>
+                    </div>
+                    <div class="bulletin-content">
+                        <div class="bulletin-header">
+                            <div class="bulletin-meta">
+                                <h3>
+                                    Robert Kim
+                                    <span class="badge partner-needed">Partner Needed</span>
+                                </h3>
+                                <p>Tournament Player</p>
+                            </div>
+                            <div class="bulletin-date">Posted 6 hours ago</div>
+                        </div>
+                        
+                        <div class="bulletin-text">
+                            Looking for a men's doubles partner for the Toronto Open on June 18-20. I'm a 4.2 DUPR player with tournament experience. Ideally looking for someone 4.0+ who's comfortable with a strategic game and has a solid third shot drop. Let me know if you're interested!
+                        </div>
+                        
+                        <div class="bulletin-footer">
+                            <div class="info-tags">
+                                <div class="info-tag dupr">DUPR 4.2</div>
+                                <div class="info-tag"><i>🏆</i> Toronto Open</div>
+                                <div class="info-tag"><i>📅</i> Jun 18-20</div>
+                                <div class="info-tag"><i>👨</i> Men's Doubles</div>
+                            </div>
+                            
+                            <div class="bulletin-actions">
+                                <button class="action-btn">View Profile</button>
+                                <button class="action-btn primary">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <div class="page-item">«</div>
+                <div class="page-item active">1</div>
+                <div class="page-item">2</div>
+                <div class="page-item">3</div>
+                <div class="page-item">4</div>
+                <div class="page-item">»</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Board - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .notification-icon {
+            position: relative;
+            color: #666;
+            font-size: 20px;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FFD700;
+            color: #000;
+            font-size: 10px;
+            font-weight: bold;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Discussion header */
+        .page-header {
+            background: #fff;
+            padding: 30px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .search-bar {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px 0 0 20px;
+            font-size: 14px;
+        }
+        
+        .search-btn {
+            background: #000;
+            color: #FFD700;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+        
+        /* Filter options */
+        .filter-options {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: #fff;
+            font-size: 14px;
+            min-width: 120px;
+        }
+        
+        .filter-tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .filter-tag.active {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        /* Main layout */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            padding: 30px 0;
+        }
+        
+        .content-main {
+            flex: 1;
+        }
+        
+        .content-sidebar {
+            width: 300px;
+        }
+        
+        /* Discussion topics */
+        .discussion-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+        }
+        
+        .discussion-header {
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .discussion-votes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 40px;
+            color: #666;
+        }
+        
+        .vote-btn {
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .vote-btn:hover {
+            color: #FFD700;
+        }
+        
+        .vote-count {
+            font-weight: 700;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        
+        .discussion-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .discussion-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #888;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .discussion-content {
+            padding: 20px 15px;
+        }
+        
+        .discussion-body {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .discussion-body p {
+            margin-bottom: 15px;
+        }
+        
+        .discussion-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f9f9f9;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .discussion-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .action-btn:hover {
+            color: #000;
+        }
+        
+        .discussion-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .tag:hover {
+            background: #FFD700;
+            color: #000;
+            cursor: pointer;
+        }
+        
+        /* Comments section */
+        .comments-section {
+            margin-top: 5px;
+            border-top: 1px solid #f0f0f0;
+            padding: 15px;
+        }
+        
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .comments-count {
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .sort-comments {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .author-badge {
+            background: #FFD700;
+            color: #000;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        
+        .comment-footer {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .comment-action {
+            cursor: pointer;
+        }
+        
+        .comment-action:hover {
+            color: #000;
+        }
+        
+        .add-comment {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .comment-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 5px;
+        }
+        
+        .page-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            background: #fff;
+            border: 1px solid #ddd;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .page-item.active {
+            background: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+        }
+        
+        .page-item:hover:not(.active) {
+            background: #f5f5f5;
+        }
+        
+        /* Sidebar */
+        .sidebar-section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .create-post {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .create-post:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .category-list {
+            list-style-type: none;
+        }
+        
+        .category-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .category-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .category-list a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-list a:hover {
+            color: #000;
+        }
+        
+        .category-count {
+            background: #f0f0f0;
+            color: #666;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .trending-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .trending-tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .trending-tag:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        /* Footer */
+        footer {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            font-size: 14px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .content-sidebar {
+                width: 100%;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-bar {
+                max-width: 100%;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .discussion-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .discussion-footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Gear</a>
+                <a href="#" class="nav-link active">Community</a>
+                <a href="#" class="nav-link">Blog</a>
+            </div>
+            <div class="user-menu">
+                <div class="notification-icon">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-avatar">JD</div>
+                <a href="#" class="btn-primary">+ New Post</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Discussion Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Discussions</h1>
+            
+            <div class="header-actions">
+                <form class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search discussions...">
+                    <button type="submit" class="search-btn">🔍</button>
+                </form>
+                
+                <a href="#" class="btn-primary">+ Create Discussion</a>
+            </div>
+            
+            <div class="filter-options">
+                <div class="filter-group">
+                    <span class="filter-label">Sort by:</span>
+                    <select class="filter-select">
+                        <option>Most Recent</option>
+                        <option>Most Popular</option>
+                        <option>Most Commented</option>
+                        <option>Most Viewed</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <span class="filter-label">Show:</span>
+                    <select class="filter-select">
+                        <option>All Topics</option>
+                        <option>My Topics</option>
+                        <option>Followed Topics</option>
+                        <option>Answered</option>
+                        <option>Unanswered</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-tag active">All</div>
+                    <div class="filter-tag">Strategy</div>
+                    <div class="filter-tag">Gear</div>
+                    <div class="filter-tag">Tournaments</div>
+                    <div class="filter-tag">Rules</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <div class="content-main">
+                <!-- Discussion Post -->
+                <div class="discussion-card">
+                    <div class="discussion-header">
+                        <div class="discussion-votes">
+                            <span class="vote-btn">↑</span>
+                            <span class="vote-count">42</span>
+                            <span class="vote-btn">↓</span>
+                        </div>
+                        <div class="discussion-info">
+                            <h2 class="discussion-title">Best drill for improving third shot drops?</h2>
+                            <div class="discussion-meta">
+                                <div class="user-info">
+                                    <div class="author-avatar">JP</div>
+                                    <span>JanePickle</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span>Posted 2 hours ago</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span>👁️ 247 views</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span>💬 32 comments</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="discussion-content">
+                        <div class="discussion-body">
+                            <p>I've been struggling with consistency on my third shot drops, especially when under pressure. What drills have helped you improve this shot?</p>
+                            
+                            <p>I've been playing for about a year (DUPR 3.5) and feel like my drive is strong, but my drops are inconsistent. I've tried practicing against a wall but it doesn't seem to translate well to real games.</p>
+                            
+                            <p>Any specific drills or practice routines that helped you develop better touch and consistency?</p>
+                        </div>
+                        
+                        <div class="discussion-tags">
+                            <span class="tag">Drills</span>
+                            <span class="tag">Strategy</span>
+                            <span class="tag">Beginners</span>
+                            <span class="tag">Third Shot</span>
+                        </div>
+                    </div>
+                    
+                    <div class="discussion-footer">
+                        <div class="discussion-actions">
+                            <button class="action-btn">💬 Comment</button>
+                            <button class="action-btn">🔖 Save</button>
+                            <button class="action-btn">🔗 Share</button>
+                        </div>
+                        <div class="discussion-actions">
+                            <button class="action-btn">📢 Follow</button>
+                            <button class="action-btn">⚑ Report</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comments-section">
+                        <div class="comments-header">
+                            <div class="comments-count">32 Comments</div>
+                            <div class="sort-comments">
+                                Sort by: Newest ▼
+                            </div>
+                        </div>
+                        
+                        <div class="comment-item">
+                            <div class="author-avatar">BT</div>
+                            <div class="comment-content">
+                                <div class="comment-author">
+                                    BigTopSpin <span class="author-badge">Coach</span>
+                                </div>
+                                <div class="comment-text">
+                                    The drill that helped me the most was having someone feed balls from the NVZ while I stand at the baseline. Start slow and focus on just clearing the net with a soft touch. Gradually increase difficulty by having them feed faster and to different positions.
+                                </div>
+                                <div class="comment-footer">
+                                    <span class="comment-action">Like</span>
+                                    <span class="comment-action">Reply</span>
+                                    <span>5 minutes ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comment-item">
+                            <div class="author-avatar">PM</div>
+                            <div class="comment-content">
+                                <div class="comment-author">
+                                    PickleMaster
+                                </div>
+                                <div class="comment-text">
+                                    I found that practicing third shot drops down the line helped me a lot. I would have a partner stand at the kitchen line and I'd try to drop the ball right in front of them. Once you get good at that, start working on cross-court drops.
+                                </div>
+                                <div class="comment-footer">
+                                    <span class="comment-action">Like</span>
+                                    <span class="comment-action">Reply</span>
+                                    <span>27 minutes ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comment-item">
+                            <div class="author-avatar">SR</div>
+                            <div class="comment-content">
+                                <div class="comment-author">
+                                    SpinRally <span class="author-badge">4.5+</span>
+                                </div>
+                                <div class="comment-text">
+                                    Try the 3-2-1 drill! Three players at the baseline, two at NVZ, and one server. The server serves to any baseline player who must hit a third shot drop. The kitchen players try to put away anything that's too high. Rotate positions after 5 serves.
+                                </div>
+                                <div class="comment-footer">
+                                    <span class="comment-action">Like</span>
+                                    <span class="comment-action">Reply</span>
+                                    <span>42 minutes ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="add-comment">
+                            <div class="author-avatar">JD</div>
+                            <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+                            <button class="btn-primary">Post</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <div class="page-item">‹</div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">3</div>
+                    <div class="page-item">...</div>
+                    <div class="page-item">12</div>
+                    <div class="page-item">›</div>
+                </div>
+            </div>
+
+            <div class="content-sidebar">
+                <button class="create-post">+ Create New Discussion</button>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Categories</h3>
+                    <ul class="category-list">
+                        <li>
+                            <a href="#">
+                                <span>🏆 Strategy & Technique</span>
+                            </a>
+                            <span class="category-count">1,245</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>🏓 Equipment & Gear</span>
+                            </a>
+                            <span class="category-count">892</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>🗓️ Tournaments & Events</span>
+                            </a>
+                            <span class="category-count">543</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>📚 Rules & Etiquette</span>
+                            </a>
+                            <span class="category-count">421</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>👥 Partner Search</span>
+                            </a>
+                            <span class="category-count">328</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>🌎 Travel & Courts</span>
+                            </a>
+                            <span class="category-count">201</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>💪 Fitness & Health</span>
+                            </a>
+                            <span class="category-count">187</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Trending Tags</h3>
+                    <div class="trending-tags">
+                        <span class="trending-tag">third shot</span>
+                        <span class="trending-tag">dinking</span>
+                        <span class="trending-tag">paddle weight</span>
+                        <span class="trending-tag">rule changes</span>
+                        <span class="trending-tag">footwork</span>
+                        <span class="trending-tag">stacking</span>
+                        <span class="trending-tag">pro tour</span>
+                        <span class="trending-tag">spin serves</span>
+                        <span class="trending-tag">court shoes</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Popular This Week</h3>
+                    <ul class="category-list">
+                        <li>
+                            <a href="#">
+                                Should I switch to a heavier paddle?
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                2025 rule changes discussion
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Best courts in South Florida
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                How to counter constant bangers
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Tournament recovery tips
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>© 2025 Pickleball Match. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

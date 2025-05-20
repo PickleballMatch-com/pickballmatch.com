@@ -16,7 +16,7 @@ A web application for connecting pickleball players, scheduling matches, and bui
 - **Frontend**: Next.js, React, TypeScript, TailwindCSS
 - **API**: tRPC for type-safe API calls
 - **Authentication**: Clerk for user authentication and management
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: PostgreSQL (hosted on Railway) with Drizzle ORM
 - **Real-time**: Socket.io for real-time messaging and notifications
 
 ## Getting Started
@@ -25,7 +25,7 @@ A web application for connecting pickleball players, scheduling matches, and bui
 
 - Node.js (v16+)
 - npm or yarn
-- PostgreSQL database
+- Railway account (for PostgreSQL database)
 
 ### Installation
 
@@ -44,7 +44,9 @@ npm install
 
 4. Set up the database
 ```bash
-npx drizzle-kit push:pg
+# Make sure to add your Railway PostgreSQL connection URL to .env.local
+# Then run migrations:
+npx drizzle-kit push
 ```
 
 5. Run the development server

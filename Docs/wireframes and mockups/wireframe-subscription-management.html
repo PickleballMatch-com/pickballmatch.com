@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Management - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            background: #FFD700;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 30px 0;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 28px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            color: #666;
+            max-width: 600px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-danger {
+            background: transparent;
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+        
+        /* Subscription Box */
+        .subscription-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            background: #e6f7ea;
+            color: #28a745;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .subscription-plan {
+            margin-bottom: 20px;
+        }
+        
+        .plan-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .plan-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .plan-period {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .plan-features {
+            margin: 20px 0;
+        }
+        
+        .plan-features h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-check {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .renewal-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .renewal-info h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .renewal-date {
+            font-weight: bold;
+        }
+        
+        .plan-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Payment Methods */
+        .payment-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .payment-methods {
+            margin-bottom: 20px;
+        }
+        
+        .payment-method {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .payment-method:last-child {
+            margin-bottom: 0;
+        }
+        
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 30px;
+            background: #f1f1f1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .payment-details {
+            line-height: 1.4;
+        }
+        
+        .card-number {
+            font-weight: 600;
+        }
+        
+        .card-expiry {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .payment-action {
+            color: #000;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .default-badge {
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Billing History */
+        .billing-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+        
+        .billing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .billing-table th,
+        .billing-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .billing-table th {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .billing-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .invoice-link {
+            color: #000;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .payment-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-success {
+            background: #e6f7ea;
+            color: #28a745;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .subscription-header,
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .plan-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .payment-method {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .payment-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .billing-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="user-menu">
+                <div class="notification-icon">
+                    📬
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="user-avatar">JS</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Subscription & Billing</h1>
+            <p>Manage your subscription plan, payment methods, and billing history.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Current Subscription -->
+        <div class="subscription-box">
+            <div class="subscription-header">
+                <div class="subscription-status">
+                    <h2>Current Plan</h2>
+                    <div class="status-badge">Active</div>
+                </div>
+                <div class="plan-actions">
+                    <button class="btn btn-primary">Upgrade Plan</button>
+                    <button class="btn btn-secondary">Change Billing Cycle</button>
+                </div>
+            </div>
+            
+            <div class="subscription-plan">
+                <div class="plan-name">Premium Plan</div>
+                <div class="plan-price">$4.99<span class="plan-period">/month</span></div>
+                <div class="plan-period">Started on April 15, 2025</div>
+            </div>
+            
+            <div class="plan-features">
+                <h3>Your Plan Includes:</h3>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Unlimited swipes</li>
+                    <li><span class="feature-check">✓</span> Advanced filters</li>
+                    <li><span class="feature-check">✓</span> See who viewed your profile</li>
+                    <li><span class="feature-check">✓</span> Priority in search results</li>
+                    <li><span class="feature-check">✓</span> Ad-free experience</li>
+                </ul>
+            </div>
+            
+            <div class="renewal-info">
+                <h3>Renewal Information</h3>
+                <p>Your subscription will automatically renew on <span class="renewal-date">May 15, 2025</span> for $4.99.</p>
+            </div>
+            
+            <div class="plan-actions">
+                <button class="btn btn-danger">Cancel Subscription</button>
+                <button class="btn btn-secondary">Pause Subscription</button>
+            </div>
+        </div>
+        
+        <!-- Payment Methods -->
+        <div class="payment-box">
+            <div class="section-header">
+                <h2 class="section-title">Payment Methods</h2>
+                <button class="btn btn-secondary">Add Payment Method</button>
+            </div>
+            
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <div class="payment-info">
+                        <div class="payment-icon">
+                            💳
+                        </div>
+                        <div class="payment-details">
+                            <div class="card-number">•••• •••• •••• 4242</div>
+                            <div class="card-expiry">Expires 03/2028</div>
+                        </div>
+                        <div class="default-badge">Default</div>
+                    </div>
+                    <div class="payment-actions">
+                        <div class="payment-action">Edit</div>
+                        <div class="payment-action">Remove</div>
+                    </div>
+                </div>
+                
+                <div class="payment-method">
+                    <div class="payment-info">
+                        <div class="payment-icon">
+                            💳
+                        </div>
+                        <div class="payment-details">
+                            <div class="card-number">•••• •••• •••• 7890</div>
+                            <div class="card-expiry">Expires 08/2026</div>
+                        </div>
+                    </div>
+                    <div class="payment-actions">
+                        <div class="payment-action">Make Default</div>
+                        <div class="payment-action">Edit</div>
+                        <div class="payment-action">Remove</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Billing History -->
+        <div class="billing-box">
+            <div class="section-header">
+                <h2 class="section-title">Billing History</h2>
+                <button class="btn btn-secondary">Download All</button>
+            </div>
+            
+            <table class="billing-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Invoice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Apr 15, 2025</td>
+                        <td>Premium Plan - Monthly</td>
+                        <td>$4.99</td>
+                        <td><span class="payment-status status-success">Paid</span></td>
+                        <td><span class="invoice-link">View</span></td>
+                    </tr>
+                    <tr>
+                        <td>Mar 15, 2025</td>
+                        <td>Premium Plan - Monthly</td>
+                        <td>$4.99</td>
+                        <td><span class="payment-status status-success">Paid</span></td>
+                        <td><span class="invoice-link">View</span></td>
+                    </tr>
+                    <tr>
+                        <td>Feb 15, 2025</td>
+                        <td>Premium Plan - Monthly</td>
+                        <td>$4.99</td>
+                        <td><span class="payment-status status-success">Paid</span></td>
+                        <td><span class="invoice-link">View</span></td>
+                    </tr>
+                    <tr>
+                        <td>Jan 15, 2025</td>
+                        <td>Premium Plan - Monthly</td>
+                        <td>$4.99</td>
+                        <td><span class="payment-status status-success">Paid</span></td>
+                        <td><span class="invoice-link">View</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

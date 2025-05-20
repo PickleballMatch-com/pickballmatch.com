@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reach-Out List - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            background: #FFD700;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            margin-top: 30px;
+            gap: 30px;
+        }
+        
+        .side-menu {
+            width: 240px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 20px;
+            height: fit-content;
+        }
+        
+        .side-menu h2 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #000;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 10px;
+            border-radius: 8px;
+            color: #666;
+            text-decoration: none;
+            margin-bottom: 5px;
+            transition: all 0.2s ease;
+        }
+        
+        .menu-item:hover {
+            background: #f2f2f2;
+        }
+        
+        .menu-item.active {
+            background: #000;
+            color: #FFD700;
+            font-weight: 500;
+        }
+        
+        .category-badge {
+            background: #f0f0f0;
+            color: #666;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: auto;
+        }
+        
+        /* Content Area */
+        .content-area {
+            flex: 1;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: #000;
+        }
+        
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 1px solid #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Reach-Out List */
+        .reach-out-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .list-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            height: 160px;
+        }
+        
+        .card-photo {
+            width: 35%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            overflow: hidden;
+        }
+        
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-info {
+            width: 65%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .person-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #000;
+        }
+        
+        .skill-badge {
+            background: #000;
+            color: #FFD700;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+        
+        .match-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .match-badge {
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            color: #333;
+        }
+        
+        .match-badge.travel {
+            background: #e6f7ff;
+            color: #0070f3;
+        }
+        
+        .match-badge.tournament {
+            background: #f9e9e9;
+            color: #d32f2f;
+        }
+        
+        .match-badge.casual {
+            background: #e6f9e6;
+            color: #2e7d32;
+        }
+        
+        .match-badge.drilling {
+            background: #fff8e6;
+            color: #ed6c02;
+        }
+        
+        .card-description {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .card-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .card-btn-primary {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .card-btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .card-btn-secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .card-btn-secondary:hover {
+            background: #ddd;
+        }
+        
+        .travel-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #0070f3;
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #999;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+            max-width: 400px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .side-menu {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .reach-out-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">🏓 Find Partners</a>
+                <a href="#" class="nav-link">🏆 Tournaments</a>
+                <a href="#" class="nav-link">✈️ Travel</a>
+                <a href="#" class="nav-link">🎮 Community</a>
+                <a href="#" class="nav-link">📝 Blog</a>
+            </div>
+            <div class="user-menu">
+                <a href="#" class="nav-link">📬 Messages</a>
+                <div class="avatar">JS</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Side Menu -->
+            <div class="side-menu">
+                <h2>Match Center</h2>
+                <a href="#" class="menu-item">
+                    <span>👥 Find Players</span>
+                </a>
+                <a href="#" class="menu-item active">
+                    <span>👋 Reach-Out List</span>
+                    <span class="category-badge">12</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>💬 Messages</span>
+                    <span class="category-badge">3</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>🧩 My Partners</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>🏆 Tournament Matches</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>✈️ Travel Plans</span>
+                </a>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="page-header">
+                    <h1 class="page-title">Reach-Out List</h1>
+                </div>
+
+                <!-- Actions Bar -->
+                <div class="actions-bar">
+                    <div class="filters">
+                        <button class="filter-btn active">All (12)</button>
+                        <button class="filter-btn">Casual (5)</button>
+                        <button class="filter-btn">Tournament (3)</button>
+                        <button class="filter-btn">Drilling (2)</button>
+                        <button class="filter-btn">Travel (2)</button>
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn btn-secondary">Remove All</button>
+                        <button class="btn btn-primary">Message All</button>
+                    </div>
+                </div>
+
+                <!-- Reach-Out List -->
+                <div class="reach-out-list">
+                    <!-- Card 1 -->
+                    <div class="list-card">
+                        <div class="card-photo">
+                            <img src="/api/placeholder/400/320" alt="placeholder" />
+                        </div>
+                        <div class="card-info">
+                            <div class="card-header">
+                                <span class="person-name">Sarah Thompson</span>
+                                <span class="skill-badge">4.0</span>
+                            </div>
+                            <div class="match-detail">
+                                <span>📍 2 miles away</span>
+                            </div>
+                            <div class="match-detail">
+                                <span class="match-badge tournament">Tournament</span>
+                                <span class="match-badge casual">Casual</span>
+                            </div>
+                            <p class="card-description">Looking for a tournament partner for Chicago Open. I play an aggressive style with a strong serve.</p>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-primary">Message</button>
+                                <button class="card-btn card-btn-secondary">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="list-card">
+                        <div class="card-photo">
+                            <img src="/api/placeholder/400/320" alt="placeholder" />
+                        </div>
+                        <div class="card-info">
+                            <div class="card-header">
+                                <span class="person-name">Mike Rodriguez</span>
+                                <span class="skill-badge">3.5</span>
+                            </div>
+                            <div class="match-detail">
+                                <span>📍 5 miles away</span>
+                            </div>
+                            <div class="match-detail">
+                                <span class="match-badge drilling">Drilling</span>
+                                <span class="match-badge casual">Casual</span>
+                            </div>
+                            <p class="card-description">Looking for weekday morning drilling partners. Focused on improving my third shot drop and dinking game.</p>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-primary">Message</button>
+                                <button class="card-btn card-btn-secondary">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="list-card">
+                        <div class="card-photo">
+                            <img src="/api/placeholder/400/320" alt="placeholder" />
+                        </div>
+                        <div class="card-info">
+                            <div class="card-header">
+                                <span class="person-name">Alex Chen</span>
+                                <span class="skill-badge">4.5</span>
+                            </div>
+                            <div class="match-detail">
+                                <span>📍 Visiting Jaco</span>
+                            </div>
+                            <div class="match-detail">
+                                <span class="match-badge travel">Travel</span>
+                                <span class="match-badge casual">Casual</span>
+                            </div>
+                            <p class="card-description">In town June 10-15 for business. Looking for evening games at any local courts. Can play with all levels.</p>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-primary">Message</button>
+                                <button class="card-btn card-btn-secondary">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="list-card">
+                        <div class="card-photo">
+                            <img src="/api/placeholder/400/320" alt="placeholder" />
+                        </div>
+                        <div class="card-info">
+                            <div class="card-header">
+                                <span class="person-name">Taylor Williams</span>
+                                <span class="skill-badge">3.0</span>
+                            </div>
+                            <div class="match-detail">
+                                <span>📍 1 mile away</span>
+                            </div>
+                            <div class="match-detail">
+                                <span class="match-badge casual">Casual</span>
+                            </div>
+                            <p class="card-description">Newer player looking for patient partners to practice with on weekends. Eager to learn and improve!</p>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-primary">Message</button>
+                                <button class="card-btn card-btn-secondary">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

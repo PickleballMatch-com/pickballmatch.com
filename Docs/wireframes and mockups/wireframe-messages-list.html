@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickleball Match - Messages List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .nav-link:hover {
+            color: #000;
+        }
+        
+        .nav-link.active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .profile-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            height: calc(100vh - 71px);
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            border-radius: 0 0 12px 12px;
+        }
+        
+        /* Messages Sidebar */
+        .messages-sidebar {
+            border-right: 1px solid #eee;
+            background: #fff;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .sidebar-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title h2 {
+            font-size: 20px;
+            color: #000;
+        }
+        
+        .new-message-btn {
+            width: 36px;
+            height: 36px;
+            background: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #eee;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            font-size: 16px;
+            opacity: 0.5;
+        }
+        
+        .message-filters {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .filter-chip {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            background: #f0f0f0;
+            border: none;
+        }
+        
+        .filter-chip.active {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Conversation List */
+        .conversation-list {
+            padding: 10px;
+        }
+        
+        .conversation-item {
+            display: flex;
+            padding: 15px 10px;
+            border-radius: 12px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .conversation-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .conversation-item.active {
+            background: #f0f0f0;
+        }
+        
+        .conversation-item.unread {
+            background: #fffbef;
+        }
+        
+        .conversation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .conversation-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .conversation-content {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .conversation-name {
+            font-weight: 600;
+            color: #000;
+            margin-right: 10px;
+        }
+        
+        .conversation-time {
+            font-size: 12px;
+            color: #999;
+            flex-shrink: 0;
+        }
+        
+        .conversation-preview {
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 20px;
+        }
+        
+        .badge-container {
+            position: absolute;
+            top: 15px;
+            right: 10px;
+        }
+        
+        .unread-badge {
+            display: inline-block;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 10px;
+            background: #FFD700;
+            color: #000;
+            font-size: 12px;
+            text-align: center;
+            line-height: 20px;
+            font-weight: bold;
+        }
+        
+        .user-status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+            background: #ccc;
+        }
+        
+        .user-status.online {
+            background: #4CAF50;
+        }
+        
+        /* Empty State */
+        .chat-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        .empty-title {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .empty-desc {
+            color: #666;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .match-type-pill {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: #f0f0f0;
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .match-type-pill.tournament {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .match-type-pill.travel {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .match-type-pill.drill {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .match-type-pill.dating {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .messages-sidebar {
+                position: fixed;
+                left: 0;
+                top: 71px;
+                bottom: 0;
+                width: 100%;
+                z-index: 100;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Match</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link active">Messages</a>
+                <a href="#" class="nav-link">Community</a>
+            </div>
+            <div class="user-menu">
+                <div class="profile-pic">
+                    <img src="/api/placeholder/36/36" alt="Profile" />
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Messages Sidebar -->
+            <div class="messages-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-title">
+                        <h2>Messages</h2>
+                        <button class="new-message-btn">+</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" placeholder="Search messages...">
+                    </div>
+                    <div class="message-filters">
+                        <button class="filter-chip active">All</button>
+                        <button class="filter-chip">Unread</button>
+                        <button class="filter-chip">Tournament</button>
+                        <button class="filter-chip">Travel</button>
+                        <button class="filter-chip">Dating</button>
+                    </div>
+                </div>
+                <div class="conversation-list">
+                    <!-- Unread Conversation -->
+                    <div class="conversation-item unread">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="Sarah" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    Sarah Johnson
+                                    <span class="user-status online"></span>
+                                    <span class="match-type-pill tournament">Tournament</span>
+                                </div>
+                                <div class="conversation-time">11:23 AM</div>
+                            </div>
+                            <div class="conversation-preview">Hey! I'm interested in being your partner for the Miami Open next month. I'm a 4.2 DUPR and have played in 3 tournaments this year.</div>
+                        </div>
+                        <div class="badge-container">
+                            <div class="unread-badge">2</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Conversation -->
+                    <div class="conversation-item active">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="Michael" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    Michael Chen
+                                    <span class="match-type-pill drill">Drill</span>
+                                </div>
+                                <div class="conversation-time">Yesterday</div>
+                            </div>
+                            <div class="conversation-preview">Let's do those drills we talked about. South Courts at 6:30pm on Thursday works for me.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Read Conversation (Travel) -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="Jessica" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    Jessica Rivera
+                                    <span class="match-type-pill travel">Travel</span>
+                                </div>
+                                <div class="conversation-time">2 days ago</div>
+                            </div>
+                            <div class="conversation-preview">Welcome to Chicago! I'd be happy to show you the courts at Lincoln Park. They're much better than the downtown ones.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Read Conversation (Dating) -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="Alex" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    Alex Thompson
+                                    <span class="match-type-pill dating">Dating</span>
+                                </div>
+                                <div class="conversation-time">3 days ago</div>
+                            </div>
+                            <div class="conversation-preview">Had a great time playing yesterday! Would you like to grab coffee sometime after our next match?</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Read Conversation (Regular) -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="Robert" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    Robert Wilson
+                                </div>
+                                <div class="conversation-time">1 week ago</div>
+                            </div>
+                            <div class="conversation-preview">The new paddles just came in. I'll bring one on Saturday for you to try out.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Read Conversation (Regular) -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="Emma" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    Emma Garcia
+                                </div>
+                                <div class="conversation-time">1 week ago</div>
+                            </div>
+                            <div class="conversation-preview">Thanks for the tips on my backhand. It's already improved a lot!</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Placeholder for more conversations -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            <img src="/api/placeholder/50/50" alt="David" />
+                        </div>
+                        <div class="conversation-content">
+                            <div class="conversation-header">
+                                <div class="conversation-name">
+                                    David Park
+                                    <span class="match-type-pill tournament">Tournament</span>
+                                </div>
+                                <div class="conversation-time">2 weeks ago</div>
+                            </div>
+                            <div class="conversation-preview">Great playing with you at the Atlanta Open. Let's partner up again sometime!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty Chat State -->
+            <div class="chat-empty-state">
+                <div class="empty-icon">💬</div>
+                <h3 class="empty-title">Your messages will appear here</h3>
+                <p class="empty-desc">Select a conversation from the list or start a new message to connect with players.</p>
+                <button class="btn-primary">New Message</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

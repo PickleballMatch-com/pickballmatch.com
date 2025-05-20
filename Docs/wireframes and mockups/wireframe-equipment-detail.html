@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Detail - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            background: #FFD700;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-outline:hover {
+            border-color: #999;
+            color: #000;
+        }
+        
+        /* Breadcrumbs */
+        .breadcrumbs {
+            display: flex;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .breadcrumb-link {
+            color: #000;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-link:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            color: #ccc;
+        }
+        
+        /* Product Section */
+        .product-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        /* Product Gallery */
+        .product-gallery {
+            position: relative;
+        }
+        
+        .main-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-weight: bold;
+        }
+        
+        .image-thumbnails {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            transition: all 0.2s;
+        }
+        
+        .thumbnail.active {
+            border: 2px solid #FFD700;
+        }
+        
+        .thumbnail:hover:not(.active) {
+            opacity: 0.8;
+        }
+        
+        /* Product Info */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-category {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .product-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 15px;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stars {
+            color: #FFD700;
+        }
+        
+        .review-count {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .price-discount {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 18px;
+        }
+        
+        .discount-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .product-specs {
+            margin-bottom: 25px;
+        }
+        
+        .spec-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .spec-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .spec-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .spec-value {
+            font-weight: 600;
+        }
+        
+        .product-cta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .store-options {
+            border-top: 1px solid #eee;
+            padding-top: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .store-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .store-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .store-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .store-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .store-logo {
+            width: 40px;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+        
+        .store-name {
+            font-weight: 600;
+        }
+        
+        .store-price {
+            font-weight: bold;
+        }
+        
+        .social-share {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .share-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .share-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .share-button:hover {
+            background: #e0e0e0;
+        }
+        
+        /* Tabs Section */
+        .tabs-section {
+            margin-bottom: 60px;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: #000;
+        }
+        
+        .tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #FFD700;
+        }
+        
+        .tab:not(.active) {
+            color: #666;
+        }
+        
+        .tab:not(.active):hover {
+            color: #000;
+        }
+        
+        /* Reviews Section */
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .reviews-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .review-stats {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .rating-breakdown {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .overall-rating {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .rating-big {
+            font-size: 64px;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        
+        .rating-stars-big {
+            font-size: 24px;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .detailed-ratings {
+            flex-grow: 1;
+        }
+        
+        .rating-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .rating-bar-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .rating-name {
+            width: 80px;
+            font-size: 14px;
+        }
+        
+        .rating-bar-container {
+            flex-grow: 1;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .rating-bar-fill {
+            height: 100%;
+            background: #FFD700;
+        }
+        
+        .rating-value {
+            width: 30px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .review-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .review-filter {
+            white-space: nowrap;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .review-filter.active {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .review-filter:hover:not(.active) {
+            background: #e0e0e0;
+        }
+        
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .review-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 25px;
+            background: #fff;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-weight: bold;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+        }
+        
+        .review-date {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .review-rating {
+            color: #FFD700;
+        }
+        
+        .review-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .review-content {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .review-photos {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .review-photo {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+        
+        .review-pros-cons {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .review-pros, .review-cons {
+            flex: 1;
+        }
+        
+        .pros-cons-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .pros-cons-list {
+            list-style-position: inside;
+        }
+        
+        .pros-cons-item {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .review-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .review-helpful {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .helpful-question {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .helpful-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .review-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .review-action {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .review-action:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .page-item {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .page-item.active {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .page-item:hover:not(.active) {
+            background: #f0f0f0;
+        }
+        
+        /* User Inventory Section */
+        .user-inventory {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 60px;
+        }
+        
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .inventory-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .not-in-inventory-message {
+            text-align: center;
+            padding: 30px;
+            font-size: 16px;
+            color: #666;
+        }
+        
+        /* Similar Products Section */
+        .similar-section {
+            margin-bottom: 60px;
+        }
+        
+        .similar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .similar-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .similar-products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .similar-product {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        
+        .similar-product:hover {
+            transform: translateY(-5px);
+        }
+        
+        .similar-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+        
+        .similar-details {
+            padding: 15px;
+        }
+        
+        .similar-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .similar-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .similar-stars {
+            color: #FFD700;
+        }
+        
+        .similar-price {
+            font-weight: bold;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .similar-products {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .rating-breakdown {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center;
+            }
+            
+            .similar-products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .review-pros-cons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .spec-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-cta {
+                flex-direction: column;
+            }
+            
+            .similar-products {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="user-menu">
+                <div class="notification-icon">
+                    📬
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="user-avatar">JS</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs">
+            <a href="#" class="breadcrumb-link">Equipment</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="#" class="breadcrumb-link">Paddles</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>Selkirk AMPED Epic Midweight</span>
+        </div>
+        
+        <!-- Product Section -->
+        <div class="product-section">
+            <!-- Product Gallery -->
+            <div class="product-gallery">
+                <div class="main-image">Paddle Image</div>
+                <div class="image-thumbnails">
+                    <div class="thumbnail active">1</div>
+                    <div class="thumbnail">2</div>
+                    <div class="thumbnail">3</div>
+                    <div class="thumbnail">4</div>
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="product-category">Paddle</div>
+                <h1 class="product-name">Selkirk AMPED Epic Midweight</h1>
+                <div class="product-rating">
+                    <div class="stars">★★★★★</div>
+                    <div class="review-count">329 reviews</div>
+                </div>
+                <div class="product-price">
+                    <div class="price-discount">
+                        <div>$149.99</div>
+                        <div class="original-price">$179.99</div>
+                        <div class="discount-badge">17% OFF</div>
+                    </div>
+                </div>
+                <div class="product-description">
+                    The Selkirk AMPED Epic is a midweight paddle featuring a polypropylene X5 core and FiberFlex fiberglass face for enhanced power and control. With its larger sweet spot and unrivaled touch, this paddle is perfect for players of all skill levels.
+                </div>
+                <div class="product-specs">
+                    <div class="spec-title">Specifications</div>
+                    <div class="spec-list">
+                        <div class="spec-item">
+                            <div class="spec-label">Weight</div>
+                            <div class="spec-value">7.9-8.3 oz</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-label">Grip Size</div>
+                            <div class="spec-value">4 1/4"</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-label">Length</div>
+                            <div class="spec-value">15.5"</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-label">Width</div>
+                            <div class="spec-value">7.5"</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-label">Face</div>
+                            <div class="spec-value">FiberFlex Fiberglass</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-label">Core</div>
+                            <div class="spec-value">X5 Polypropylene Honeycomb</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-cta">
+                    <a href="#" class="btn btn-primary">Add to Inventory</a>
+                    <a href="#" class="btn btn-secondary">Add to Wishlist</a>
+                </div>
+                <div class="store-options">
+                    <div class="store-title">Available From</div>
+                    <div class="store-list">
+                        <div class="store-item">
+                            <div class="store-info">
+                                <div class="store-logo">S</div>
+                                <div class="store-name">Selkirk Sports</div>
+                            </div>
+                            <div class="store-price">$149.99</div>
+                            <a href="#" class="btn btn-outline">Buy Now</a>
+                        </div>
+                        <div class="store-item">
+                            <div class="store-info">
+                                <div class="store-logo">A</div>
+                                <div class="store-name">Amazon</div>
+                            </div>
+                            <div class="store-price">$159.99</div>
+                            <a href="#" class="btn btn-outline">Buy Now</a>
+                        </div>
+                        <div class="store-item">
+                            <div class="store-info">
+                                <div class="store-logo">P</div>
+                                <div class="store-name">Pickleball Central</div>
+                            </div>
+                            <div class="store-price">$154.99</div>
+                            <a href="#" class="btn btn-outline">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="social-share">
+                    <div class="share-label">Share:</div>
+                    <div class="share-buttons">
+                        <div class="share-button">f</div>
+                        <div class="share-button">t</div>
+                        <div class="share-button">ig</div>
+                        <div class="share-button">✉</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Inventory Section -->
+        <div class="user-inventory">
+            <div class="inventory-header">
+                <div class="inventory-title">In Your Inventory</div>
+                <a href="#" class="btn btn-secondary">Edit Your Review</a>
+            </div>
+            <div class="reviewer-info">
+                <div class="reviewer-avatar">JS</div>
+                <div>
+                    <div class="reviewer-name">Your Rating: <span class="stars">★★★★☆</span></div>
+                    <div class="review-date">Added on April 15, 2025 • Currently Using</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs Section -->
+        <div class="tabs-section">
+            <div class="tabs-header">
+                <div class="tab active">Reviews (329)</div>
+                <div class="tab">Details & Specs</div>
+                <div class="tab">Community Insights</div>
+                <div class="tab">Videos</div>
+            </div>
+            
+            <!-- Reviews Content -->
+            <div class="reviews-content">
+                <div class="reviews-header">
+                    <h2 class="reviews-title">Customer Reviews</h2>
+                    <div class="review-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">329</div>
+                            <div class="stat-label">Reviews</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">96%</div>
+                            <div class="stat-label">Recommend</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="rating-breakdown">
+                    <div class="overall-rating">
+                        <div class="rating-big">4.8</div>
+                        <div class="rating-stars-big">★★★★★</div>
+                        <div>out of 5</div>
+                    </div>
+                    <div class="detailed-ratings">
+                        <div class="rating-bars">
+                            <div class="rating-bar-item">
+                                <div class="rating-name">Power</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar-fill" style="width: 92%;"></div>
+                                </div>
+                                <div class="rating-value">4.6</div>
+                            </div>
+                            <div class="rating-bar-item">
+                                <div class="rating-name">Control</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar-fill" style="width: 96%;"></div>
+                                </div>
+                                <div class="rating-value">4.8</div>
+                            </div>
+                            <div class="rating-bar-item">
+                                <div class="rating-name">Touch</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar-fill" style="width: 94%;"></div>
+                                </div>
+                                <div class="rating-value">4.7</div>
+                            </div>
+                            <div class="rating-bar-item">
+                                <div class="rating-name">Durability</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar-fill" style="width: 90%;"></div>
+                                </div>
+                                <div class="rating-value">4.5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Review Filters -->
+                <div class="review-filters">
+                    <div class="review-filter active">All Reviews</div>
+                    <div class="review-filter">Recent</div>
+                    <div class="review-filter">5 Star</div>
+                    <div class="review-filter">4 Star</div>
+                    <div class="review-filter">3 Star</div>
+                    <div class="review-filter">2 Star</div>
+                    <div class="review-filter">1 Star</div>
+                    <div class="review-filter">With Photos</div>
+                    <div class="review-filter">Verified Owners</div>
+                </div>
+                
+                <!-- Review List -->
+                <div class="review-list">
+                    <!-- Review 1 -->
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">TC</div>
+                                <div>
+                                    <div class="reviewer-name">Tom C.</div>
+                                    <div class="review-date">Reviewed on May 3, 2025</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">★★★★★</div>
+                        </div>
+                        <div class="review-title">Outstanding control and feel</div>
+                        <div class="review-content">
+                            I've tried several paddles over the past year and the AMPED Epic is by far my favorite. The sweet spot is massive, which helps with consistency, and the feel at the kitchen line is exceptional. Drives have good power without sacrificing control. Highly recommend for 4.0+ players who value touch and placement.
+                        </div>
+                        <div class="review-photos">
+                            <div class="review-photo">Photo 1</div>
+                            <div class="review-photo">Photo 2</div>
+                        </div>
+                        <div class="review-pros-cons">
+                            <div class="review-pros">
+                                <div class="pros-cons-title">Pros</div>
+                                <ul class="pros-cons-list">
+                                    <li class="pros-cons-item">Excellent control</li>
+                                    <li class="pros-cons-item">Large sweet spot</li>
+                                    <li class="pros-cons-item">Great for dinking</li>
+                                </ul>
+                            </div>
+                            <div class="review-cons">
+                                <div class="pros-cons-title">Cons</div>
+                                <ul class="pros-cons-list">
+                                    <li class="pros-cons-item">Slightly heavy</li>
+                                    <li class="pros-cons-item">Premium price</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="review-footer">
+                            <div class="review-helpful">
+                                <div class="helpful-question">Was this helpful?</div>
+                                <div class="helpful-buttons">
+                                    <button class="btn btn-outline">Yes (24)</button>
+                                    <button class="btn btn-outline">No (2)</button>
+                                </div>
+                            </div>
+                            <div class="review-actions">
+                                <div class="review-action">Report</div>
+                                <div class="review-action">Share</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Review 2 -->
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">AM</div>
+                                <div>
+                                    <div class="reviewer-name">Ashley M.</div>
+                                    <div class="review-date">Reviewed on Apr 28, 2025</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">★★★★☆</div>
+                        </div>
+                        <div class="review-title">Great paddle, bit heavy for smaller players</div>
+                        <div class="review-content">
+                            This paddle has excellent touch and feel, especially at the net. I love the control I get for dinks and third-shot drops. My only complaint is that as a smaller female player, I find it slightly heavy for long tournament days. If they made a lightweight version with the same tech, it would be perfect!
+                        </div>
+                        <div class="review-pros-cons">
+                            <div class="review-pros">
+                                <div class="pros-cons-title">Pros</div>
+                                <ul class="pros-cons-list">
+                                    <li class="pros-cons-item">Great touch</li>
+                                    <li class="pros-cons-item">Durable</li>
+                                    <li class="pros-cons-item">Comfortable grip</li>
+                                </ul>
+                            </div>
+                            <div class="review-cons">
+                                <div class="pros-cons-title">Cons</div>
+                                <ul class="pros-cons-list">
+                                    <li class="pros-cons-item">Heavy for smaller players</li>
+                                    <li class="pros-cons-item">Expensive</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="review-footer">
+                            <div class="review-helpful">
+                                <div class="helpful-question">Was this helpful?</div>
+                                <div class="helpful-buttons">
+                                    <button class="btn btn-outline">Yes (18)</button>
+                                    <button class="btn btn-outline">No (1)</button>
+                                </div>
+                            </div>
+                            <div class="review-actions">
+                                <div class="review-action">Report</div>
+                                <div class="review-action">Share</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <div class="page-item">←</div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">3</div>
+                    <div class="page-item">4</div>
+                    <div class="page-item">5</div>
+                    <div class="page-item">→</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Similar Products -->
+        <div class="similar-section">
+            <div class="similar-header">
+                <h2 class="similar-title">Similar Paddles</h2>
+                <a href="#" class="btn btn-secondary">View All</a>
+            </div>
+            <div class="similar-products">
+                <!-- Similar 1 -->
+                <div class="similar-product">
+                    <div class="similar-image">Image</div>
+                    <div class="similar-details">
+                        <div class="similar-name">Joola Ben Johns Hyperion CFS 16</div>
+                        <div class="similar-rating">
+                            <div class="similar-stars">★★★★★</div>
+                            <div>(156)</div>
+                        </div>
+                        <div class="similar-price">$179.95</div>
+                    </div>
+                </div>
+                
+                <!-- Similar 2 -->
+                <div class="similar-product">
+                    <div class="similar-image">Image</div>
+                    <div class="similar-details">
+                        <div class="similar-name">Paddletek Tempest Wave Pro</div>
+                        <div class="similar-rating">
+                            <div class="similar-stars">★★★★☆</div>
+                            <div>(203)</div>
+                        </div>
+                        <div class="similar-price">$159.99</div>
+                    </div>
+                </div>
+                
+                <!-- Similar 3 -->
+                <div class="similar-product">
+                    <div class="similar-image">Image</div>
+                    <div class="similar-details">
+                        <div class="similar-name">Engage Pursuit MX 6.0</div>
+                        <div class="similar-rating">
+                            <div class="similar-stars">★★★★★</div>
+                            <div>(112)</div>
+                        </div>
+                        <div class="similar-price">$164.99</div>
+                    </div>
+                </div>
+                
+                <!-- Similar 4 -->
+                <div class="similar-product">
+                    <div class="similar-image">Image</div>
+                    <div class="similar-details">
+                        <div class="similar-name">Gearbox CX14E Power</div>
+                        <div class="similar-rating">
+                            <div class="similar-stars">★★★★☆</div>
+                            <div>(87)</div>
+                        </div>
+                        <div class="similar-price">$149.99</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

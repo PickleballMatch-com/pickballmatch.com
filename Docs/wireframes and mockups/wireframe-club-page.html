@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Page - Pickleball Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #000;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .btn-primary {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        /* Club Header */
+        .club-header {
+            background-size: cover;
+            background-position: center;
+            background-color: #333;
+            position: relative;
+            height: 260px;
+            color: #fff;
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        .club-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+            z-index: 1;
+        }
+        
+        .club-info {
+            position: relative;
+            z-index: 2;
+            padding: 30px 0;
+            width: 100%;
+        }
+        
+        .club-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .club-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .club-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Club Navigation */
+        .club-nav {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+        
+        .club-tabs {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .club-tab {
+            padding: 15px 20px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .club-tab.active {
+            color: #000;
+            border-bottom: 3px solid #FFD700;
+        }
+        
+        .club-tab:hover:not(.active) {
+            color: #333;
+            border-bottom: 3px solid #eee;
+        }
+        
+        /* Main layout */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            padding: 40px 0;
+        }
+        
+        .content-main {
+            flex: 1;
+        }
+        
+        .content-sidebar {
+            width: 300px;
+        }
+        
+        /* About Section */
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title .btn-link {
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+            font-weight: normal;
+        }
+        
+        .section-title .btn-link:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        
+        .about-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        .about-content p {
+            margin-bottom: 15px;
+        }
+        
+        .about-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Court Details */
+        .court-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .court-detail {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .detail-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+        }
+        
+        /* Schedule Section */
+        .schedule-list {
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .schedule-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .schedule-day {
+            font-weight: 600;
+            color: #000;
+            min-width: 100px;
+        }
+        
+        .schedule-hours {
+            color: #444;
+            flex: 1;
+            padding: 0 20px;
+        }
+        
+        .schedule-hours span {
+            font-weight: 500;
+        }
+        
+        .schedule-type {
+            font-size: 13px;
+            color: #666;
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Upcoming Events */
+        .event-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .event-date {
+            width: 80px;
+            background: #000;
+            color: #FFD700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        
+        .event-month {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .event-day {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .event-content {
+            padding: 15px;
+            flex: 1;
+        }
+        
+        .event-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+        }
+        
+        .event-details {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .event-action {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        /* Members Section */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .member-card:hover {
+            background: #f5f5f5;
+        }
+        
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            color: #000;
+            line-height: 1.2;
+        }
+        
+        .member-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .member-dupr {
+            background: #000;
+            color: #FFD700;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+        
+        /* Photos Gallery */
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .photo-item {
+            aspect-ratio: 1;
+            background: #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        
+        /* Reviews */
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .reviewer-date {
+            font-size: 13px;
+            color: #888;
+        }
+        
+        .review-rating {
+            color: #FFD700;
+            font-size: 18px;
+        }
+        
+        .review-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        
+        /* Sidebar */
+        .sidebar-section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .contact-info {
+            margin-bottom: 20px;
+        }
+        
+        .contact-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .contact-icon {
+            font-size: 18px;
+            color: #666;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .contact-detail {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .contact-detail a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .contact-detail a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 200px;
+            background: #eee;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-weight: 500;
+        }
+        
+        .amenities-list {
+            list-style-type: none;
+        }
+        
+        .amenities-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .amenities-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .amenity-icon {
+            color: #000;
+            font-size: 16px;
+        }
+        
+        .nearby-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .nearby-item:last-child {
+            border-bottom: none;
+        }
+        
+        .nearby-name {
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .nearby-distance {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        /* Footer */
+        footer {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            font-size: 14px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .content-sidebar {
+                width: 100%;
+            }
+            
+            .members-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .club-title {
+                font-size: 24px;
+            }
+            
+            .club-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .club-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+            
+            .club-tab {
+                padding: 15px 15px;
+            }
+            
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-card {
+                flex-direction: column;
+            }
+            
+            .event-date {
+                width: 100%;
+                padding: 10px 0;
+                flex-direction: row;
+                justify-content: center;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">P.M</div>
+                <div class="logo-text">Pickleball Match</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Find Partners</a>
+                <a href="#" class="nav-link">Tournaments</a>
+                <a href="#" class="nav-link">Travel</a>
+                <a href="#" class="nav-link">Gear</a>
+                <a href="#" class="nav-link active">Community</a>
+                <a href="#" class="nav-link">Blog</a>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+                <a href="#" class="btn-primary">Join Club</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Club Header -->
+    <div class="club-header" style="background-color: #2c3e50;">
+        <div class="container">
+            <div class="club-info">
+                <h1 class="club-title">Jaco Pickleball Club</h1>
+                <div class="club-meta">
+                    <div class="meta-item">📍 Jaco, Costa Rica</div>
+                    <div class="meta-item">👥 127 Members</div>
+                    <div class="meta-item">⭐ 4.8 (42 reviews)</div>
+                    <div class="meta-item">🏓 8 Courts (4 Indoor, 4 Outdoor)</div>
+                </div>
+                <div class="club-actions">
+                    <a href="#" class="btn-primary">Join Club</a>
+                    <a href="#" class="btn-secondary">Contact</a>
+                    <a href="#" class="btn-secondary">Share</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Club Navigation -->
+    <div class="club-nav">
+        <div class="container">
+            <div class="club-tabs">
+                <div class="club-tab active">About</div>
+                <div class="club-tab">Schedule</div>
+                <div class="club-tab">Events</div>
+                <div class="club-tab">Members</div>
+                <div class="club-tab">Photos</div>
+                <div class="club-tab">Reviews</div>
+                <div class="club-tab">Nearby</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <div class="content-main">
+                <!-- About Section -->
+                <div class="section">
+                    <h2 class="section-title">About This Club</h2>
+                    <div class="about-content">
+                        <p>Welcome to Jaco Pickleball Club, the premier pickleball destination in Costa Rica! Our club offers world-class facilities for players of all levels, from beginners to advanced competitors.</p>
+                        
+                        <p>Founded in 2018, we've grown to become a vibrant community of local and international players. Our mission is to promote pickleball in Costa Rica while providing a fun, inclusive environment for everyone.</p>
+                        
+                        <p>We offer regular open play sessions, clinics, private lessons, and tournaments throughout the year. Whether you're a local resident or just visiting Jaco, we welcome you to join us on the courts!</p>
+                    </div>
+                </div>
+
+                <!-- Court Details -->
+                <div class="section">
+                    <h2 class="section-title">Court Details</h2>
+                    <div class="court-info">
+                        <div class="court-detail">
+                            <div class="detail-label">Total Courts</div>
+                            <div class="detail-value">8 Courts</div>
+                        </div>
+                        <div class="court-detail">
+                            <div class="detail-label">Indoor Courts</div>
+                            <div class="detail-value">4 Courts</div>
+                        </div>
+                        <div class="court-detail">
+                            <div class="detail-label">Outdoor Courts</div>
+                            <div class="detail-value">4 Courts</div>
+                        </div>
+                    </div>
+                    <div class="court-info" style="margin-top: 15px;">
+                        <div class="court-detail">
+                            <div class="detail-label">Surface Type</div>
+                            <div class="detail-value">Pro Cushion</div>
+                        </div>
+                        <div class="court-detail">
+                            <div class="detail-label">Lighting</div>
+                            <div class="detail-value">Yes (until 10pm)</div>
+                        </div>
+                        <div class="court-detail">
+                            <div class="detail-label">Availability</div>
+                            <div class="detail-value">Daily, 7am - 10pm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Section -->
+                <div class="section">
+                    <h2 class="section-title">Weekly Schedule</h2>
+                    <div class="schedule-list">
+                        <div class="schedule-item">
+                            <div class="schedule-day">Monday</div>
+                            <div class="schedule-hours">
+                                <div><span>7:00 AM - 11:00 AM:</span> Open Play (All Levels)</div>
+                                <div><span>4:00 PM - 6:00 PM:</span> Beginner Clinic</div>
+                                <div><span>6:00 PM - 9:00 PM:</span> Advanced Play (4.0+)</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-day">Tuesday</div>
+                            <div class="schedule-hours">
+                                <div><span>7:00 AM - 11:00 AM:</span> Open Play (All Levels)</div>
+                                <div><span>4:00 PM - 6:00 PM:</span> Intermediate Clinic</div>
+                                <div><span>6:00 PM - 9:00 PM:</span> Round Robin</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-day">Wednesday</div>
+                            <div class="schedule-hours">
+                                <div><span>7:00 AM - 11:00 AM:</span> Open Play (All Levels)</div>
+                                <div><span>4:00 PM - 6:00 PM:</span> Advanced Clinic</div>
+                                <div><span>6:00 PM - 9:00 PM:</span> Ladder Play</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-day">Thursday</div>
+                            <div class="schedule-hours">
+                                <div><span>7:00 AM - 11:00 AM:</span> Open Play (All Levels)</div>
+                                <div><span>4:00 PM - 6:00 PM:</span> Skills & Drills</div>
+                                <div><span>6:00 PM - 9:00 PM:</span> Social Play</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-day">Friday</div>
+                            <div class="schedule-hours">
+                                <div><span>7:00 AM - 11:00 AM:</span> Open Play (All Levels)</div>
+                                <div><span>4:00 PM - 9:00 PM:</span> Challenge Courts</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-day">Saturday</div>
+                            <div class="schedule-hours">
+                                <div><span>8:00 AM - 12:00 PM:</span> Weekend Round Robin</div>
+                                <div><span>1:00 PM - 5:00 PM:</span> Open Play</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-day">Sunday</div>
+                            <div class="schedule-hours">
+                                <div><span>8:00 AM - 12:00 PM:</span> Open Play (All Levels)</div>
+                                <div><span>1:00 PM - 4:00 PM:</span> Family Play</div>
+                            </div>
+                            <div class="schedule-type">Mixed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="section">
+                    <h2 class="section-title">Upcoming Events <a href="#" class="btn-link">See All</a></h2>
+                    <div class="event-list">
+                        <div class="event-card">
+                            <div class="event-date">
+                                <div class="event-month">May</div>
+                                <div class="event-day">18</div>
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">Jaco Beach Tournament</h3>
+                                <div class="event-details">
+                                    <div><strong>Time:</strong> 8:00 AM - 6:00 PM</div>
+                                    <div><strong>Registration Fee:</strong> $25</div>
+                                    <div><strong>Details:</strong> Men's, Women's, and Mixed divisions. All skill levels welcome.</div>
+                                </div>
+                                <div class="event-action">
+                                    <button class="btn-secondary">Register</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-card">
+                            <div class="event-date">
+                                <div class="event-month">May</div>
+                                <div class="event-day">25</div>
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">Beginner Bootcamp</h3>
+                                <div class="event-details">
+                                    <div><strong>Time:</strong> 9:00 AM - 12:00 PM</div>
+                                    <div><strong>Registration Fee:</strong> $15</div>
+                                    <div><strong>Details:</strong> Intensive 3-hour bootcamp for beginners. Learn rules, basic shots, and strategy.</div>
+                                </div>
+                                <div class="event-action">
+                                    <button class="btn-secondary">Register</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club Members -->
+                <div class="section">
+                    <h2 class="section-title">Club Members <a href="#" class="btn-link">See All (127)</a></h2>
+                    <div class="members-grid">
+                        <div class="member-card">
+                            <div class="member-avatar">RG</div>
+                            <div class="member-info">
+                                <div class="member-name">Robert Garcia</div>
+                                <div class="member-role">Club Owner</div>
+                            </div>
+                            <div class="member-dupr">4.5</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">MS</div>
+                            <div class="member-info">
+                                <div class="member-name">Maria Santos</div>
+                                <div class="member-role">Coach</div>
+                            </div>
+                            <div class="member-dupr">4.8</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">JL</div>
+                            <div class="member-info">
+                                <div class="member-name">John Lewis</div>
+                                <div class="member-role">Member</div>
+                            </div>
+                            <div class="member-dupr">3.7</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">AT</div>
+                            <div class="member-info">
+                                <div class="member-name">Ana Torres</div>
+                                <div class="member-role">Member</div>
+                            </div>
+                            <div class="member-dupr">4.2</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">DH</div>
+                            <div class="member-info">
+                                <div class="member-name">David Hughes</div>
+                                <div class="member-role">Member</div>
+                            </div>
+                            <div class="member-dupr">3.5</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">SK</div>
+                            <div class="member-info">
+                                <div class="member-name">Sarah Kim</div>
+                                <div class="member-role">Member</div>
+                            </div>
+                            <div class="member-dupr">4.0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club Photos -->
+                <div class="section">
+                    <h2 class="section-title">Photos <a href="#" class="btn-link">See All (24)</a></h2>
+                    <div class="photos-grid">
+                        <div class="photo-item">Court Photo 1</div>
+                        <div class="photo-item">Court Photo 2</div>
+                        <div class="photo-item">Court Photo 3</div>
+                        <div class="photo-item">Event Photo 1</div>
+                        <div class="photo-item">Event Photo 2</div>
+                        <div class="photo-item">Event Photo 3</div>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <div class="section">
+                    <h2 class="section-title">Reviews <a href="#" class="btn-link">See All (42)</a></h2>
+                    <div class="review-list">
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">MJ</div>
+                                    <div>
+                                        <div class="reviewer-name">Mike Johnson</div>
+                                        <div class="reviewer-date">April 28, 2025</div>
+                                    </div>
+                                </div>
+                                <div class="review-rating">★★★★★</div>
+                            </div>
+                            <div class="review-text">
+                                Amazing facilities and very friendly community! I was visiting Jaco for a week and played here every day. The courts are in excellent condition and they have a very welcoming atmosphere for visitors. Will definitely be back!
+                            </div>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">LP</div>
+                                    <div>
+                                        <div class="reviewer-name">Lisa Peterson</div>
+                                        <div class="reviewer-date">April 15, 2025</div>
+                                    </div>
+                                </div>
+                                <div class="review-rating">★★★★☆</div>
+                            </div>
+                            <div class="review-text">
+                                Great club with excellent coaches. I took a beginner clinic and learned so much in just two hours. The only reason for 4 stars instead of 5 is that it gets quite busy during peak hours. Would recommend coming early in the morning.
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <a href="#" class="btn-secondary">Write a Review</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Contact Information</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-detail"><a href="tel:+50622717890">+506 2271 7890</a></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">✉️</div>
+                            <div class="contact-detail"><a href="mailto:info@jacopickleball.com">info@jacopickleball.com</a></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">🌐</div>
+                            <div class="contact-detail"><a href="https://www.jacopickleball.com">www.jacopickleball.com</a></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-detail">123 Playa Jaco Road, Jaco, Costa Rica</div>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        [Map of Jaco Pickleball Club]
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Hours of Operation</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">📆</div>
+                            <div class="contact-detail">
+                                <div><strong>Monday-Friday:</strong> 7:00 AM - 10:00 PM</div>
+                                <div><strong>Saturday-Sunday:</strong> 8:00 AM - 8:00 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Amenities</h3>
+                    <ul class="amenities-list">
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>Pro Shop</div>
+                        </li>
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>Locker Rooms</div>
+                        </li>
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>Showers</div>
+                        </li>
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>Paddle Rentals</div>
+                        </li>
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>Cafe/Refreshments</div>
+                        </li>
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>Free Parking</div>
+                        </li>
+                        <li>
+                            <div class="amenity-icon">✓</div>
+                            <div>WiFi</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Nearby Clubs</h3>
+                    <div class="nearby-list">
+                        <div class="nearby-item">
+                            <div class="nearby-name">Herradura Pickleball Center</div>
+                            <div class="nearby-distance">15 miles away</div>
+                        </div>
+                        <div class="nearby-item">
+                            <div class="nearby-name">San Jose Pickleball Club</div>
+                            <div class="nearby-distance">62 miles away</div>
+                        </div>
+                        <div class="nearby-item">
+                            <div class="nearby-name">Manuel Antonio Pickleball</div>
+                            <div class="nearby-distance">43 miles away</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>© 2025 Pickleball Match. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

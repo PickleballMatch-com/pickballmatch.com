@@ -1,131 +1,55 @@
-[09:16:11.383] Running build in Washington, D.C., USA (East) – iad1
-[09:16:11.383] Build machine configuration: 2 cores, 8 GB
-[09:16:11.398] Cloning github.com/PickleballMatch-com/pickballmatch.com (Branch: feature/project-setup, Commit: b44ea58)
-[09:16:11.406] Skipping build cache, deployment was triggered without cache.
-[09:16:11.705] Cloning completed: 306.000ms
-[09:16:12.103] Running "vercel build"
-[09:16:12.592] Vercel CLI 41.7.3
-[09:16:12.913] Running "install" command: `npm install`...
-[09:16:19.093] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
-[09:16:19.187] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
-[09:16:29.581] 
-[09:16:29.582] added 581 packages, and audited 582 packages in 16s
-[09:16:29.583] 
-[09:16:29.583] 177 packages are looking for funding
-[09:16:29.583]   run `npm fund` for details
-[09:16:29.605] 
-[09:16:29.606] 4 moderate severity vulnerabilities
-[09:16:29.606] 
-[09:16:29.606] To address all issues (including breaking changes), run:
-[09:16:29.607]   npm audit fix --force
-[09:16:29.607] 
-[09:16:29.607] Run `npm audit` for details.
-[09:16:29.655] Detected Next.js version: 15.3.1
-[09:16:29.656] Running "npm run build"
-[09:16:29.773] 
-[09:16:29.774] > pickleball-match@0.1.0 build
-[09:16:29.774] > next build
-[09:16:29.774] 
-[09:16:30.388] Attention: Next.js now collects completely anonymous telemetry regarding usage.
-[09:16:30.389] This information is used to shape Next.js' roadmap and prioritize features.
-[09:16:30.390] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-[09:16:30.390] https://nextjs.org/telemetry
-[09:16:30.390] 
-[09:16:30.492]    ▲ Next.js 15.3.1
-[09:16:30.493] 
-[09:16:30.520]    Creating an optimized production build ...
-[09:16:45.012] <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (120kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
-[09:16:53.208]  ✓ Compiled successfully in 19.0s
-[09:16:53.213]    Linting and checking validity of types ...
-[09:16:59.442] 
-[09:16:59.443] Failed to compile.
-[09:16:59.443] 
-[09:16:59.443] ./src/app/page.tsx
-[09:16:59.443] 10:8  Error: 'Link' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:16:59.443] 102:66  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
-[09:16:59.443] 
-[09:16:59.443] ./src/app/profile/edit/page.tsx
-[09:16:59.443] 11:11  Error: 'user' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[09:16:59.443] 
-[09:16:59.443] ./src/components/common/Button.tsx
-[09:16:59.444] 38:45  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
-[09:16:59.444] 
-[09:16:59.444] ./src/server/api/routers/matchRequests.ts
-[09:16:59.444] 3:10  Error: 'db' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:16:59.444] 
-[09:16:59.444] ./src/server/api/routers/users.ts
-[09:16:59.444] 3:10  Error: 'db' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:16:59.444] 
-[09:16:59.444] ./src/server/trpc/index.ts
-[09:16:59.444] 4:10  Error: 'getAuth' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:16:59.444] 5:10  Error: 'currentUser' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:16:59.444] 12:10  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
-[09:16:59.444] 
-[09:16:59.444] info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
-[09:16:59.480] Error: Command "npm run build" exited with 1
-[09:16:59.748] 
-[09:17:02.855] Exiting build container
-
-
-From develop: 
-
-[09:17:25.089] Running build in Washington, D.C., USA (East) – iad1
-[09:17:25.090] Build machine configuration: 2 cores, 8 GB
-[09:17:25.165] Cloning github.com/PickleballMatch-com/pickballmatch.com (Branch: develop, Commit: 0c22b30)
-[09:17:25.191] Skipping build cache, deployment was triggered without cache.
-[09:17:26.029] Cloning completed: 852.000ms
-[09:17:27.987] Running "vercel build"
-[09:17:28.455] Vercel CLI 41.7.3
-[09:17:28.982] Installing dependencies...
-[09:17:34.366] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
-[09:17:34.454] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
-[09:17:45.399] 
-[09:17:45.400] added 581 packages in 16s
-[09:17:45.400] 
-[09:17:45.400] 177 packages are looking for funding
-[09:17:45.401]   run `npm fund` for details
-[09:17:45.649] Detected Next.js version: 15.3.1
-[09:17:45.655] Running "npm run build"
-[09:17:46.223] 
-[09:17:46.223] > pickleball-match@0.1.0 build
-[09:17:46.223] > next build
-[09:17:46.224] 
-[09:17:47.526] Attention: Next.js now collects completely anonymous telemetry regarding usage.
-[09:17:47.528] This information is used to shape Next.js' roadmap and prioritize features.
-[09:17:47.529] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-[09:17:47.529] https://nextjs.org/telemetry
-[09:17:47.530] 
-[09:17:47.832]    ▲ Next.js 15.3.1
-[09:17:47.833] 
-[09:17:47.932]    Creating an optimized production build ...
-[09:18:01.684] <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (120kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
-[09:18:09.918]  ✓ Compiled successfully in 18.0s
-[09:18:09.923]    Linting and checking validity of types ...
-[09:18:15.478] 
-[09:18:15.487] Failed to compile.
-[09:18:15.487] 
-[09:18:15.487] ./src/app/page.tsx
-[09:18:15.488] 10:8  Error: 'Link' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:18:15.488] 102:66  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
-[09:18:15.488] 
-[09:18:15.489] ./src/app/profile/edit/page.tsx
-[09:18:15.490] 11:11  Error: 'user' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[09:18:15.490] 
-[09:18:15.490] ./src/components/common/Button.tsx
-[09:18:15.491] 38:45  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
-[09:18:15.491] 
-[09:18:15.491] ./src/server/api/routers/matchRequests.ts
-[09:18:15.491] 3:10  Error: 'db' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:18:15.491] 
-[09:18:15.491] ./src/server/api/routers/users.ts
-[09:18:15.492] 3:10  Error: 'db' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:18:15.492] 
-[09:18:15.492] ./src/server/trpc/index.ts
-[09:18:15.492] 4:10  Error: 'getAuth' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:18:15.492] 5:10  Error: 'currentUser' is defined but never used.  @typescript-eslint/no-unused-vars
-[09:18:15.493] 12:10  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
-[09:18:15.493] 
-[09:18:15.493] info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
-[09:18:15.517] Error: Command "npm run build" exited with 1
-[09:18:15.819] 
-[09:18:18.915] Exiting build container
+[09:34:17.098] Running build in Washington, D.C., USA (East) – iad1
+[09:34:17.098] Build machine configuration: 2 cores, 8 GB
+[09:34:17.126] Cloning github.com/PickleballMatch-com/pickballmatch.com (Branch: develop, Commit: fcb7fa6)
+[09:34:17.465] Previous build caches not available
+[09:34:17.543] Cloning completed: 417.000ms
+[09:34:19.188] Running "vercel build"
+[09:34:19.570] Vercel CLI 41.7.3
+[09:34:19.892] Installing dependencies...
+[09:34:25.543] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[09:34:25.609] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[09:34:36.897] 
+[09:34:36.898] added 581 packages in 17s
+[09:34:36.901] 
+[09:34:36.902] 177 packages are looking for funding
+[09:34:36.905]   run `npm fund` for details
+[09:34:37.185] Detected Next.js version: 15.3.1
+[09:34:37.192] Running "npm run build"
+[09:34:37.326] 
+[09:34:37.327] > pickleball-match@0.1.0 build
+[09:34:37.327] > next build
+[09:34:37.327] 
+[09:34:38.478] Attention: Next.js now collects completely anonymous telemetry regarding usage.
+[09:34:38.479] This information is used to shape Next.js' roadmap and prioritize features.
+[09:34:38.480] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[09:34:38.480] https://nextjs.org/telemetry
+[09:34:38.481] 
+[09:34:38.679]    ▲ Next.js 15.3.1
+[09:34:38.680] 
+[09:34:38.787]    Creating an optimized production build ...
+[09:34:52.539] <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (120kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+[09:35:00.716]  ✓ Compiled successfully in 18.0s
+[09:35:00.722]    Skipping validation of types
+[09:35:00.722]    Skipping linting
+[09:35:00.977]    Collecting page data ...
+[09:35:03.423]    Generating static pages (0/11) ...
+[09:35:04.662]    Generating static pages (2/11) 
+[09:35:04.663]    Generating static pages (5/11) 
+[09:35:04.663]    Generating static pages (8/11) 
+[09:35:04.663]  ⨯ useSearchParams() should be wrapped in a suspense boundary at page "/profile/edit". Read more: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+[09:35:04.663]     at o (/vercel/path0/.next/server/chunks/141.js:4:7013)
+[09:35:04.664]     at d (/vercel/path0/.next/server/chunks/141.js:41:95569)
+[09:35:04.664]     at c (/vercel/path0/.next/server/app/profile/edit/page.js:1:1064)
+[09:35:04.664]     at nF (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:46843)
+[09:35:04.664]     at nH (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:48618)
+[09:35:04.664]     at nW (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:67762)
+[09:35:04.665]     at nz (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:65337)
+[09:35:04.665]     at nB (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:47195)
+[09:35:04.665]     at nH (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:48664)
+[09:35:04.665]     at nH (/vercel/path0/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:76:64688)
+[09:35:04.665] Error occurred prerendering page "/profile/edit". Read more: https://nextjs.org/docs/messages/prerender-error
+[09:35:04.665] Export encountered an error on /profile/edit/page: /profile/edit, exiting the build.
+[09:35:04.668]  ⨯ Next.js build worker exited with code: 1 and signal: null
+[09:35:04.701] Error: Command "npm run build" exited with 1
+[09:35:04.979] 
+[09:35:08.023] Exiting build container

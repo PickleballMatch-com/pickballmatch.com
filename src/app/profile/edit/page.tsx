@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/trpc/client';
 import { useProfileSync } from '@/lib/hooks/useProfileSync';
 import ProfileCompletionIndicator from '@/components/profile/ProfileCompletionIndicator';
 
-export default function EditProfilePage() {
+// Create a component that uses searchParams
+function EditProfileContent() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -415,5 +416,14 @@ export default function EditProfilePage() {
         </div>
       </form>
     </div>
+  );
+}
+
+// Default export with Suspense boundary
+export default function EditProfilePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading profile editor...</div>}>
+      <EditProfileContent />
+    </Suspense>
   );
 }

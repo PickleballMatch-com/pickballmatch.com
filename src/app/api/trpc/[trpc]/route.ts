@@ -72,6 +72,15 @@ const handler = async (req: Request) => {
       
       debugLog('TRPC Handler', 'Calling fetchRequestHandler');
       
+      // Log the request body for debugging
+      const reqClone = req.clone();
+      const bodyText = await reqClone.text();
+      debugLog('TRPC Handler', 'Request body', { 
+        bodyText: bodyText.substring(0, 500) + (bodyText.length > 500 ? '...' : ''),
+        contentType: req.headers.get('content-type'),
+        method: req.method
+      });
+      
       const rawResponse = await fetchRequestHandler({
         endpoint: '/api/trpc',
         req,
@@ -97,7 +106,7 @@ const handler = async (req: Request) => {
             errorCause: error.cause,
             errorName: error.name,
             errorStack: error.stack,
-            input,
+            input: JSON.stringify(input).substring(0, 1000),
             type,
           });
         },

@@ -20,10 +20,36 @@ export function useProfileSync() {
     // Even if sync failed, we still want to try to get the profile
     // as it might exist from previous sessions
     onSuccess: (data) => {
+      console.log("Profile data retrieved:", data);
+
       if (syncFailed && data?.user) {
         // If we previously failed to sync but we have user data,
         // that means we can use the existing profile
         console.log("Found existing profile, no need to sync");
+      }
+      
+      // Additional check for empty arrays
+      if (data?.playerProfile) {
+        if (!Array.isArray(data.playerProfile.strengths)) {
+          console.log("Fixing missing strengths array");
+          data.playerProfile.strengths = [];
+        }
+        if (!Array.isArray(data.playerProfile.weaknesses)) {
+          console.log("Fixing missing weaknesses array");
+          data.playerProfile.weaknesses = [];
+        }
+        if (!Array.isArray(data.playerProfile.gameplayVideos)) {
+          console.log("Fixing missing gameplayVideos array");
+          data.playerProfile.gameplayVideos = [];
+        }
+        if (!Array.isArray(data.playerProfile.equipmentIds)) {
+          console.log("Fixing missing equipmentIds array");
+          data.playerProfile.equipmentIds = [];
+        }
+        if (!Array.isArray(data.playerProfile.matchTypes)) {
+          console.log("Fixing missing matchTypes array");
+          data.playerProfile.matchTypes = [];
+        }
       }
     }
   });

@@ -132,21 +132,28 @@ function EditProfileContent() {
       return;
     }
     
+    // Convert empty strings to null for API validation
+    const processValue = (value: any) => {
+      if (value === '') return null;
+      if (value === undefined) return null;
+      return value;
+    };
+    
     // Prepare data in the exact shape expected by the API
     const profileData = {
       skillLevel: formData.skillLevel,
-      preferredPlayStyle: formData.preferredPlayStyle || null,
+      preferredPlayStyle: processValue(formData.preferredPlayStyle),
       yearsPlaying: typeof formData.yearsPlaying === 'number' ? formData.yearsPlaying : null,
-      preferredLocation: formData.preferredLocation || null,
-      bio: formData.bio || null,
+      preferredLocation: processValue(formData.preferredLocation),
+      bio: processValue(formData.bio),
       maxTravelDistance: typeof formData.maxTravelDistance === 'number' ? formData.maxTravelDistance : null,
       isAvailableToPlay: typeof formData.isAvailableToPlay === 'boolean' ? formData.isAvailableToPlay : true,
       strengths: Array.isArray(formData.strengths) ? formData.strengths : [],
       weaknesses: Array.isArray(formData.weaknesses) ? formData.weaknesses : [],
-      playingFrequency: formData.playingFrequency || null,
+      playingFrequency: processValue(formData.playingFrequency),
     };
     
-    console.log("Submitting full profile data:", profileData);
+    console.log("Submitting full profile data:", JSON.stringify(profileData));
     
     // Add debug info to the console
     console.log("Current environment:", {
@@ -155,27 +162,57 @@ function EditProfileContent() {
       protocol: window.location.protocol,
     });
     
-    try {
-      updateProfile.mutate(profileData, {
-        onError: (error) => {
-          console.error("Profile update error:", error);
-          
-          // Add more detailed error info
-          if (error.data?.zodError) {
-            console.error("Validation errors:", error.data.zodError);
-            const formErrors = Object.entries(error.data.zodError.fieldErrors || {})
-              .map(([field, errors]) => `${field}: ${errors?.join(', ')}`)
-              .join('\n');
-              
-            alert(`Validation errors:\n${formErrors || error.message}`);
-          } else {
-            alert(`Failed to update profile: ${error.message}`);
-          }
-        }
+    // Try with direct AJAX request as a fallback if tRPC is failing
+    if (!window.location.hostname.includes('localhost')) {
+      console.log("Using direct fetch approach as fallback");
+      
+      fetch(`${window.location.origin}/api/trpc/profiles.updatePlayerProfile?batch=1`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([{ json: profileData }]),
+      })
+      .then(response => {
+        console.log("Profile update response status:", response.status);
+        return response.json();
+      })
+      .then(data => {
+        console.log("Profile update success:", data);
+        router.push('/profile');
+      })
+      .catch(error => {
+        console.error("Profile update error with fetch:", error);
+        alert(`Failed to update profile: ${error.message || 'Unknown error'}`);
       });
-    } catch (error) {
-      console.error("Error in mutation:", error);
-      alert("An error occurred while updating your profile");
+    } else {
+      // Use tRPC approach locally
+      try {
+        updateProfile.mutate(profileData, {
+          onSuccess: () => {
+            console.log("Profile updated successfully!");
+            router.push('/profile');
+          },
+          onError: (error) => {
+            console.error("Profile update error:", error);
+            
+            // Add more detailed error info
+            if (error.data?.zodError) {
+              console.error("Validation errors:", error.data.zodError);
+              const formErrors = Object.entries(error.data.zodError.fieldErrors || {})
+                .map(([field, errors]) => `${field}: ${errors?.join(', ')}`)
+                .join('\n');
+                
+              alert(`Validation errors:\n${formErrors || error.message}`);
+            } else {
+              alert(`Failed to update profile: ${error.message}`);
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Error in mutation:", error);
+        alert("An error occurred while updating your profile");
+      }
     }
   };
   

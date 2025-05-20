@@ -79,15 +79,45 @@ export function calculateProfileCompletionPercentage(user: User | null | undefin
       const value = playerProfile[req.field as keyof typeof playerProfile];
       let isComplete = false;
       
-      // Special handling for array fields
+      // Special handling for array fields - more robust handling for different serialization formats
       if (Array.isArray(value)) {
         if (value.length > 0) {
           isComplete = true;
           console.log(`Player profile array field ${req.field} is complete with ${value.length} items: +${req.weight} points`);
         } else {
-          console.log(`Player profile array field ${req.field} is empty`);
+          console.log(`Player profile array field ${req.field} is empty array`);
         }
       } 
+      // Try to handle array fields that might be serialized as objects or strings
+      else if (req.field === 'strengths' || req.field === 'weaknesses' || 
+               req.field === 'gameplayVideos' || req.field === 'equipmentIds' || 
+               req.field === 'matchTypes') {
+        // If it's a string but might be a JSON array
+        if (typeof value === 'string' && value.trim() !== '') {
+          try {
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              isComplete = true;
+              console.log(`Player profile string-array field ${req.field} parsed as JSON with ${parsed.length} items: +${req.weight} points`);
+            }
+          } catch (e) {
+            // Not valid JSON, but still a non-empty string, so count it
+            if (value !== '[]') {
+              isComplete = true;
+              console.log(`Player profile string-array field ${req.field} is non-empty string: +${req.weight} points`);
+            }
+          }
+        }
+        // Might be an object with array-like properties
+        else if (value && typeof value === 'object' && !Array.isArray(value)) {
+          // Check if it has numeric keys and length property, like an array-like object
+          const keys = Object.keys(value).filter(k => !isNaN(Number(k)));
+          if (keys.length > 0) {
+            isComplete = true;
+            console.log(`Player profile array-like object field ${req.field} has ${keys.length} items: +${req.weight} points`);
+          }
+        }
+      }
       // Special handling for boolean fields
       else if (typeof value === 'boolean') {
         isComplete = true;

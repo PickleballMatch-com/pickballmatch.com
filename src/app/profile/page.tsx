@@ -154,30 +154,101 @@ export default function ProfilePage() {
         
         <div className="bg-white shadow rounded-lg p-6">
           <h3 className="text-xl font-bold mb-4">Strengths & Weaknesses</h3>
-          {profileData?.playerProfile && 
-            (profileData.playerProfile.strengths?.length || profileData.playerProfile.weaknesses?.length) ? (
+          {profileData?.playerProfile ? (
               <div>
-                {profileData.playerProfile.strengths?.length ? (
-                  <div className="mb-4">
-                    <p className="font-medium mb-2">Strengths:</p>
-                    <ul className="list-disc list-inside">
-                      {profileData.playerProfile.strengths.map((strength, index) => (
-                        <li key={index} className="text-gray-700">{strength}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
+                {/* Handle strengths with more robust checks */}
+                {(() => {
+                  // Helper function to handle possibly non-array strengths
+                  const getStrengthsArray = () => {
+                    const strengths = profileData.playerProfile.strengths;
+                    if (Array.isArray(strengths) && strengths.length > 0) {
+                      return strengths;
+                    } 
+                    // Try to handle strengths if it's a string representation of an array
+                    if (typeof strengths === 'string' && strengths.trim() !== '' && strengths !== '[]') {
+                      try {
+                        const parsed = JSON.parse(strengths);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                          return parsed;
+                        }
+                        return [strengths]; // If it's a string but not an array
+                      } catch (e) {
+                        // Not valid JSON, but still a string
+                        return [strengths];
+                      }
+                    }
+                    // Handle object with array-like properties
+                    if (strengths && typeof strengths === 'object') {
+                      const keys = Object.keys(strengths).filter(k => !isNaN(Number(k)));
+                      if (keys.length > 0) {
+                        return keys.map(k => strengths[k]);
+                      }
+                    }
+                    return null;
+                  };
+                  
+                  const strengthsArray = getStrengthsArray();
+                  if (strengthsArray) {
+                    return (
+                      <div className="mb-4">
+                        <p className="font-medium mb-2">Strengths:</p>
+                        <ul className="list-disc list-inside">
+                          {strengthsArray.map((strength, index) => (
+                            <li key={index} className="text-gray-700">{strength}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
                 
-                {profileData.playerProfile.weaknesses?.length ? (
-                  <div>
-                    <p className="font-medium mb-2">Areas to Improve:</p>
-                    <ul className="list-disc list-inside">
-                      {profileData.playerProfile.weaknesses.map((weakness, index) => (
-                        <li key={index} className="text-gray-700">{weakness}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
+                {/* Handle weaknesses with more robust checks */}
+                {(() => {
+                  // Helper function to handle possibly non-array weaknesses
+                  const getWeaknessesArray = () => {
+                    const weaknesses = profileData.playerProfile.weaknesses;
+                    if (Array.isArray(weaknesses) && weaknesses.length > 0) {
+                      return weaknesses;
+                    } 
+                    // Try to handle weaknesses if it's a string representation of an array
+                    if (typeof weaknesses === 'string' && weaknesses.trim() !== '' && weaknesses !== '[]') {
+                      try {
+                        const parsed = JSON.parse(weaknesses);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                          return parsed;
+                        }
+                        return [weaknesses]; // If it's a string but not an array
+                      } catch (e) {
+                        // Not valid JSON, but still a string
+                        return [weaknesses];
+                      }
+                    }
+                    // Handle object with array-like properties
+                    if (weaknesses && typeof weaknesses === 'object') {
+                      const keys = Object.keys(weaknesses).filter(k => !isNaN(Number(k)));
+                      if (keys.length > 0) {
+                        return keys.map(k => weaknesses[k]);
+                      }
+                    }
+                    return null;
+                  };
+                  
+                  const weaknessesArray = getWeaknessesArray();
+                  if (weaknessesArray) {
+                    return (
+                      <div>
+                        <p className="font-medium mb-2">Areas to Improve:</p>
+                        <ul className="list-disc list-inside">
+                          {weaknessesArray.map((weakness, index) => (
+                            <li key={index} className="text-gray-700">{weakness}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             ) : (
               <p className="text-gray-500 italic">No strengths or weaknesses added</p>

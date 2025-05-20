@@ -44,16 +44,19 @@ const handler = async (req: Request) => {
     const auth = getAuth(req);
     const user = await currentUser();
 
-    debugLog('TRPC Handler', `Processing request for user: ${auth.userId}`, { 
+    debugLog('TRPC Handler', `Processing request for user: ${auth?.userId || 'Unknown'}`, { 
       userObj: user ? {
         id: user.id,
         email: user.emailAddresses?.[0]?.emailAddress,
         firstName: user.firstName,
         lastName: user.lastName,
-      } : null
+      } : null,
+      authAvailable: !!auth,
+      currentUserAvailable: !!user,
+      environment: process.env.VERCEL ? 'Vercel' : 'Local'
     });
 
-    console.log("TRPC Request Auth:", { userId: auth.userId });
+    console.log("TRPC Request Auth:", { userId: auth?.userId || 'Unknown', hasAuth: !!auth });
 
     try {
       // Try connecting to the database before proceeding
@@ -87,11 +90,15 @@ const handler = async (req: Request) => {
         router: appRouter,
         createContext: async () => {
           const contextObj = {
-            auth,
+            auth: auth || { userId: null }, // Prevent null reference
             user,
             db,
           };
-          debugLog('TRPC Context', 'Created context', { hasAuth: !!auth, hasUser: !!user });
+          debugLog('TRPC Context', 'Created context', { 
+            hasAuth: !!auth, 
+            hasUser: !!user,
+            userId: auth?.userId || null
+          });
           return contextObj;
         },
         onError: ({ error, path, input, type, ctx }) => {

@@ -10,13 +10,20 @@ export function useProfileSync() {
   const { user, isLoaded, isSignedIn } = useUser();
 
   // Get the current profile data from our database
+  console.log("UseProfileSync hook - Initial render", { 
+    isLoaded, 
+    isSignedIn,
+    userId: user?.id
+  });
+
   const {
     data: profileData,
+    error: profileError,
     isLoading: isProfileLoading,
     refetch
   } = api.profiles.getCurrent.useQuery(undefined, {
     enabled: !!isSignedIn,
-    retry: 1, // Limit retries to reduce unnecessary requests
+    retry: 3, // Increase retries for debugging
     // Even if sync failed, we still want to try to get the profile
     // as it might exist from previous sessions
     onSuccess: (data) => {
@@ -257,11 +264,22 @@ export function useProfileSync() {
     }
   }, [isLoaded, isSignedIn, user, profileData, syncProfile, syncFailed]);
 
+  // Log any error for debugging
+  useEffect(() => {
+    if (profileError) {
+      console.error("ProfileSync Error:", {
+        message: profileError.message,
+        data: profileError.data,
+        shape: profileError.shape
+      });
+    }
+  }, [profileError]);
+
   return {
     profileData,
     isLoading: isProfileLoading && !syncFailed, // Don't show loading if sync failed
-    isError: syncProfile.isError || syncFailed,
-    error: errorDetails || syncProfile.error?.message,
+    isError: syncProfile.isError || syncFailed || !!profileError,
+    error: errorDetails || syncProfile.error?.message || profileError?.message,
     refetch
   };
 }

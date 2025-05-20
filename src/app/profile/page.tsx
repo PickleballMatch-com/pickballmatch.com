@@ -13,7 +13,14 @@ export default function ProfilePage() {
   const router = useRouter();
 
   // Use our custom hook to manage profile synchronization
-  const { profileData, isLoading } = useProfileSync();
+  const { profileData, isLoading, isError, error } = useProfileSync();
+  
+  // Log any errors
+  useEffect(() => {
+    if (isError) {
+      console.error("Profile page error:", error);
+    }
+  }, [isError, error]);
   
   // Debug logging
   useEffect(() => {
@@ -171,7 +178,16 @@ export default function ProfilePage() {
                 {(() => {
                   // Helper function to handle possibly non-array strengths
                   const getStrengthsArray = () => {
-                    const strengths = profileData.playerProfile.strengths;
+                    // Extra safety checks to prevent null/undefined access
+                    if (!unwrappedProfileData || !unwrappedProfileData.playerProfile) {
+                      return null;
+                    }
+                    
+                    const strengths = unwrappedProfileData.playerProfile.strengths;
+                    if (!strengths) {
+                      return null;
+                    }
+                    
                     if (Array.isArray(strengths) && strengths.length > 0) {
                       return strengths;
                     } 
@@ -218,7 +234,16 @@ export default function ProfilePage() {
                 {(() => {
                   // Helper function to handle possibly non-array weaknesses
                   const getWeaknessesArray = () => {
-                    const weaknesses = profileData.playerProfile.weaknesses;
+                    // Extra safety checks to prevent null/undefined access
+                    if (!unwrappedProfileData || !unwrappedProfileData.playerProfile) {
+                      return null;
+                    }
+                    
+                    const weaknesses = unwrappedProfileData.playerProfile.weaknesses;
+                    if (!weaknesses) {
+                      return null;
+                    }
+                    
                     if (Array.isArray(weaknesses) && weaknesses.length > 0) {
                       return weaknesses;
                     } 

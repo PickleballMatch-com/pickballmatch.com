@@ -9,7 +9,14 @@ import { debugLog } from '../../debug-log';
 export const profilesRouter = router({
   // Get the current user's profile
   getCurrent: protectedProcedure.query(async ({ ctx }) => {
-    const clerkId = ctx.auth.userId;
+    const clerkId = ctx.auth?.userId;
+    if (!clerkId) {
+      debugLog('profiles.getCurrent', 'No user ID found in auth context');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User not authenticated'
+      });
+    }
     debugLog('profiles.getCurrent', `Getting profile for user: ${clerkId}`);
     
     try {
@@ -96,13 +103,15 @@ export const profilesRouter = router({
           return { success: false, action: 'failed', error: 'No auth context' };
         }
 
-        const clerkId = ctx.auth.userId;
-        debugLog('profiles.syncFromClerk', `Syncing profile for user ${clerkId}`, { input });
-
+        const clerkId = ctx.auth?.userId;
         if (!clerkId) {
-          debugLog('profiles.syncFromClerk', 'No clerk ID found in auth context');
+          debugLog('profiles.syncFromClerk', 'No user ID found in auth context');
           return { success: false, action: 'failed', error: 'No user ID' };
         }
+        
+        debugLog('profiles.syncFromClerk', `Syncing profile for user ${clerkId}`, { input });
+
+        // We already checked clerkId above, this was a duplicate check
 
         // Extract user info from clerk user object if available
         let firstName = input.firstName || '';
@@ -203,7 +212,7 @@ export const profilesRouter = router({
           });
         }
         
-        const clerkId = ctx.auth.userId;
+        const clerkId = ctx.auth?.userId;
         if (!clerkId) {
           debugLog('profiles.updatePlayerProfile', "No userId in auth context");
           throw new TRPCError({

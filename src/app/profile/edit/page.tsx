@@ -56,45 +56,56 @@ function EditProfileContent() {
   useEffect(() => {
     console.log("Setting form data from profile data:", profileData);
     
-    if (profileData?.playerProfile) {
+    // CRITICAL FIX: Check if data is nested under json property
+    const unwrappedData = profileData?.json ? profileData.json : profileData;
+    console.log("Edit page - unwrapped profile data:", {
+      original: profileData,
+      unwrapped: unwrappedData,
+      hasUserBeforeUnwrap: !!profileData?.user,
+      hasPlayerProfileBeforeUnwrap: !!profileData?.playerProfile,
+      hasUserAfterUnwrap: !!unwrappedData?.user,
+      hasPlayerProfileAfterUnwrap: !!unwrappedData?.playerProfile
+    });
+    
+    if (unwrappedData?.playerProfile) {
       // Log the type information for debugging
       console.log("Profile data types:", {
-        skillLevel: typeof profileData.playerProfile.skillLevel,
-        preferredPlayStyle: typeof profileData.playerProfile.preferredPlayStyle,
-        yearsPlaying: typeof profileData.playerProfile.yearsPlaying,
-        strengthsIsArray: Array.isArray(profileData.playerProfile.strengths),
-        weaknessesIsArray: Array.isArray(profileData.playerProfile.weaknesses),
-        updatedAtType: typeof profileData.playerProfile.updatedAt,
+        skillLevel: typeof unwrappedData.playerProfile.skillLevel,
+        preferredPlayStyle: typeof unwrappedData.playerProfile.preferredPlayStyle,
+        yearsPlaying: typeof unwrappedData.playerProfile.yearsPlaying,
+        strengthsIsArray: Array.isArray(unwrappedData.playerProfile.strengths),
+        weaknessesIsArray: Array.isArray(unwrappedData.playerProfile.weaknesses),
+        updatedAtType: typeof unwrappedData.playerProfile.updatedAt,
       });
       
       // Force array types in case they're not properly deserialized
-      const strengths = Array.isArray(profileData.playerProfile.strengths) 
-        ? profileData.playerProfile.strengths 
-        : (typeof profileData.playerProfile.strengths === 'string' 
-            ? [profileData.playerProfile.strengths]
+      const strengths = Array.isArray(unwrappedData.playerProfile.strengths) 
+        ? unwrappedData.playerProfile.strengths 
+        : (typeof unwrappedData.playerProfile.strengths === 'string' 
+            ? [unwrappedData.playerProfile.strengths]
             : []);
             
-      const weaknesses = Array.isArray(profileData.playerProfile.weaknesses) 
-        ? profileData.playerProfile.weaknesses 
-        : (typeof profileData.playerProfile.weaknesses === 'string'
-            ? [profileData.playerProfile.weaknesses]
+      const weaknesses = Array.isArray(unwrappedData.playerProfile.weaknesses) 
+        ? unwrappedData.playerProfile.weaknesses 
+        : (typeof unwrappedData.playerProfile.weaknesses === 'string'
+            ? [unwrappedData.playerProfile.weaknesses]
             : []);
       
       // Handle null or undefined values
       const normalizedData = {
-        skillLevel: profileData.playerProfile.skillLevel || '',
-        preferredPlayStyle: profileData.playerProfile.preferredPlayStyle || '',
-        yearsPlaying: typeof profileData.playerProfile.yearsPlaying === 'number' 
-          ? profileData.playerProfile.yearsPlaying 
+        skillLevel: unwrappedData.playerProfile.skillLevel || '',
+        preferredPlayStyle: unwrappedData.playerProfile.preferredPlayStyle || '',
+        yearsPlaying: typeof unwrappedData.playerProfile.yearsPlaying === 'number' 
+          ? unwrappedData.playerProfile.yearsPlaying 
           : 0,
-        preferredLocation: profileData.playerProfile.preferredLocation || '',
-        bio: profileData.playerProfile.bio || '',
-        playingFrequency: profileData.playerProfile.playingFrequency || '',
-        maxTravelDistance: typeof profileData.playerProfile.maxTravelDistance === 'number'
-          ? profileData.playerProfile.maxTravelDistance
+        preferredLocation: unwrappedData.playerProfile.preferredLocation || '',
+        bio: unwrappedData.playerProfile.bio || '',
+        playingFrequency: unwrappedData.playerProfile.playingFrequency || '',
+        maxTravelDistance: typeof unwrappedData.playerProfile.maxTravelDistance === 'number'
+          ? unwrappedData.playerProfile.maxTravelDistance
           : 0,
-        isAvailableToPlay: typeof profileData.playerProfile.isAvailableToPlay === 'boolean'
-          ? profileData.playerProfile.isAvailableToPlay
+        isAvailableToPlay: typeof unwrappedData.playerProfile.isAvailableToPlay === 'boolean'
+          ? unwrappedData.playerProfile.isAvailableToPlay
           : true,
         strengths: strengths,
         weaknesses: weaknesses,
@@ -235,12 +246,30 @@ function EditProfileContent() {
     if (isVercel) {
       console.log("Using direct fetch approach on Vercel");
       
+      // CRITICAL FIX: Modify the request for Vercel's specific format
+      const requestBody = JSON.stringify([{ 
+        json: {
+          skillLevel: profileData.skillLevel,
+          preferredPlayStyle: profileData.preferredPlayStyle,
+          yearsPlaying: profileData.yearsPlaying,
+          preferredLocation: profileData.preferredLocation,
+          bio: profileData.bio,
+          maxTravelDistance: profileData.maxTravelDistance,
+          isAvailableToPlay: profileData.isAvailableToPlay,
+          strengths: profileData.strengths,
+          weaknesses: profileData.weaknesses,
+          playingFrequency: profileData.playingFrequency
+        }
+      }]);
+      
+      console.log("Vercel direct fetch request body:", requestBody);
+      
       fetch(`${window.location.origin}/api/trpc/profiles.updatePlayerProfile?batch=1`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify([{ json: profileData }]),
+        body: requestBody,
         credentials: 'include', // Include cookies for auth
       })
       .then(response => {

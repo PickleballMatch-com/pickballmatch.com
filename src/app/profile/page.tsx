@@ -49,8 +49,19 @@ export default function ProfilePage() {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
+  // CRITICAL FIX: Check if data is nested under json property
+  const unwrappedProfileData = profileData?.json ? profileData.json : profileData;
+  console.log("Profile page - unwrapped profile data:", {
+    original: profileData,
+    unwrapped: unwrappedProfileData,
+    hasUserBeforeUnwrap: profileData ? !!profileData.user : false,
+    hasPlayerProfileBeforeUnwrap: profileData ? !!profileData.playerProfile : false,
+    hasUserAfterUnwrap: unwrappedProfileData ? !!unwrappedProfileData.user : false,
+    hasPlayerProfileAfterUnwrap: unwrappedProfileData ? !!unwrappedProfileData.playerProfile : false
+  });
+  
   // We'll show the profile even if we have errors, as long as we have some user data
-  const showLoading = isLoading && !profileData;
+  const showLoading = isLoading && !unwrappedProfileData;
   if (showLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading profile data...</div>;
   }
@@ -61,8 +72,8 @@ export default function ProfilePage() {
       
       {/* Profile Completion Prompt */}
       <ProfileCompletionPrompt
-        user={profileData?.user}
-        playerProfile={profileData?.playerProfile}
+        user={unwrappedProfileData?.user}
+        playerProfile={unwrappedProfileData?.playerProfile}
         className="mb-6"
         variant="card"
       />
@@ -90,26 +101,26 @@ export default function ProfilePage() {
             
             {/* Profile Completion Indicator */}
             <ProfileCompletionIndicator
-              user={profileData?.user}
-              playerProfile={profileData?.playerProfile}
+              user={unwrappedProfileData?.user}
+              playerProfile={unwrappedProfileData?.playerProfile}
               showMissingFields={false}
               className="mb-4"
             />
             
             {/* Display custom profile data from our database */}
-            {profileData?.playerProfile ? (
+            {unwrappedProfileData?.playerProfile ? (
               <div className="mt-4">
-                <p className="font-medium">Skill Level: <span className="font-normal">{profileData.playerProfile.skillLevel}</span></p>
-                {profileData.playerProfile.yearsPlaying && (
-                  <p className="font-medium">Experience: <span className="font-normal">{profileData.playerProfile.yearsPlaying} years</span></p>
+                <p className="font-medium">Skill Level: <span className="font-normal">{unwrappedProfileData.playerProfile.skillLevel}</span></p>
+                {unwrappedProfileData.playerProfile.yearsPlaying && (
+                  <p className="font-medium">Experience: <span className="font-normal">{unwrappedProfileData.playerProfile.yearsPlaying} years</span></p>
                 )}
-                {profileData.playerProfile.preferredPlayStyle && (
-                  <p className="font-medium">Preferred Style: <span className="font-normal">{profileData.playerProfile.preferredPlayStyle}</span></p>
+                {unwrappedProfileData.playerProfile.preferredPlayStyle && (
+                  <p className="font-medium">Preferred Style: <span className="font-normal">{unwrappedProfileData.playerProfile.preferredPlayStyle}</span></p>
                 )}
-                {profileData.playerProfile.bio && (
+                {unwrappedProfileData.playerProfile.bio && (
                   <div className="mt-4">
                     <p className="font-medium">Bio:</p>
-                    <p className="text-gray-700">{profileData.playerProfile.bio}</p>
+                    <p className="text-gray-700">{unwrappedProfileData.playerProfile.bio}</p>
                   </div>
                 )}
               </div>
@@ -135,16 +146,16 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white shadow rounded-lg p-6">
           <h3 className="text-xl font-bold mb-4">Playing Preferences</h3>
-          {profileData?.playerProfile ? (
+          {unwrappedProfileData?.playerProfile ? (
             <div>
-              {profileData.playerProfile.playingFrequency && (
-                <p className="font-medium">Frequency: <span className="font-normal">{profileData.playerProfile.playingFrequency}</span></p>
+              {unwrappedProfileData.playerProfile.playingFrequency && (
+                <p className="font-medium">Frequency: <span className="font-normal">{unwrappedProfileData.playerProfile.playingFrequency}</span></p>
               )}
-              {profileData.playerProfile.maxTravelDistance && (
-                <p className="font-medium">Max Travel Distance: <span className="font-normal">{profileData.playerProfile.maxTravelDistance} miles</span></p>
+              {unwrappedProfileData.playerProfile.maxTravelDistance && (
+                <p className="font-medium">Max Travel Distance: <span className="font-normal">{unwrappedProfileData.playerProfile.maxTravelDistance} miles</span></p>
               )}
-              {profileData.playerProfile.isAvailableToPlay !== undefined && (
-                <p className="font-medium">Available to Play: <span className="font-normal">{profileData.playerProfile.isAvailableToPlay ? 'Yes' : 'No'}</span></p>
+              {unwrappedProfileData.playerProfile.isAvailableToPlay !== undefined && (
+                <p className="font-medium">Available to Play: <span className="font-normal">{unwrappedProfileData.playerProfile.isAvailableToPlay ? 'Yes' : 'No'}</span></p>
               )}
             </div>
           ) : (
@@ -154,7 +165,7 @@ export default function ProfilePage() {
         
         <div className="bg-white shadow rounded-lg p-6">
           <h3 className="text-xl font-bold mb-4">Strengths & Weaknesses</h3>
-          {profileData?.playerProfile ? (
+          {unwrappedProfileData?.playerProfile ? (
               <div>
                 {/* Handle strengths with more robust checks */}
                 {(() => {

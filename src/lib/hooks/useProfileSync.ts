@@ -20,6 +20,20 @@ export function useProfileSync() {
     // Even if sync failed, we still want to try to get the profile
     // as it might exist from previous sessions
     onSuccess: (data) => {
+      // CRITICAL: Add debugging to see EXACT structure of the data before transformations
+      console.log("CRITICAL DEBUG - Raw data directly from API:", {
+        original: data,
+        hasUserProperty: !!data?.user,
+        hasPlayerProfileProperty: !!data?.playerProfile,
+        // Sometimes the data can be nested under 'json'
+        nestedData: data?.json, 
+        hasNestedUser: !!data?.json?.user,
+        hasNestedPlayerProfile: !!data?.json?.playerProfile,
+        // Super detailed inspection
+        typeofData: typeof data,
+        keysAtRoot: data ? Object.keys(data) : [],
+        stringified: JSON.stringify(data).substring(0, 200) + "..."
+      });
       console.log("Profile data retrieved:", data);
       console.log("Raw profile data types:", {
         userObject: data?.user ? {
@@ -139,6 +153,32 @@ export function useProfileSync() {
         }
       }
       
+      // !! CRITICAL FIX !!
+      // Check if data is nested under 'json' property (which happens on Vercel but not localhost)
+      if (!data.user && !data.playerProfile && data.json) {
+        console.log("CRITICAL FIX APPLIED - Detected nested data structure. Unwrapping data from 'json' property", {
+          before: {
+            hasUserAtRoot: !!data.user,
+            hasPlayerProfileAtRoot: !!data.playerProfile,
+          },
+          json: {
+            hasUserInJson: !!data.json.user,
+            hasPlayerProfileInJson: !!data.json.playerProfile
+          }
+        });
+        
+        // Unwrap the data - this is the critical fix!
+        data = data.json;
+        
+        // Now apply our fixes to the unwrapped data
+        fixedData = { ...data };
+        
+        console.log("After unwrapping:", {
+          hasUserAtRoot: !!data.user,
+          hasPlayerProfileAtRoot: !!data.playerProfile,
+        });
+      }
+      
       // Update the reference to the fixed data
       Object.assign(data, fixedData);
       
@@ -156,7 +196,13 @@ export function useProfileSync() {
           strengthsType: typeof data.playerProfile.strengths,
           isStrengthsArray: Array.isArray(data.playerProfile.strengths),
           strengthsLength: Array.isArray(data.playerProfile.strengths) ? data.playerProfile.strengths.length : 'not an array'
-        } : null
+        } : null,
+        // Super detailed inspection
+        finalDataStructure: {
+          keysAtRoot: Object.keys(data),
+          userIsDefined: !!data.user,
+          playerProfileIsDefined: !!data.playerProfile
+        }
       });
     }
   });

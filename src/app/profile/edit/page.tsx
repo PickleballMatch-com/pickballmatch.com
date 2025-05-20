@@ -179,9 +179,17 @@ function EditProfileContent() {
       {/* Profile Completion Indicator */}
       <div className="bg-white shadow rounded-lg p-6 mb-6">
         <ProfileCompletionIndicator
-          user={profileData?.user}
+          user={profileData?.user ? {
+            ...profileData.user,
+            // Convert string dates back to Date objects for the indicator
+            createdAt: new Date(profileData.user.createdAt),
+            updatedAt: new Date(profileData.user.updatedAt),
+            lastActive: profileData.user.lastActive ? new Date(profileData.user.lastActive) : null,
+          } : null}
           playerProfile={profileData?.playerProfile ? {
             ...profileData.playerProfile,
+            // Convert string date back to Date object
+            updatedAt: new Date(profileData.playerProfile.updatedAt),
             // Override with form data, converting types as needed
             skillLevel: formData.skillLevel || profileData.playerProfile.skillLevel,
             preferredPlayStyle: formData.preferredPlayStyle,

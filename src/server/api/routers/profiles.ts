@@ -4,28 +4,58 @@ import { router } from '../../trpc';
 import { protectedProcedure, publicProcedure } from '../../trpc';
 import { TRPCError } from '@trpc/server';
 import { users, playerProfiles } from '../../db/schema';
+import { debugLog } from '../../debug-log';
 
 export const profilesRouter = router({
   // Get the current user's profile
   getCurrent: protectedProcedure.query(async ({ ctx }) => {
     const clerkId = ctx.auth.userId;
+    debugLog('profiles.getCurrent', `Getting profile for user: ${clerkId}`);
     
-    // Get user from database
-    const user = await ctx.db.query.users.findFirst({
-      where: eq(users.id, clerkId),
-    });
-    
-    // Get player profile if it exists
-    const playerProfile = user
-      ? await ctx.db.query.playerProfiles.findFirst({
-          where: eq(playerProfiles.userId, user.id),
-        })
-      : null;
-    
-    return {
-      user,
-      playerProfile,
-    };
+    try {
+      // Get user from database
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.id, clerkId),
+      });
+      
+      debugLog('profiles.getCurrent', 'User data from DB:', user);
+      
+      // Get player profile if it exists
+      const playerProfile = user
+        ? await ctx.db.query.playerProfiles.findFirst({
+            where: eq(playerProfiles.userId, user.id),
+          })
+        : null;
+      
+      debugLog('profiles.getCurrent', 'Player profile from DB:', playerProfile);
+      
+      // Prepare the response in a safe format
+      const response = {
+        user: user ? {
+          ...user,
+          createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : user.createdAt,
+          updatedAt: user.updatedAt instanceof Date ? user.updatedAt.toISOString() : user.updatedAt,
+          lastActive: user.lastActive instanceof Date ? user.lastActive.toISOString() : user.lastActive,
+        } : null,
+        playerProfile: playerProfile ? {
+          ...playerProfile,
+          // Ensure dates are serialized as ISO strings
+          updatedAt: playerProfile.updatedAt instanceof Date ? playerProfile.updatedAt.toISOString() : playerProfile.updatedAt,
+          // Ensure arrays are properly handled
+          strengths: Array.isArray(playerProfile.strengths) ? playerProfile.strengths : [],
+          weaknesses: Array.isArray(playerProfile.weaknesses) ? playerProfile.weaknesses : [],
+          gameplayVideos: Array.isArray(playerProfile.gameplayVideos) ? playerProfile.gameplayVideos : [],
+          equipmentIds: Array.isArray(playerProfile.equipmentIds) ? playerProfile.equipmentIds : [],
+          matchTypes: Array.isArray(playerProfile.matchTypes) ? playerProfile.matchTypes : [],
+        } : null,
+      };
+      
+      debugLog('profiles.getCurrent', 'Response data to client:', response);
+      return response;
+    } catch (error) {
+      debugLog('profiles.getCurrent', 'Error getting profile:', error);
+      throw error;
+    }
   }),
   
   // Get a user's profile by ID
@@ -62,15 +92,15 @@ export const profilesRouter = router({
       try {
         // Ensure auth context exists and has userId
         if (!ctx.auth) {
-          console.error("No auth context available");
+          debugLog('profiles.syncFromClerk', 'No auth context available');
           return { success: false, action: 'failed', error: 'No auth context' };
         }
 
         const clerkId = ctx.auth.userId;
-        console.log(`Syncing profile for user ${clerkId}`);
+        debugLog('profiles.syncFromClerk', `Syncing profile for user ${clerkId}`, { input });
 
         if (!clerkId) {
-          console.error("No clerk ID found in auth context");
+          debugLog('profiles.syncFromClerk', 'No clerk ID found in auth context');
           return { success: false, action: 'failed', error: 'No user ID' };
         }
 
@@ -82,6 +112,7 @@ export const profilesRouter = router({
 
         // If we have ctx.user (from currentUser), use that data to supplement
         if (ctx.user) {
+          debugLog('profiles.syncFromClerk', 'Using Clerk currentUser data', ctx.user);
           firstName = firstName || ctx.user.firstName || '';
           lastName = lastName || ctx.user.lastName || '';
           email = email || ctx.user.emailAddresses?.[0]?.emailAddress || `${clerkId}@placeholder.com`;
@@ -92,9 +123,11 @@ export const profilesRouter = router({
         const existingUser = await ctx.db.query.users.findFirst({
           where: eq(users.id, clerkId),
         });
+        
+        debugLog('profiles.syncFromClerk', 'Existing user check result:', existingUser);
 
         if (existingUser) {
-          console.log(`Updating existing user ${clerkId}`);
+          debugLog('profiles.syncFromClerk', `Updating existing user ${clerkId}`);
 
           // Update existing user
           await ctx.db
@@ -108,12 +141,13 @@ export const profilesRouter = router({
             })
             .where(eq(users.id, clerkId));
 
+          debugLog('profiles.syncFromClerk', 'User updated successfully');
           return { success: true, action: 'updated' };
         } else {
-          console.log(`Creating new user ${clerkId}`);
+          debugLog('profiles.syncFromClerk', `Creating new user ${clerkId}`);
 
           // Create new user
-          await ctx.db.insert(users).values({
+          const result = await ctx.db.insert(users).values({
             id: clerkId,
             firstName,
             lastName,
@@ -123,10 +157,15 @@ export const profilesRouter = router({
             updatedAt: new Date(),
           });
 
+          debugLog('profiles.syncFromClerk', 'User created successfully', { result });
           return { success: true, action: 'created' };
         }
       } catch (error) {
-        console.error('Error syncing profile:', error);
+        debugLog('profiles.syncFromClerk', 'Error syncing profile:', {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined
+        });
+        
         return {
           success: false,
           action: 'failed',
@@ -153,11 +192,11 @@ export const profilesRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        console.log("Profile update received with input:", JSON.stringify(input, null, 2));
-        console.log("Auth context:", ctx.auth);
+        debugLog('profiles.updatePlayerProfile', "Profile update received with input:", input);
+        debugLog('profiles.updatePlayerProfile', "Auth context:", ctx.auth);
         
         if (!input) {
-          console.error("No input received for profile update");
+          debugLog('profiles.updatePlayerProfile', "No input received for profile update");
           throw new TRPCError({
             code: 'BAD_REQUEST',
             message: 'No profile data provided',
@@ -166,19 +205,21 @@ export const profilesRouter = router({
         
         const clerkId = ctx.auth.userId;
         if (!clerkId) {
-          console.error("No userId in auth context");
+          debugLog('profiles.updatePlayerProfile', "No userId in auth context");
           throw new TRPCError({
             code: 'UNAUTHORIZED',
             message: 'User not authenticated',
           });
         }
         
-        console.log("Processing update for user ID:", clerkId);
+        debugLog('profiles.updatePlayerProfile', "Processing update for user ID:", { clerkId });
         
         // Check if player profile exists
         const existingProfile = await ctx.db.query.playerProfiles.findFirst({
           where: eq(playerProfiles.userId, clerkId),
         });
+        
+        debugLog('profiles.updatePlayerProfile', "Existing profile check result:", existingProfile);
         
         // Prepare data for update/insert
         const profileData = {
@@ -195,29 +236,79 @@ export const profilesRouter = router({
           updatedAt: new Date(),
         };
         
-        // Restore full profile update logic
-        if (existingProfile) {
-          // Update existing profile
-          await ctx.db
-            .update(playerProfiles)
-            .set(profileData)
-            .where(eq(playerProfiles.userId, clerkId));
+        try {
+          // Restore full profile update logic
+          if (existingProfile) {
+            // Update existing profile
+            const updateResult = await ctx.db
+              .update(playerProfiles)
+              .set(profileData)
+              .where(eq(playerProfiles.userId, clerkId));
+              
+            debugLog('profiles.updatePlayerProfile', "Profile updated successfully", { updateResult });
             
-          console.log("Profile updated successfully");
-          return { success: true, action: 'updated' };
-        } else {
-          // Create new profile
-          await ctx.db.insert(playerProfiles).values({
-            userId: clerkId,
-            ...profileData,
-            isAvailableToPlay: input.isAvailableToPlay ?? true,
+            // Fetch the updated profile to return
+            const updatedProfile = await ctx.db.query.playerProfiles.findFirst({
+              where: eq(playerProfiles.userId, clerkId),
+            });
+            
+            debugLog('profiles.updatePlayerProfile', "Updated profile:", updatedProfile);
+            
+            return { 
+              success: true, 
+              action: 'updated',
+              profile: updatedProfile ? {
+                ...updatedProfile,
+                updatedAt: updatedProfile.updatedAt instanceof Date ? updatedProfile.updatedAt.toISOString() : updatedProfile.updatedAt,
+                strengths: Array.isArray(updatedProfile.strengths) ? updatedProfile.strengths : [],
+                weaknesses: Array.isArray(updatedProfile.weaknesses) ? updatedProfile.weaknesses : [],
+              } : null
+            };
+          } else {
+            // Create new profile
+            const insertResult = await ctx.db.insert(playerProfiles).values({
+              userId: clerkId,
+              ...profileData,
+              isAvailableToPlay: input.isAvailableToPlay ?? true,
+            });
+            
+            debugLog('profiles.updatePlayerProfile', "Profile created successfully", { insertResult });
+            
+            // Fetch the created profile to return
+            const createdProfile = await ctx.db.query.playerProfiles.findFirst({
+              where: eq(playerProfiles.userId, clerkId),
+            });
+            
+            debugLog('profiles.updatePlayerProfile', "Created profile:", createdProfile);
+            
+            return { 
+              success: true, 
+              action: 'created',
+              profile: createdProfile ? {
+                ...createdProfile,
+                updatedAt: createdProfile.updatedAt instanceof Date ? createdProfile.updatedAt.toISOString() : createdProfile.updatedAt,
+                strengths: Array.isArray(createdProfile.strengths) ? createdProfile.strengths : [],
+                weaknesses: Array.isArray(createdProfile.weaknesses) ? createdProfile.weaknesses : [],
+              } : null
+            };
+          }
+        } catch (dbError) {
+          debugLog('profiles.updatePlayerProfile', "Database operation error:", {
+            error: dbError instanceof Error ? dbError.message : String(dbError),
+            stack: dbError instanceof Error ? dbError.stack : undefined
           });
           
-          console.log("Profile created successfully");
-          return { success: true, action: 'created' };
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Database operation failed',
+            cause: dbError,
+          });
         }
       } catch (error) {
-        console.error("Error in updatePlayerProfile:", error);
+        debugLog('profiles.updatePlayerProfile', "Error in updatePlayerProfile:", {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined
+        });
         
         if (error instanceof TRPCError) {
           throw error;

@@ -20,9 +20,44 @@ export default function ProfileCompletionPrompt({
   className,
   variant = 'banner'
 }: ProfileCompletionPromptProps) {
-  const completionPercentage = calculateProfileCompletionPercentage(user, playerProfile);
-  const isComplete = isProfileComplete(user, playerProfile);
-  const missingFields = getMissingProfileFields(user, playerProfile);
+  // Ensure dates are properly converted from strings if needed
+  const normalizedUser = user ? {
+    ...user,
+    createdAt: user.createdAt instanceof Date ? user.createdAt : 
+               typeof user.createdAt === 'string' ? new Date(user.createdAt) : new Date(),
+    updatedAt: user.updatedAt instanceof Date ? user.updatedAt : 
+               typeof user.updatedAt === 'string' ? new Date(user.updatedAt) : new Date(),
+    lastActive: user.lastActive instanceof Date ? user.lastActive : 
+                typeof user.lastActive === 'string' ? new Date(user.lastActive) : null,
+  } : null;
+  
+  // Ensure player profile arrays are initialized and dates are converted
+  const normalizedPlayerProfile = playerProfile ? {
+    ...playerProfile,
+    updatedAt: playerProfile.updatedAt instanceof Date ? playerProfile.updatedAt : 
+               typeof playerProfile.updatedAt === 'string' ? new Date(playerProfile.updatedAt) : new Date(),
+    strengths: Array.isArray(playerProfile.strengths) ? playerProfile.strengths : [],
+    weaknesses: Array.isArray(playerProfile.weaknesses) ? playerProfile.weaknesses : [],
+    gameplayVideos: Array.isArray(playerProfile.gameplayVideos) ? playerProfile.gameplayVideos : [],
+    equipmentIds: Array.isArray(playerProfile.equipmentIds) ? playerProfile.equipmentIds : [],
+    matchTypes: Array.isArray(playerProfile.matchTypes) ? playerProfile.matchTypes : [],
+  } : null;
+
+  // Log debug information
+  console.log("ProfileCompletionPrompt normalized data:", { 
+    userDates: normalizedUser ? {
+      createdAt: normalizedUser.createdAt,
+      updatedAt: normalizedUser.updatedAt,
+    } : null,
+    playerProfileFields: normalizedPlayerProfile ? {
+      hasStrengths: Array.isArray(normalizedPlayerProfile.strengths),
+      strengthsLength: normalizedPlayerProfile.strengths?.length
+    } : null
+  });
+
+  const completionPercentage = calculateProfileCompletionPercentage(normalizedUser, normalizedPlayerProfile);
+  const isComplete = isProfileComplete(normalizedUser, normalizedPlayerProfile);
+  const missingFields = getMissingProfileFields(normalizedUser, normalizedPlayerProfile);
   
   // Don't show prompt if profile is complete
   if (isComplete) {

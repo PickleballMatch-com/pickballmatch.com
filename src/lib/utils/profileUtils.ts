@@ -41,6 +41,25 @@ const totalWeight = userRequirements.reduce((sum, req) => sum + req.weight, 0) +
 export function calculateProfileCompletionPercentage(user: User | null | undefined, playerProfile: PlayerProfile | null | undefined): number {
   if (!user) return 0;
   
+  // Log debug information to help diagnose issues
+  console.log("Profile completion calculation - input:", { 
+    user: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profileImageUrl: user.profileImageUrl ? "[present]" : "[missing]",
+      createdAt: user.createdAt instanceof Date ? "Date object" : typeof user.createdAt,
+      updatedAt: user.updatedAt instanceof Date ? "Date object" : typeof user.updatedAt,
+    },
+    playerProfile: playerProfile ? {
+      id: playerProfile.id,
+      skillLevel: playerProfile.skillLevel,
+      hasStrengths: playerProfile.strengths ? `${Array.isArray(playerProfile.strengths) ? "array" : typeof playerProfile.strengths} with ${Array.isArray(playerProfile.strengths) ? playerProfile.strengths.length : 0} items` : "undefined",
+      hasWeaknesses: playerProfile.weaknesses ? `${Array.isArray(playerProfile.weaknesses) ? "array" : typeof playerProfile.weaknesses} with ${Array.isArray(playerProfile.weaknesses) ? playerProfile.weaknesses.length : 0} items` : "undefined",
+      updatedAt: playerProfile.updatedAt instanceof Date ? "Date object" : typeof playerProfile.updatedAt,
+    } : "No player profile"
+  });
+  
   let completedWeight = 0;
   
   // Check user fields
@@ -48,6 +67,9 @@ export function calculateProfileCompletionPercentage(user: User | null | undefin
     const value = user[req.field as keyof typeof user];
     if (value !== undefined && value !== null && value !== '') {
       completedWeight += req.weight;
+      console.log(`User field ${req.field} is complete: +${req.weight} points`);
+    } else {
+      console.log(`User field ${req.field} is incomplete, value:`, value);
     }
   });
   
@@ -55,27 +77,45 @@ export function calculateProfileCompletionPercentage(user: User | null | undefin
   if (playerProfile) {
     playerProfileRequirements.forEach(req => {
       const value = playerProfile[req.field as keyof typeof playerProfile];
+      let isComplete = false;
       
       // Special handling for array fields
       if (Array.isArray(value)) {
         if (value.length > 0) {
-          completedWeight += req.weight;
+          isComplete = true;
+          console.log(`Player profile array field ${req.field} is complete with ${value.length} items: +${req.weight} points`);
+        } else {
+          console.log(`Player profile array field ${req.field} is empty`);
         }
       } 
       // Special handling for boolean fields
       else if (typeof value === 'boolean') {
-        completedWeight += req.weight;
+        isComplete = true;
+        console.log(`Player profile boolean field ${req.field} is complete: +${req.weight} points`);
       }
       // Handle normal fields
       else if (value !== undefined && value !== null && value !== '') {
+        isComplete = true;
+        console.log(`Player profile field ${req.field} is complete: +${req.weight} points`);
+      } else {
+        console.log(`Player profile field ${req.field} is incomplete, value:`, value);
+      }
+      
+      if (isComplete) {
         completedWeight += req.weight;
       }
     });
+  } else {
+    console.log("No player profile available - missing all player profile fields");
   }
   
   // Calculate percentage and round to nearest integer
   const percentage = (completedWeight / totalWeight) * 100;
-  return Math.round(percentage);
+  const roundedPercentage = Math.round(percentage);
+  
+  console.log(`Profile completion calculation - result: ${roundedPercentage}% (${completedWeight}/${totalWeight} points)`);
+  
+  return roundedPercentage;
 }
 
 /**

@@ -28,29 +28,61 @@ export function useProfileSync() {
         console.log("Found existing profile, no need to sync");
       }
       
-      // Additional check for empty arrays
-      if (data?.playerProfile) {
-        if (!Array.isArray(data.playerProfile.strengths)) {
-          console.log("Fixing missing strengths array");
-          data.playerProfile.strengths = [];
-        }
-        if (!Array.isArray(data.playerProfile.weaknesses)) {
-          console.log("Fixing missing weaknesses array");
-          data.playerProfile.weaknesses = [];
-        }
-        if (!Array.isArray(data.playerProfile.gameplayVideos)) {
-          console.log("Fixing missing gameplayVideos array");
-          data.playerProfile.gameplayVideos = [];
-        }
-        if (!Array.isArray(data.playerProfile.equipmentIds)) {
-          console.log("Fixing missing equipmentIds array");
-          data.playerProfile.equipmentIds = [];
-        }
-        if (!Array.isArray(data.playerProfile.matchTypes)) {
-          console.log("Fixing missing matchTypes array");
-          data.playerProfile.matchTypes = [];
+      // Create a working copy of the data to fix any issues
+      const fixedData = { ...data };
+      
+      // Fix date objects in user data if needed
+      if (fixedData?.user) {
+        try {
+          if (typeof fixedData.user.createdAt === 'string') {
+            fixedData.user.createdAt = new Date(fixedData.user.createdAt);
+          }
+          if (typeof fixedData.user.updatedAt === 'string') {
+            fixedData.user.updatedAt = new Date(fixedData.user.updatedAt);
+          }
+          if (typeof fixedData.user.lastActive === 'string') {
+            fixedData.user.lastActive = new Date(fixedData.user.lastActive);
+          }
+        } catch (e) {
+          console.error("Error converting date strings to Date objects:", e);
         }
       }
+      
+      // Additional check for empty arrays and fix player profile data
+      if (fixedData?.playerProfile) {
+        try {
+          // Convert date strings to Date objects
+          if (typeof fixedData.playerProfile.updatedAt === 'string') {
+            fixedData.playerProfile.updatedAt = new Date(fixedData.playerProfile.updatedAt);
+          }
+          
+          // Ensure arrays are properly initialized
+          fixedData.playerProfile.strengths = Array.isArray(fixedData.playerProfile.strengths) 
+            ? fixedData.playerProfile.strengths 
+            : [];
+            
+          fixedData.playerProfile.weaknesses = Array.isArray(fixedData.playerProfile.weaknesses) 
+            ? fixedData.playerProfile.weaknesses 
+            : [];
+            
+          fixedData.playerProfile.gameplayVideos = Array.isArray(fixedData.playerProfile.gameplayVideos) 
+            ? fixedData.playerProfile.gameplayVideos 
+            : [];
+            
+          fixedData.playerProfile.equipmentIds = Array.isArray(fixedData.playerProfile.equipmentIds) 
+            ? fixedData.playerProfile.equipmentIds 
+            : [];
+            
+          fixedData.playerProfile.matchTypes = Array.isArray(fixedData.playerProfile.matchTypes) 
+            ? fixedData.playerProfile.matchTypes 
+            : [];
+        } catch (e) {
+          console.error("Error fixing player profile data:", e);
+        }
+      }
+      
+      // Update the reference to the fixed data
+      Object.assign(data, fixedData);
     }
   });
 

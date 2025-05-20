@@ -14,6 +14,29 @@ export default function ProfilePage() {
 
   // Use our custom hook to manage profile synchronization
   const { profileData, isLoading } = useProfileSync();
+  
+  // Debug logging
+  useEffect(() => {
+    console.log("Profile data loaded:", {
+      hasProfileData: !!profileData,
+      user: profileData?.user ? {
+        id: profileData.user.id,
+        hasName: !!profileData.user.firstName,
+        createdAtType: profileData.user.createdAt ? typeof profileData.user.createdAt : 'undefined',
+        isDateObject: profileData.user.createdAt instanceof Date
+      } : null,
+      playerProfile: profileData?.playerProfile ? {
+        hasSkillLevel: !!profileData.playerProfile.skillLevel,
+        strengthsIsArray: Array.isArray(profileData.playerProfile.strengths),
+        strengthsLength: Array.isArray(profileData.playerProfile.strengths) ? profileData.playerProfile.strengths.length : 'not an array',
+        dateIsString: typeof profileData.playerProfile.updatedAt === 'string'
+      } : null,
+      environment: {
+        hostname: window.location.hostname,
+        isVercel: !window.location.hostname.includes('localhost')
+      }
+    });
+  }, [profileData]);
 
   // Redirect to login if not signed in
   useEffect(() => {

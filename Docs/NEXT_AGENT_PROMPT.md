@@ -2,7 +2,7 @@
 
 **Project:** Pickleball Match Platform
 **Current Phase:** Phase 1: Core MVP Features - Advanced Profile Features
-**Last Updated:** 2024-05-16 (By AI Assistant, based on User's last known work)
+**Last Updated:** 2024-05-20 (By AI Assistant, with user's Vercel deployment notes)
 **Task Management:** See `Docs/TASKS_AND_PROGRESS.md`
 
 ## 1. Project Context & Overview
@@ -28,6 +28,15 @@ The foundational infrastructure is largely in place:
 *   Client-side profile management (`useProfileSync` hook, basic Profile Edit/View pages).
 *   Profile Completion System implemented (utilities, components, guard).
 *   **Documentation Reorganization**: Streamlined project documentation into a core set of focused documents.
+*   **Profile System Fixes**: Implemented fixes for profile completion percentage calculation, date handling, and array normalization. Added extensive debugging and fallback mechanisms.
+
+**Current Deployment Status:**
+*   The application is deployed to Vercel with the `develop` branch connected for preview deployments.
+*   **Local Development**: Profile system works correctly on localhost:3000 - profile data displays properly and can be edited/updated.
+*   **Vercel Deployment**: Issues persist with the profile system:
+    1. When visiting the profile page, browser console logs show profile data is being fetched successfully, but it's not displaying on the screen.
+    2. The profile edit page doesn't allow saving changes.
+    3. The focus for the next agent should be ensuring the profile system works correctly on Vercel, not just in local development.
 
 **Key Files for Current Work:**
 *   Profile Pages: `src/app/profile/`, `src/app/profile/edit/page.tsx`
@@ -35,6 +44,9 @@ The foundational infrastructure is largely in place:
 *   Profile Sync Hook: `src/lib/hooks/useProfileSync.ts`
 *   Database Schema: `src/server/db/schema.ts`
 *   Profile Types: `src/lib/types/profile.ts`
+*   Debug Utilities: `src/server/debug-log.ts`
+*   API Routes: `src/app/api/trpc/[trpc]/route.ts`, `src/app/api/trpc/[trpc]/cors-middleware.ts`
+*   Database Test Endpoint: `src/app/api/db-test/route.ts`
 
 ## 3. Your Immediate Tasks: Advanced Profile Features
 

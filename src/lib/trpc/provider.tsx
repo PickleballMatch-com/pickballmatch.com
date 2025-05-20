@@ -35,9 +35,16 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
           },
         }),
       ],
-      transformer: superjson
+      transformer: superjson,
     })
   );
+
+  // Log environment info for debugging
+  console.log("Environment:", {
+    hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+    isVercel: typeof window !== 'undefined' && !window.location.hostname.includes('localhost'),
+    protocol: typeof window !== 'undefined' ? window.location.protocol : 'N/A',
+  });
 
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>

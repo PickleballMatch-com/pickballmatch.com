@@ -21,6 +21,28 @@ export function useProfileSync() {
     // as it might exist from previous sessions
     onSuccess: (data) => {
       console.log("Profile data retrieved:", data);
+      console.log("Raw profile data types:", {
+        userObject: data?.user ? {
+          createdAtType: typeof data.user.createdAt,
+          updatedAtType: typeof data.user.updatedAt,
+          lastActiveType: typeof data.user.lastActive,
+          isCreatedAtDate: data.user.createdAt instanceof Date,
+          sample: JSON.stringify(data.user).substring(0, 100) + "..."
+        } : null,
+        playerProfileObject: data?.playerProfile ? {
+          updatedAtType: typeof data.playerProfile.updatedAt,
+          isUpdatedAtDate: data.playerProfile.updatedAt instanceof Date,
+          strengthsType: typeof data.playerProfile.strengths,
+          isStrengthsArray: Array.isArray(data.playerProfile.strengths),
+          weaknessesType: typeof data.playerProfile.weaknesses,
+          isWeaknessesArray: Array.isArray(data.playerProfile.weaknesses),
+          sample: JSON.stringify(data.playerProfile).substring(0, 100) + "..."
+        } : null,
+        environment: typeof window !== 'undefined' ? {
+          isVercel: !window.location.hostname.includes('localhost'),
+          hostname: window.location.hostname
+        } : 'server-side'
+      });
 
       if (syncFailed && data?.user) {
         // If we previously failed to sync but we have user data,
@@ -35,12 +57,24 @@ export function useProfileSync() {
       if (fixedData?.user) {
         try {
           if (typeof fixedData.user.createdAt === 'string') {
+            console.log("Converting createdAt from string to Date", { 
+              original: fixedData.user.createdAt,
+              dateObj: new Date(fixedData.user.createdAt)
+            });
             fixedData.user.createdAt = new Date(fixedData.user.createdAt);
           }
           if (typeof fixedData.user.updatedAt === 'string') {
+            console.log("Converting updatedAt from string to Date", { 
+              original: fixedData.user.updatedAt,
+              dateObj: new Date(fixedData.user.updatedAt)
+            });
             fixedData.user.updatedAt = new Date(fixedData.user.updatedAt);
           }
           if (typeof fixedData.user.lastActive === 'string') {
+            console.log("Converting lastActive from string to Date", { 
+              original: fixedData.user.lastActive,
+              dateObj: new Date(fixedData.user.lastActive)
+            });
             fixedData.user.lastActive = new Date(fixedData.user.lastActive);
           }
         } catch (e) {
@@ -53,29 +87,53 @@ export function useProfileSync() {
         try {
           // Convert date strings to Date objects
           if (typeof fixedData.playerProfile.updatedAt === 'string') {
+            console.log("Converting profile updatedAt from string to Date", { 
+              original: fixedData.playerProfile.updatedAt,
+              dateObj: new Date(fixedData.playerProfile.updatedAt)
+            });
             fixedData.playerProfile.updatedAt = new Date(fixedData.playerProfile.updatedAt);
           }
           
           // Ensure arrays are properly initialized
-          fixedData.playerProfile.strengths = Array.isArray(fixedData.playerProfile.strengths) 
-            ? fixedData.playerProfile.strengths 
-            : [];
+          if (!Array.isArray(fixedData.playerProfile.strengths)) {
+            console.log("Fixing strengths array:", { 
+              before: fixedData.playerProfile.strengths,
+              fixed: []
+            });
+            fixedData.playerProfile.strengths = [];
+          }
             
-          fixedData.playerProfile.weaknesses = Array.isArray(fixedData.playerProfile.weaknesses) 
-            ? fixedData.playerProfile.weaknesses 
-            : [];
+          if (!Array.isArray(fixedData.playerProfile.weaknesses)) {
+            console.log("Fixing weaknesses array:", { 
+              before: fixedData.playerProfile.weaknesses,
+              fixed: []
+            });
+            fixedData.playerProfile.weaknesses = [];
+          }
             
-          fixedData.playerProfile.gameplayVideos = Array.isArray(fixedData.playerProfile.gameplayVideos) 
-            ? fixedData.playerProfile.gameplayVideos 
-            : [];
+          if (!Array.isArray(fixedData.playerProfile.gameplayVideos)) {
+            console.log("Fixing gameplayVideos array:", { 
+              before: fixedData.playerProfile.gameplayVideos,
+              fixed: []
+            });
+            fixedData.playerProfile.gameplayVideos = [];
+          }
             
-          fixedData.playerProfile.equipmentIds = Array.isArray(fixedData.playerProfile.equipmentIds) 
-            ? fixedData.playerProfile.equipmentIds 
-            : [];
+          if (!Array.isArray(fixedData.playerProfile.equipmentIds)) {
+            console.log("Fixing equipmentIds array:", { 
+              before: fixedData.playerProfile.equipmentIds,
+              fixed: []
+            });
+            fixedData.playerProfile.equipmentIds = [];
+          }
             
-          fixedData.playerProfile.matchTypes = Array.isArray(fixedData.playerProfile.matchTypes) 
-            ? fixedData.playerProfile.matchTypes 
-            : [];
+          if (!Array.isArray(fixedData.playerProfile.matchTypes)) {
+            console.log("Fixing matchTypes array:", { 
+              before: fixedData.playerProfile.matchTypes,
+              fixed: []
+            });
+            fixedData.playerProfile.matchTypes = [];
+          }
         } catch (e) {
           console.error("Error fixing player profile data:", e);
         }
@@ -83,6 +141,23 @@ export function useProfileSync() {
       
       // Update the reference to the fixed data
       Object.assign(data, fixedData);
+      
+      // Log the fixed data
+      console.log("Fixed profile data types:", {
+        userObject: data?.user ? {
+          createdAtType: typeof data.user.createdAt,
+          updatedAtType: typeof data.user.updatedAt,
+          lastActiveType: typeof data.user.lastActive,
+          isCreatedAtDate: data.user.createdAt instanceof Date
+        } : null,
+        playerProfileObject: data?.playerProfile ? {
+          updatedAtType: typeof data.playerProfile.updatedAt,
+          isUpdatedAtDate: data.playerProfile.updatedAt instanceof Date,
+          strengthsType: typeof data.playerProfile.strengths,
+          isStrengthsArray: Array.isArray(data.playerProfile.strengths),
+          strengthsLength: Array.isArray(data.playerProfile.strengths) ? data.playerProfile.strengths.length : 'not an array'
+        } : null
+      });
     }
   });
 

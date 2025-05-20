@@ -54,19 +54,54 @@ function EditProfileContent() {
   
   // Set initial form data from profile
   useEffect(() => {
+    console.log("Setting form data from profile data:", profileData);
+    
     if (profileData?.playerProfile) {
-      setFormData({
+      // Log the type information for debugging
+      console.log("Profile data types:", {
+        skillLevel: typeof profileData.playerProfile.skillLevel,
+        preferredPlayStyle: typeof profileData.playerProfile.preferredPlayStyle,
+        yearsPlaying: typeof profileData.playerProfile.yearsPlaying,
+        strengthsIsArray: Array.isArray(profileData.playerProfile.strengths),
+        weaknessesIsArray: Array.isArray(profileData.playerProfile.weaknesses),
+        updatedAtType: typeof profileData.playerProfile.updatedAt,
+      });
+      
+      // Force array types in case they're not properly deserialized
+      const strengths = Array.isArray(profileData.playerProfile.strengths) 
+        ? profileData.playerProfile.strengths 
+        : (typeof profileData.playerProfile.strengths === 'string' 
+            ? [profileData.playerProfile.strengths]
+            : []);
+            
+      const weaknesses = Array.isArray(profileData.playerProfile.weaknesses) 
+        ? profileData.playerProfile.weaknesses 
+        : (typeof profileData.playerProfile.weaknesses === 'string'
+            ? [profileData.playerProfile.weaknesses]
+            : []);
+      
+      // Handle null or undefined values
+      const normalizedData = {
         skillLevel: profileData.playerProfile.skillLevel || '',
         preferredPlayStyle: profileData.playerProfile.preferredPlayStyle || '',
-        yearsPlaying: profileData.playerProfile.yearsPlaying || 0,
+        yearsPlaying: typeof profileData.playerProfile.yearsPlaying === 'number' 
+          ? profileData.playerProfile.yearsPlaying 
+          : 0,
         preferredLocation: profileData.playerProfile.preferredLocation || '',
         bio: profileData.playerProfile.bio || '',
         playingFrequency: profileData.playerProfile.playingFrequency || '',
-        maxTravelDistance: profileData.playerProfile.maxTravelDistance || 0,
-        isAvailableToPlay: profileData.playerProfile.isAvailableToPlay ?? true,
-        strengths: profileData.playerProfile.strengths || [],
-        weaknesses: profileData.playerProfile.weaknesses || [],
-      });
+        maxTravelDistance: typeof profileData.playerProfile.maxTravelDistance === 'number'
+          ? profileData.playerProfile.maxTravelDistance
+          : 0,
+        isAvailableToPlay: typeof profileData.playerProfile.isAvailableToPlay === 'boolean'
+          ? profileData.playerProfile.isAvailableToPlay
+          : true,
+        strengths: strengths,
+        weaknesses: weaknesses,
+      };
+      
+      console.log("Normalized form data:", normalizedData);
+      setFormData(normalizedData);
     }
   }, [profileData]);
   
@@ -156,15 +191,49 @@ function EditProfileContent() {
     console.log("Submitting full profile data:", JSON.stringify(profileData));
     
     // Add debug info to the console
+    const isVercel = !window.location.hostname.includes('localhost');
     console.log("Current environment:", {
       hostname: window.location.hostname,
-      isLocal: window.location.hostname.includes('localhost'),
+      isVercel: isVercel,
       protocol: window.location.protocol,
     });
     
-    // Try with direct AJAX request as a fallback if tRPC is failing
-    if (!window.location.hostname.includes('localhost')) {
-      console.log("Using direct fetch approach as fallback");
+    // Always use both methods for comparison and debugging
+    // 1. First try tRPC mutation
+    try {
+      console.log("Using tRPC mutation to update profile");
+      updateProfile.mutate(profileData, {
+        onSuccess: (result) => {
+          console.log("Profile updated successfully with tRPC!", result);
+          if (isVercel) {
+            console.log("On Vercel but not redirecting yet - checking fetch method too");
+          } else {
+            router.push('/profile');
+          }
+        },
+        onError: (error) => {
+          console.error("Profile update error with tRPC:", error);
+          
+          // Add more detailed error info
+          if (error.data?.zodError) {
+            console.error("Validation errors:", error.data.zodError);
+            const formErrors = Object.entries(error.data.zodError.fieldErrors || {})
+              .map(([field, errors]) => `${field}: ${errors?.join(', ')}`)
+              .join('\n');
+              
+            alert(`Validation errors:\n${formErrors || error.message}`);
+          } else {
+            console.log("Will try fetch approach as fallback");
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error in tRPC mutation:", error);
+    }
+    
+    // 2. Also try with direct fetch if on Vercel
+    if (isVercel) {
+      console.log("Using direct fetch approach on Vercel");
       
       fetch(`${window.location.origin}/api/trpc/profiles.updatePlayerProfile?batch=1`, {
         method: 'POST',
@@ -172,47 +241,33 @@ function EditProfileContent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify([{ json: profileData }]),
+        credentials: 'include', // Include cookies for auth
       })
       .then(response => {
         console.log("Profile update response status:", response.status);
+        console.log("Response headers:", Object.fromEntries([...response.headers.entries()]));
         return response.json();
       })
       .then(data => {
-        console.log("Profile update success:", data);
-        router.push('/profile');
+        console.log("Profile update success with fetch:", data);
+        
+        // Check if the response contains an error
+        const hasError = data[0]?.error;
+        if (hasError) {
+          console.error("API returned error:", data[0].error);
+          alert(`Failed to update profile: ${data[0].error.message || 'Unknown error'}`);
+        } else {
+          console.log("Fetch method succeeded, redirecting to profile page");
+          router.push('/profile');
+        }
       })
       .catch(error => {
         console.error("Profile update error with fetch:", error);
         alert(`Failed to update profile: ${error.message || 'Unknown error'}`);
       });
     } else {
-      // Use tRPC approach locally
-      try {
-        updateProfile.mutate(profileData, {
-          onSuccess: () => {
-            console.log("Profile updated successfully!");
-            router.push('/profile');
-          },
-          onError: (error) => {
-            console.error("Profile update error:", error);
-            
-            // Add more detailed error info
-            if (error.data?.zodError) {
-              console.error("Validation errors:", error.data.zodError);
-              const formErrors = Object.entries(error.data.zodError.fieldErrors || {})
-                .map(([field, errors]) => `${field}: ${errors?.join(', ')}`)
-                .join('\n');
-                
-              alert(`Validation errors:\n${formErrors || error.message}`);
-            } else {
-              alert(`Failed to update profile: ${error.message}`);
-            }
-          }
-        });
-      } catch (error) {
-        console.error("Error in mutation:", error);
-        alert("An error occurred while updating your profile");
-      }
+      // Just use tRPC locally
+      console.log("Using only tRPC approach locally");
     }
   };
   

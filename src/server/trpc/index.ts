@@ -1,5 +1,5 @@
 import { initTRPC, TRPCError } from '@trpc/server';
-// Temporarily remove superjson to test basic functionality
+import superjson from 'superjson';
 import { ZodError } from 'zod';
 import { getAuth } from '@clerk/nextjs/server';
 import { currentUser } from '@clerk/nextjs/server';
@@ -14,7 +14,7 @@ type Context = {
 };
 
 const t = initTRPC.context<Context>().create({
-  // Remove transformer temporarily
+  transformer: superjson,
   errorFormatter({ shape, error }) {
     console.error('TRPC error:', error);
 

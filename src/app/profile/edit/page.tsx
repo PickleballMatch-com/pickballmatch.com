@@ -180,13 +180,20 @@ function EditProfileContent() {
       <div className="bg-white shadow rounded-lg p-6 mb-6">
         <ProfileCompletionIndicator
           user={profileData?.user}
-          playerProfile={{
-            ...profileData?.playerProfile,
-            ...formData,
-            // Convert form data types to match schema
+          playerProfile={profileData?.playerProfile ? {
+            ...profileData.playerProfile,
+            // Override with form data, converting types as needed
+            skillLevel: formData.skillLevel || profileData.playerProfile.skillLevel,
+            preferredPlayStyle: formData.preferredPlayStyle,
             yearsPlaying: typeof formData.yearsPlaying === 'number' ? formData.yearsPlaying : null,
+            preferredLocation: formData.preferredLocation,
+            bio: formData.bio,
             maxTravelDistance: typeof formData.maxTravelDistance === 'number' ? formData.maxTravelDistance : null,
-          }}
+            isAvailableToPlay: formData.isAvailableToPlay,
+            strengths: formData.strengths,
+            weaknesses: formData.weaknesses,
+            playingFrequency: formData.playingFrequency,
+          } : null}
           showMissingFields={true}
         />
       </div>
@@ -409,9 +416,9 @@ function EditProfileContent() {
           <button
             type="submit"
             className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
-            disabled={updateProfile.isLoading}
+            disabled={updateProfile.isPending}
           >
-            {updateProfile.isLoading ? 'Saving...' : 'Save Profile'}
+            {updateProfile.isPending ? 'Saving...' : 'Save Profile'}
           </button>
         </div>
       </form>

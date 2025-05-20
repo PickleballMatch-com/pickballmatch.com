@@ -152,74 +152,82 @@ export const profilesRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("Profile update received with input:", JSON.stringify(input, null, 2));
-      console.log("Auth context:", ctx.auth);
-      
-      if (!input) {
-        console.error("No input received for profile update");
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'No profile data provided',
+      try {
+        console.log("Profile update received with input:", JSON.stringify(input, null, 2));
+        console.log("Auth context:", ctx.auth);
+        
+        if (!input) {
+          console.error("No input received for profile update");
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'No profile data provided',
+          });
+        }
+        
+        const clerkId = ctx.auth.userId;
+        if (!clerkId) {
+          console.error("No userId in auth context");
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'User not authenticated',
+          });
+        }
+        
+        console.log("Processing update for user ID:", clerkId);
+        
+        // Check if player profile exists
+        const existingProfile = await ctx.db.query.playerProfiles.findFirst({
+          where: eq(playerProfiles.userId, clerkId),
         });
-      }
-      
-      const clerkId = ctx.auth.userId;
-      if (!clerkId) {
-        console.error("No userId in auth context");
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not authenticated',
-        });
-      }
-      
-      console.log("Processing update for user ID:", clerkId);
-      
-      // Check if player profile exists
-      const existingProfile = await ctx.db.query.playerProfiles.findFirst({
-        where: eq(playerProfiles.userId, clerkId),
-      });
-      
-      // Restore full profile update logic
-      if (existingProfile) {
-        // Update existing profile
-        await ctx.db
-          .update(playerProfiles)
-          .set({
-            skillLevel: input.skillLevel,
-            preferredPlayStyle: input.preferredPlayStyle,
-            yearsPlaying: input.yearsPlaying,
-            preferredLocation: input.preferredLocation,
-            bio: input.bio,
-            maxTravelDistance: input.maxTravelDistance,
-            isAvailableToPlay: input.isAvailableToPlay,
-            strengths: input.strengths,
-            weaknesses: input.weaknesses,
-            playingFrequency: input.playingFrequency,
-            updatedAt: new Date(),
-          })
-          .where(eq(playerProfiles.userId, clerkId));
-          
-        console.log("Profile updated successfully");
-        return { success: true, action: 'updated' };
-      } else {
-        // Create new profile
-        await ctx.db.insert(playerProfiles).values({
-          userId: clerkId,
+        
+        // Prepare data for update/insert
+        const profileData = {
           skillLevel: input.skillLevel,
           preferredPlayStyle: input.preferredPlayStyle,
           yearsPlaying: input.yearsPlaying,
           preferredLocation: input.preferredLocation,
           bio: input.bio,
           maxTravelDistance: input.maxTravelDistance,
-          isAvailableToPlay: input.isAvailableToPlay ?? true,
-          strengths: input.strengths,
-          weaknesses: input.weaknesses,
+          isAvailableToPlay: input.isAvailableToPlay,
+          strengths: input.strengths || [],
+          weaknesses: input.weaknesses || [],
           playingFrequency: input.playingFrequency,
           updatedAt: new Date(),
-        });
+        };
         
-        console.log("Profile created successfully");
-        return { success: true, action: 'created' };
+        // Restore full profile update logic
+        if (existingProfile) {
+          // Update existing profile
+          await ctx.db
+            .update(playerProfiles)
+            .set(profileData)
+            .where(eq(playerProfiles.userId, clerkId));
+            
+          console.log("Profile updated successfully");
+          return { success: true, action: 'updated' };
+        } else {
+          // Create new profile
+          await ctx.db.insert(playerProfiles).values({
+            userId: clerkId,
+            ...profileData,
+            isAvailableToPlay: input.isAvailableToPlay ?? true,
+          });
+          
+          console.log("Profile created successfully");
+          return { success: true, action: 'created' };
+        }
+      } catch (error) {
+        console.error("Error in updatePlayerProfile:", error);
+        
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: error instanceof Error ? error.message : 'Unknown error updating profile',
+          cause: error,
+        });
       }
     }),
 });
